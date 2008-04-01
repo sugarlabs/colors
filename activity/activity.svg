@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+        <!ENTITY ns_svg "http://www.w3.org/2000/svg">
+        <!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
+        <!ENTITY fill_color "#FFFFFF">
+        <!ENTITY stroke_color "#000000">
+]>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="45"
+   height="45"
+   id="svg2">
+  <defs
+     id="defs5">
+    <clipPath
+       id="clip1">
+      <path
+         d="M 22.5,54.319809 L -9.319809,22.5 L 3.408112,9.772079 L 16.136032,22.5 L 22.5,16.136032 L 9.772079,3.408112 L 22.5,-9.319809 L 54.319809,22.5 L 22.5,54.319809 z "
+         id="path5722" />
+    </clipPath>
+    <clipPath
+       id="clip0">
+      <rect
+         width="45"
+         height="45"
+         x="0"
+         y="0"
+         id="rect5719" />
+    </clipPath>
+    <clipPath
+       id="clipPath22110">
+      <rect
+         width="45"
+         height="45"
+         x="0"
+         y="0"
+         id="rect22112" />
+    </clipPath>
+    <clipPath
+       id="clipPath22106">
+      <path
+         d="M 22.5,54.319809 L -9.319809,22.5 L 3.408112,9.772079 L 16.136032,22.5 L 22.5,16.136032 L 9.772079,3.408112 L 22.5,-9.319809 L 54.319809,22.5 L 22.5,54.319809 z "
+         id="path22108" />
+    </clipPath>
+    <clipPath
+       id="clipPath22305">
+      <rect
+         width="45"
+         height="45"
+         x="0"
+         y="0"
+         id="rect22307" />
+    </clipPath>
+    <clipPath
+       id="clipPath22301">
+      <path
+         d="M 22.5,54.319809 L -9.319809,22.5 L 3.408112,9.772079 L 16.136032,22.5 L 22.5,16.136032 L 9.772079,3.408112 L 22.5,-9.319809 L 54.319809,22.5 L 22.5,54.319809 z "
+         id="path22303" />
+    </clipPath>
+  </defs>
+  <g
+     transform="translate(-18.266264,-19.0671)"
+     id="layer2" />
+  <g
+     transform="translate(0.8874094,27.650381)"
+     id="g22116" />
+  <g
+     transform="translate(2.1840441,4.6840148e-2)"
+     id="g22332">
+    <path
+       d="M 17.3205,22.182585 C 21.33214,25.04709 21.513685,25.447204 22.726745,26.526335 C 23.939805,27.605466 25.108845,28.73092 26.180035,29.875578 C 26.715635,30.447907 29.107965,32.635197 28.327845,33.778659 C 27.547725,34.922122 25.810655,40.053366 27.144805,41.471367 C 28.832095,43.654981 31.807185,43.78633 33.158905,41.453134 C 34.555365,39.885594 32.153025,34.168149 32.511765,33.683401 C 33.229945,32.712951 34.722005,32.222981 36.083605,31.540057 C 37.445205,30.857133 38.676339,29.981253 38.872649,28.238981 C 39.068959,25.14706 36.12938,22.461793 31.53201,18.251653 C 26.93464,14.041513 32.034486,17.930914 25.681681,13.16877 C 19.328876,8.4066264 12.04171,4.6513343 6.6017505,4.6513343 C 6.6017505,4.6513343 2.7425005,9.2451085 8.7580007,10.338835 C 10.13218,12.301959 4.8969605,17.401336 8.1642507,17.401334 C 9.6340104,17.401334 13.30886,19.31808 17.3205,22.182585 z "
+       
+style="fill:&fill_color;;fill-opacity:1;fill-rule:evenodd;stroke:&stroke_color;;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path22313" />
+    <g
+       transform="translate(-1.1078786,0.2015846)"
+       id="g22328">
+      <path
+         d="M 2.9818548,42.033534 C 1.3762287,38.516248 15.806007,23.224025 20.843349,19.467062 C 22.522482,17.972582 28.146986,12.992284 28.146986,12.992284 C 28.146986,12.992284 28.953429,9.108277 31.725501,6.5220425 C 35.434037,3.0621267 37.380584,4.8972017 39.455759,1.5484155 C 39.455759,1.5484155 40.142838,4.3201323 39.911765,5.2887595 C 39.675428,6.2794243 38.687798,10.595475 38.015218,11.827164 C 36.277482,15.044615 31.354721,16.303366 31.354721,16.303366 C 31.354721,16.303366 28.033979,21.203555 27.015039,22.430711 C 22.014508,30.486743 3.0122299,42.775886 2.9818548,42.033534 z "
+         
+style="fill:&fill_color;;fill-opacity:1;fill-rule:evenodd;stroke:&stroke_color;;stroke-width:3.50000024;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path22123" />
+      <path
+         d="M 26.765447,12.804034 C 27.78242,13.743475 31.074521,16.016869 31.639705,16.659846"
+         
+style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:&stroke_color;;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path22125" />
+    </g>
+  </g>
+  <g
+     transform="translate(59.375211,-25.654121)"
+     id="g22311" />
+</svg>
