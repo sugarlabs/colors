@@ -1,7 +1,7 @@
 [Activity]
 name = Colors!
-activity_version = 3
+activity_version = 4
 host_version = 1
 service_name = org.laptop.community.Colors
-icon = activity
+icon = Colors-activity
 exec = sugar-activity colors.Colors

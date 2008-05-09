@@ -23,7 +23,9 @@ data/intro.drw
 data/castle.png
 data/castle.drw
 icons/erase.svg
+icons/take-reference.svg
+icons/show-reference.svg
+icons/video-paint.svg
 icons/palette.svg
-icons/reference.svg
 activity/activity.info
-activity/activity.svg
+activity/Colors-activity.svg

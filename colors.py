@@ -434,19 +434,19 @@ class Colors(activity.Activity, ExportedGObject):
 
         self.refsep = gtk.SeparatorToolItem()
 
-        self.takerefbtn = toolbutton.ToolButton('reference')
+        self.takerefbtn = toolbutton.ToolButton('take-reference')
         self.takerefbtn.set_tooltip(_("Take Reference Picture"))
         self.takerefbtn.connect('clicked', self.on_take_reference)
         self.take_reference = False
 
-        self.showrefbtn = toggletoolbutton.ToggleToolButton('zoom-out')
+        self.showrefbtn = toggletoolbutton.ToggleToolButton('show-reference')
         self.showrefbtn.set_tooltip(_("Show Reference Picture"))
         self.showrefbtn.connect('clicked', self.on_show_reference)
         self.reference_forced = False
 
         self.videopaintsep = gtk.SeparatorToolItem()
 
-        self.videopaintbtn = toggletoolbutton.ToggleToolButton('zoom-out')
+        self.videopaintbtn = toggletoolbutton.ToggleToolButton('video-paint')
         self.videopaintbtn.set_tooltip(_("Video Paint"))
         self.videopaintbtn.connect('clicked', self.on_videopaint)
         self.videopaintpreview = gtk.DrawingArea()
