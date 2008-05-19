@@ -115,7 +115,7 @@ class BrushControlsPanel(gtk.HBox):
         self.sizebar.set_property("inverted", True)
         self.sizebar.connect('value-changed', self.on_size_change)
         sizebox.pack_end(self.sizebar)
-        self.sizecheck = gtk.CheckButton(_('Pressure\nSensitive'))
+        self.sizecheck = gtk.CheckButton(_('Sensitive'))
         self.sizecheck.connect('toggled', self.on_variable_size_toggle)
         sizebox.pack_end(self.sizecheck, False)
         self.pack_start(sizebox, False)
@@ -130,7 +130,7 @@ class BrushControlsPanel(gtk.HBox):
         self.opacitybar.set_property("inverted", True)
         self.opacitybar.connect('value-changed', self.on_opacity_change)
         opacitybox.pack_end(self.opacitybar)
-        self.opacitycheck = gtk.CheckButton(_('Pressure\nSensitive'))
+        self.opacitycheck = gtk.CheckButton(_('Sensitive'))
         self.opacitycheck.connect('toggled', self.on_variable_opacity_toggle)
         opacitybox.pack_end(self.opacitycheck, False)
         self.pack_start(opacitybox, False)
@@ -423,7 +423,6 @@ class Colors(activity.Activity, ExportedGObject):
         self.palettebtn = toggletoolbutton.ToggleToolButton('palette')
         self.palettebtn.set_tooltip(_("Palette"))
         self.palettebtn.connect('clicked', self.on_palette)
-        self.palette_forced = False
 
         # todo- Color picker button, similar semantics to palette button.
 
@@ -442,7 +441,6 @@ class Colors(activity.Activity, ExportedGObject):
         self.showrefbtn = toggletoolbutton.ToggleToolButton('show-reference')
         self.showrefbtn.set_tooltip(_("Show Reference Picture"))
         self.showrefbtn.connect('clicked', self.on_show_reference)
-        self.reference_forced = False
 
         self.videopaintsep = gtk.SeparatorToolItem()
 
@@ -816,8 +814,8 @@ class Colors(activity.Activity, ExportedGObject):
         # So each major key should appear at least once on each side of the keyboard.
         button = 0
 
-        # 'p' for Palette (todo- need something better!).
-        if event.keyval == ord('p'): 
+        # Space bar for Palette (todo- need something better!).
+        if event.keyval == ord(' '): 
             button = Colors.BUTTON_PALETTE
 
         # 'r' for Reference (todo- need something better!).
@@ -833,7 +831,7 @@ class Colors(activity.Activity, ExportedGObject):
             self.save_thumbnail(activity.get_bundle_path() + '/thumb.png')
 
         # OLPC 'hand' buttons for scrolling.
-        if event.keyval == 311 or event.keyval == 312 or event.keyval == ord('s'): 
+        if event.keyval == ord('x') or event.keyval == 311 or event.keyval == 312 or event.keyval == ord('s'): 
             button = Colors.BUTTON_SCROLL
 
         # OLPC 'size' buttons for intensity.
@@ -843,10 +841,10 @@ class Colors(activity.Activity, ExportedGObject):
         #if event.keyval == 289: button = Colors.BUTTON_SIZE_3
 
         # Arrow keys, gamepad 'face' buttons, or 'z' and 'x' for Zoom.
-        if event.keyval == ord('z') or event.keyval == 264 or event.keyval == 265 or event.keyval == 273:
-            button = Colors.BUTTON_ZOOM_IN
-        if event.keyval == ord('x') or event.keyval == 258 or event.keyval == 259 or event.keyval == 274:
-            button = Colors.BUTTON_ZOOM_OUT
+        #if event.keyval == ord('z') or event.keyval == 264 or event.keyval == 265 or event.keyval == 273:
+        #    button = Colors.BUTTON_ZOOM_IN
+        #if event.keyval == ord('x') or event.keyval == 258 or event.keyval == 259 or event.keyval == 274:
+        #    button = Colors.BUTTON_ZOOM_OUT
 
         # Either Alt key for pick.
         if event.keyval == 313 or event.keyval == 308:
@@ -921,15 +919,44 @@ class Colors(activity.Activity, ExportedGObject):
     def on_press (self, button):
         if button & Colors.BUTTON_ZOOM_IN:
             self.zoom_in()
+            return
 
         if button & Colors.BUTTON_ZOOM_OUT:
             self.zoom_out()
+            return
 
         if button & Colors.BUTTON_VIDEOPAINT:
             self.videopaintbtn.set_active(not self.videopaint_enabled)
+            return
+
+        if self.mode == Colors.MODE_CANVAS:
+            if button & Colors.BUTTON_PALETTE:
+                self.set_mode(Colors.MODE_PALETTE)
+                return
+            if button & Colors.BUTTON_REFERENCE:
+                self.set_mode(Colors.MODE_REFERENCE)
+                return
+            if button & Colors.BUTTON_SCROLL:
+                log.debug("enter scroll")
+                self.set_mode(Colors.MODE_SCROLL)
+                return
+    
+        if self.mode == Colors.MODE_PALETTE:
+            if button & Colors.BUTTON_PALETTE:
+                self.set_mode(Colors.MODE_CANVAS)
+                return
+
+        if self.mode == Colors.MODE_REFERENCE:
+            if button & Colors.BUTTON_REFERENCE:
+                self.set_mode(Colors.MODE_CANVAS)
+                return
 
     def on_release (self, button):
-        pass
+        if self.mode == Colors.MODE_SCROLL:
+            if button & Colors.BUTTON_SCROLL:
+                log.debug("leave scroll")
+                self.set_mode(Colors.MODE_SCROLL)
+                return
 
     def on_hold (self, button):
         pass
@@ -947,9 +974,11 @@ class Colors(activity.Activity, ExportedGObject):
         self.scroll = pos
 
         # Clamp scroll position to within absolute limits.
-        scroll.x = min(max(scroll.x, -self.easel.width * 0.125), self.easel.width * 0.125)
-        scroll.y = min(max(scroll.y, -self.easel.height * 0.125), self.easel.height * 0.125)
+        self.scroll.x = min(max(self.scroll.x, -self.easel.width * 0.125), self.easel.width * 0.125)
+        self.scroll.y = min(max(self.scroll.y, -self.easel.height * 0.125), self.easel.height * 0.125)
 
+        log.debug("scroll.x:%f scroll.y:%f" % (self.scroll.x, self.scroll.y))
+        
     def snap_scroll (self):
         """Animates the scroll position back towards reasonable bounds."""
         if self.scroll.x < self.easel.width *-0.05: self.scroll.x = self.scroll.x * 0.9
@@ -1113,12 +1142,18 @@ class Colors(activity.Activity, ExportedGObject):
 
     def flush_cursor (self):
         """Causes a redraw of the canvas area covered by the cursor."""
-        r = int(self.easel.brush.size*2*self.pressure/256)
-        x0 = min(self.lastmx-self.lastr/2, self.mx-r/2)
-        y0 = min(self.lastmy-self.lastr/2, self.my-r/2)
-        x1 = max(self.lastmx+self.lastr/2, self.mx+r/2)
-        y1 = max(self.lastmy+self.lastr/2, self.my+r/2)
-        self.easelarea.queue_draw_area(x0, y0, x1-x0+2, y1-y0+2)
+        try:
+            r = int(self.easel.brush.size*2*self.pressure/256)
+            x0 = min(self.lastmx-self.lastr/2, self.mx-r/2)
+            y0 = min(self.lastmy-self.lastr/2, self.my-r/2)
+            x1 = max(self.lastmx+self.lastr/2, self.mx+r/2)
+            y1 = max(self.lastmy+self.lastr/2, self.my+r/2)
+            self.easelarea.queue_draw_area(x0, y0, x1-x0+2, y1-y0+2)
+        except:
+            # WTB- Temporary workaround for invalid values!
+            self.lastmx = 0
+            self.lastmy = 0
+            self.lastr = 0
 
     #-----------------------------------------------------------------------------------------------------------------
     # Application states
@@ -1162,10 +1197,12 @@ class Colors(activity.Activity, ExportedGObject):
             self.brush_controls.show_all()
             self.flush_entire_canvas()
             self.overlay_active = True
-
+            self.palettebtn.set_active(True)
+            
         if self.mode == Colors.MODE_REFERENCE:
             self.easel.render_reference_overlay()
             self.flush_entire_canvas()
+            self.showrefbtn.set_active(True)
 
     def leave_mode (self):
         if self.mode == Colors.MODE_INTRO:
@@ -1194,10 +1231,12 @@ class Colors(activity.Activity, ExportedGObject):
             self.easelarea.set_double_buffered(False)
             self.flush_entire_canvas()
             self.overlay_active = False
+            self.palettebtn.set_active(False)
 
         if self.mode == Colors.MODE_REFERENCE:
             self.easel.clear_overlay()
             self.flush_entire_canvas()
+            self.showrefbtn.set_active(False)
 
     def update_mode (self):
         if self.mode == None:
@@ -1240,18 +1279,6 @@ class Colors(activity.Activity, ExportedGObject):
             elif self.easel.stroke:
                 self.end_draw()
                 self.flush_dirty_canvas()
-            # Bring up palette if requested.
-            if self.cur_buttons & Colors.BUTTON_PALETTE:
-                self.set_mode(Colors.MODE_PALETTE)
-                return
-            # Bring up reference image if requested.
-            if self.cur_buttons & Colors.BUTTON_REFERENCE:
-                self.set_mode(Colors.MODE_REFERENCE)
-                return
-            # Start scrolling if requested.
-            if self.cur_buttons & Colors.BUTTON_SCROLL:
-                self.set_mode(Colors.MODE_SCROLL)
-                return
 
         if self.mode == Colors.MODE_SCROLL:
             if self.cur_buttons & Colors.BUTTON_TOUCH:
@@ -1262,40 +1289,32 @@ class Colors(activity.Activity, ExportedGObject):
                     move = mpos - self.scrollref
                     if move.x != 0 or move.y != 0:
                         self.scroll_to(self.scroll - move)
-                        self.scrollref = mpos
+                        #self.scrollref = mpos
             else:
                 self.scrollref = None
                 # Smoothly pull back towards the image when out of reasonable bounds.
-                self.snap_scroll()
+                #self.snap_scroll()
             self.flush_entire_canvas()
-            if not (self.cur_buttons & Colors.BUTTON_SCROLL):
-                self.set_mode(Colors.MODE_CANVAS)
 
         if self.mode == Colors.MODE_PALETTE:
-            if not self.palette_forced:
-                if not self.cur_buttons & Colors.BUTTON_PALETTE:
-                    self.set_mode(Colors.MODE_CANVAS)
-                    return
+            pass
 
         if self.mode == Colors.MODE_REFERENCE:
-            if not self.reference_forced:
-                if not self.cur_buttons & Colors.BUTTON_REFERENCE:
-                    self.set_mode(Colors.MODE_CANVAS)
-                    return
+            pass
 
     def set_mode (self, mode):
+        log.debug("set mode %d", mode)
         if self.mode != None:
             self.leave_mode()
         self.mode = mode
         self.enter_mode()
 
     def update (self):
-        if self.overlay_active:
-            return
         if self.easel == None:
             return
         self.update_input()
-        self.update_mode()
+        if not self.overlay_active:
+            self.update_mode()
 
     def tick (self):
         # todo- Return False when nothing is going on (to idle the XO), then restart the idle event when something happens.
@@ -1337,6 +1356,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.easel.blit_2x(
             self.easelimage, 
             int(event.area.x/2), int(event.area.y/2), int(event.area.width/2), int(event.area.height/2),
+            int(self.scroll.x), int(self.scroll.y),
             self.overlay_active)
 
         # Then draw the image to the screen.
@@ -1369,22 +1389,20 @@ class Colors(activity.Activity, ExportedGObject):
 
     def on_palette (self, button):
         if button.get_active():
-            self.set_mode(Colors.MODE_PALETTE)
-            self.palette_forced = True
+            if self.mode != Colors.MODE_PALETTE:
+                self.set_mode(Colors.MODE_PALETTE)
         else:
             self.set_mode(Colors.MODE_CANVAS)
-            self.palette_forced = False
 
     def on_take_reference (self, button):
         self.take_reference = True
 
     def on_show_reference (self, button):
         if button.get_active():
-            self.set_mode(Colors.MODE_REFERENCE)
-            self.reference_forced = True
+            if self.mode != Colors.MODE_REFERENCE:
+                self.set_mode(Colors.MODE_REFERENCE)
         else:
             self.set_mode(Colors.MODE_CANVAS)
-            self.reference_forced = False
 
     def on_videopaint (self, button):
         self.videopaint_enabled = button.get_active()

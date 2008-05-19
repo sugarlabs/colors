@@ -9349,7 +9349,9 @@ SWIGINTERN PyObject *_wrap_Canvas_blit_2x(PyObject *SWIGUNUSEDPARM(self), PyObje
   int arg4 ;
   int arg5 ;
   int arg6 ;
-  bool arg7 ;
+  int arg7 ;
+  int arg8 ;
+  bool arg9 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val3 ;
@@ -9360,8 +9362,12 @@ SWIGINTERN PyObject *_wrap_Canvas_blit_2x(PyObject *SWIGUNUSEDPARM(self), PyObje
   int ecode5 = 0 ;
   int val6 ;
   int ecode6 = 0 ;
-  bool val7 ;
+  int val7 ;
   int ecode7 = 0 ;
+  int val8 ;
+  int ecode8 = 0 ;
+  bool val9 ;
+  int ecode9 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
@@ -9369,8 +9375,10 @@ SWIGINTERN PyObject *_wrap_Canvas_blit_2x(PyObject *SWIGUNUSEDPARM(self), PyObje
   PyObject * obj4 = 0 ;
   PyObject * obj5 = 0 ;
   PyObject * obj6 = 0 ;
+  PyObject * obj7 = 0 ;
+  PyObject * obj8 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOOO:Canvas_blit_2x",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOOO:Canvas_blit_2x",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7,&obj8)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Canvas, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Canvas_blit_2x" "', argument " "1"" of type '" "Canvas *""'"); 
@@ -9402,12 +9410,22 @@ SWIGINTERN PyObject *_wrap_Canvas_blit_2x(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "Canvas_blit_2x" "', argument " "6"" of type '" "int""'");
   } 
   arg6 = static_cast< int >(val6);
-  ecode7 = SWIG_AsVal_bool(obj6, &val7);
+  ecode7 = SWIG_AsVal_int(obj6, &val7);
   if (!SWIG_IsOK(ecode7)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "Canvas_blit_2x" "', argument " "7"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "Canvas_blit_2x" "', argument " "7"" of type '" "int""'");
   } 
-  arg7 = static_cast< bool >(val7);
-  (arg1)->blit_2x(arg2,arg3,arg4,arg5,arg6,arg7);
+  arg7 = static_cast< int >(val7);
+  ecode8 = SWIG_AsVal_int(obj7, &val8);
+  if (!SWIG_IsOK(ecode8)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "Canvas_blit_2x" "', argument " "8"" of type '" "int""'");
+  } 
+  arg8 = static_cast< int >(val8);
+  ecode9 = SWIG_AsVal_bool(obj8, &val9);
+  if (!SWIG_IsOK(ecode9)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "Canvas_blit_2x" "', argument " "9"" of type '" "bool""'");
+  } 
+  arg9 = static_cast< bool >(val9);
+  (arg1)->blit_2x(arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:

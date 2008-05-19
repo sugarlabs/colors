@@ -426,10 +426,14 @@ public:
         alpha = new unsigned char[width*height];
 
         image_shared = new unsigned int[width*height];
+
         image_reference = new unsigned short[REFERENCE_WIDTH*REFERENCE_HEIGHT];
+        memset(image_reference, 0, REFERENCE_WIDTH*REFERENCE_HEIGHT*sizeof(unsigned short));
 
         image_video[0] = new unsigned int[VIDEO_WIDTH*VIDEO_HEIGHT];
         image_video[1] = new unsigned int[VIDEO_WIDTH*VIDEO_HEIGHT];
+        memset(image_video[0], 0, VIDEO_WIDTH*VIDEO_HEIGHT*sizeof(unsigned int));
+        memset(image_video[1], 0, VIDEO_WIDTH*VIDEO_HEIGHT*sizeof(unsigned int));
         video_idx = 0;
 
         clear();
@@ -480,10 +484,10 @@ public:
         clear_image();
     }
 
-        // Changes the size of the canvas.
-        // Rather than trying to repaint everything from scratch, we simply quickly rescale it.
-        void resize(int new_width, int new_height)
-        {
+    // Changes the size of the canvas.
+    // Rather than trying to repaint everything from scratch, we simply quickly rescale it.
+    void resize(int new_width, int new_height)
+    {
         unsigned int* new_image = new unsigned int[new_width*new_height];
         unsigned int* new_image_backup = new unsigned int[new_width*new_height];
         unsigned char* new_alpha = new unsigned char[new_width*new_height];
@@ -497,31 +501,31 @@ public:
             int rx = 0;
             for (int x = 0; x < new_width; x++)
             {
-                                int sofs = (ry>>16)*width + (rx>>16);
-                                int dofs = y*new_width+x;
-                                new_image[dofs] = image[sofs];
-                                new_image_backup[dofs] = image_backup[sofs];
-                                new_alpha[dofs] = alpha[sofs];
-                                new_image_shared[dofs] = image_shared[sofs];
-                                rx += dx;
+                int sofs = (ry>>16)*width + (rx>>16);
+                int dofs = y*new_width+x;
+                new_image[dofs] = image[sofs];
+                new_image_backup[dofs] = image_backup[sofs];
+                new_alpha[dofs] = alpha[sofs];
+                new_image_shared[dofs] = image_shared[sofs];
+                rx += dx;
             }
-                        ry += dy;
+            ry += dy;
         }
-                
-                delete[] image;
-                delete[] image_backup;
-                delete[] alpha;
-                delete[] image_shared;
-                
-                width = new_width;
-                height = new_height;
-                
-                image = new_image;
-                image_backup = new_image_backup;
-                alpha = new_alpha;
-                image_shared = new_image_shared;
-        }
+ 
+        delete[] image;
+        delete[] image_backup;
+        delete[] alpha;
+        delete[] image_shared;
         
+        width = new_width;
+        height = new_height;
+        
+        image = new_image;
+        image_backup = new_image_backup;
+        alpha = new_alpha;
+        image_shared = new_image_shared;
+    }
+    
     // Resets the brush to a random color and a default size and type.
     void reset_brush()
     {
@@ -577,10 +581,6 @@ public:
         memset(alpha, 0, width*height*sizeof(unsigned char));
 
         memset(image_shared, 0xff, width*height*sizeof(unsigned int));
-
-        memset(image_reference, 0, REFERENCE_WIDTH*REFERENCE_HEIGHT*sizeof(unsigned short));
-        memset(image_video[0], 0, VIDEO_WIDTH*VIDEO_HEIGHT*sizeof(unsigned short));
-        memset(image_video[1], 0, VIDEO_WIDTH*VIDEO_HEIGHT*sizeof(unsigned short));
 
         dirtymin = Pos(0, 0);
         dirtymax = Pos(width, height);
@@ -1026,14 +1026,68 @@ public:
     // Blit
     // 
     // Draws a region of the canvas into a GdkImage for display on the screen, with optional scaling
-        // and darkening.
+    // and darkening.
 
-    void blit_2x(GdkImage* img, int x, int y, int w, int h, bool overlay)
+    void blit_2x(GdkImage* img, int x, int y, int w, int h, int scroll_x, int scroll_y, bool overlay)
     {
+        unsigned short* pixels = (unsigned short*)img->mem;
+        int pitch = img->bpl/sizeof(unsigned short);
+
+        // Translate origin to output location.
+        unsigned short* dest_pixels = pixels + y*pitch+x;
+
+        int src_x = (x - scroll_x)/2;
+        int src_y = (y - scroll_y)/2;
+
+        if (src_x < 0) src_x = 0;
+
+        while (src_y < 0)
+        {
+            unsigned short* __restrict row0 = dest_pixels;
+            unsigned short* __restrict row1 = dest_pixels + pitch;
+            dest_pixels += pitch*2;
+            for (int cx = 0; cx < w; cx++)
+            {
+                unsigned int rgb = 0;
+                row0[0] = rgb;
+                row0[1] = rgb;
+                row1[0] = rgb;
+                row1[1] = rgb;
+                row0 += 2;
+                row1 += 2;
+            }
+            src_y++;
+            h--;
+        }
+
+        unsigned int* src_pixels = &image[src_y*width+src_x];
+
+        for (int cy = 0; cy < h; cy++)
+        {
+            unsigned int* __restrict src = src_pixels;
+            unsigned short* __restrict row0 = dest_pixels;
+            unsigned short* __restrict row1 = dest_pixels + pitch;
+            src_pixels += width;
+            dest_pixels += pitch*2;
+            for (int cx = 0; cx < w; cx++)
+            {
+                unsigned int p = *src++;
+                unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                unsigned int b = (((p>> 0)&0xff)>>3);
+                unsigned int rgb = r|g|b;
+                row0[0] = rgb;
+                row0[1] = rgb;
+                row1[0] = rgb;
+                row1[1] = rgb;
+                row0 += 2;
+                row1 += 2;
+            }
+        }
+    
+/*    
         if (overlay)
         {
-            unsigned short* pixels = (unsigned short*)img->mem;
-            int pitch = img->bpl/sizeof(unsigned short);
 
             for (int cy = 0; cy < h; cy++)
             {
@@ -1059,31 +1113,7 @@ public:
             }
         }
         else
-        {
-            unsigned short* pixels = (unsigned short*)img->mem;
-            int pitch = img->bpl/sizeof(unsigned short);
-
-            for (int cy = 0; cy < h; cy++)
-            {
-                unsigned int* __restrict src = &image[(y+cy)*width+x];
-                unsigned short* __restrict row0 = &pixels[((y+cy)*2+0)*pitch+x*2];
-                unsigned short* __restrict row1 = &pixels[((y+cy)*2+1)*pitch+x*2];
-                for (int cx = 0; cx < w; cx++)
-                {
-                    unsigned int p = *src++;
-                    unsigned int r = (((p>>16)&0xff)>>3)<<11;
-                    unsigned int g = (((p>> 8)&0xff)>>2)<<5;
-                    unsigned int b = (((p>> 0)&0xff)>>3);
-                    unsigned int rgb = r|g|b;
-                    row0[0] = rgb;
-                    row0[1] = rgb;
-                    row1[0] = rgb;
-                    row1[1] = rgb;
-                    row0 += 2;
-                    row1 += 2;
-                }
-            }
-        }
+ */        
     }
 
     //---------------------------------------------------------------------------------------------
