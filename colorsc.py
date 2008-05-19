@@ -501,6 +501,7 @@ class Canvas(_object):
     def get_num_commands(*args): return _colorsc.Canvas_get_num_commands(*args)
     def play_range(*args): return _colorsc.Canvas_play_range(*args)
     def blit_2x(*args): return _colorsc.Canvas_blit_2x(*args)
+    def blit_4x(*args): return _colorsc.Canvas_blit_4x(*args)
     def downsize_video(*args): return _colorsc.Canvas_downsize_video(*args)
     def videopaint_motion(*args): return _colorsc.Canvas_videopaint_motion(*args)
     def blit_videopaint(*args): return _colorsc.Canvas_blit_videopaint(*args)

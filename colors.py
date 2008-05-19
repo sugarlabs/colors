@@ -424,12 +424,12 @@ class Colors(activity.Activity, ExportedGObject):
         self.palettebtn.set_tooltip(_("Palette"))
         self.palettebtn.connect('clicked', self.on_palette)
 
-        # todo- Color picker button, similar semantics to palette button.
+        # todo- Color picker button, similar semantics to scroll button.
 
-        #self.zoomoutbtn = toolbutton.ToolButton('zoom-out')
-        #self.zoomoutbtn.set_tooltip(_("Zoom Out"))
-        #self.zoominbtn = toolbutton.ToolButton('zoom-in')
-        #self.zoominbtn.set_tooltip(_("Zoom In"))
+        self.zoomoutbtn = toolbutton.ToolButton('zoom-out')
+        self.zoomoutbtn.set_tooltip(_("Zoom Out"))
+        self.zoominbtn = toolbutton.ToolButton('zoom-in')
+        self.zoominbtn.set_tooltip(_("Zoom In"))
 
         self.refsep = gtk.SeparatorToolItem()
 
@@ -465,8 +465,8 @@ class Colors(activity.Activity, ExportedGObject):
 
         paintbox = gtk.Toolbar()
         paintbox.insert(self.palettebtn, -1)
-        #paintbox.insert(self.zoomoutbtn, -1)
-        #paintbox.insert(self.zoominbtn, -1)
+        paintbox.insert(self.zoomoutbtn, -1)
+        paintbox.insert(self.zoominbtn, -1)
         paintbox.insert(self.refsep, -1)
         paintbox.insert(self.takerefbtn, -1)
         paintbox.insert(self.showrefbtn, -1)
@@ -831,7 +831,7 @@ class Colors(activity.Activity, ExportedGObject):
             self.save_thumbnail(activity.get_bundle_path() + '/thumb.png')
 
         # OLPC 'hand' buttons for scrolling.
-        if event.keyval == ord('x') or event.keyval == 311 or event.keyval == 312 or event.keyval == ord('s'): 
+        if event.keyval == ord('c') or event.keyval == 311 or event.keyval == 312 or event.keyval == ord('s'): 
             button = Colors.BUTTON_SCROLL
 
         # OLPC 'size' buttons for intensity.
@@ -841,10 +841,10 @@ class Colors(activity.Activity, ExportedGObject):
         #if event.keyval == 289: button = Colors.BUTTON_SIZE_3
 
         # Arrow keys, gamepad 'face' buttons, or 'z' and 'x' for Zoom.
-        #if event.keyval == ord('z') or event.keyval == 264 or event.keyval == 265 or event.keyval == 273:
-        #    button = Colors.BUTTON_ZOOM_IN
-        #if event.keyval == ord('x') or event.keyval == 258 or event.keyval == 259 or event.keyval == 274:
-        #    button = Colors.BUTTON_ZOOM_OUT
+        if event.keyval == ord('z') or event.keyval == 264 or event.keyval == 265 or event.keyval == 273:
+            button = Colors.BUTTON_ZOOM_IN
+        if event.keyval == ord('x') or event.keyval == 258 or event.keyval == 259 or event.keyval == 274:
+            button = Colors.BUTTON_ZOOM_OUT
 
         # Either Alt key for pick.
         if event.keyval == 313 or event.keyval == 308:
@@ -937,7 +937,6 @@ class Colors(activity.Activity, ExportedGObject):
                 self.set_mode(Colors.MODE_REFERENCE)
                 return
             if button & Colors.BUTTON_SCROLL:
-                log.debug("enter scroll")
                 self.set_mode(Colors.MODE_SCROLL)
                 return
     
@@ -954,8 +953,7 @@ class Colors(activity.Activity, ExportedGObject):
     def on_release (self, button):
         if self.mode == Colors.MODE_SCROLL:
             if button & Colors.BUTTON_SCROLL:
-                log.debug("leave scroll")
-                self.set_mode(Colors.MODE_SCROLL)
+                self.set_mode(Colors.MODE_CANVAS)
                 return
 
     def on_hold (self, button):
@@ -974,10 +972,10 @@ class Colors(activity.Activity, ExportedGObject):
         self.scroll = pos
 
         # Clamp scroll position to within absolute limits.
-        self.scroll.x = min(max(self.scroll.x, -self.easel.width * 0.125), self.easel.width * 0.125)
-        self.scroll.y = min(max(self.scroll.y, -self.easel.height * 0.125), self.easel.height * 0.125)
+        self.scroll.x = min(max(self.scroll.x, -self.easel.width * 0.125), self.easel.width * 0.875)
+        self.scroll.y = min(max(self.scroll.y, -self.easel.height * 0.125), self.easel.height * 0.875)
 
-        log.debug("scroll.x:%f scroll.y:%f" % (self.scroll.x, self.scroll.y))
+        log.debug("scroll: %f, %f" % (self.scroll.x, self.scroll.y))
         
     def snap_scroll (self):
         """Animates the scroll position back towards reasonable bounds."""
@@ -990,11 +988,6 @@ class Colors(activity.Activity, ExportedGObject):
 
     #-----------------------------------------------------------------------------------------------------------------
     # Zoom code
-    # 
-    # todo- Zooming is currently broken.  It needs to be bound to a key and the issues need to be fixed.
-    # 
-    # The main issue is probably that the underlying canvas doesn't support enough scaled blit options and also
-    # doesn't support clipping.
 
     def init_zoom (self):
         self.zoom = 1.0
@@ -1006,27 +999,30 @@ class Colors(activity.Activity, ExportedGObject):
 
         # Adjust scroll position to keep the same point centered on screen while the zoom changes.
         # This is either the reference point (the center of the last stroke) or else the screen center.
-        #if self.zoomref != None:
-        #    scrollcenter = self.zoomref
-        #else:
-        scrollcenter = self.scroll + Pos(self.width*0.5/self.zoom, self.height*0.5/self.zoom)
+        if self.zoomref != None:
+            scrollcenter = self.zoomref
+        else:
+            scrollcenter = self.scroll + Pos(self.width*0.5/self.zoom, self.height*0.5/self.zoom)
         self.zoom = zoom
         self.scroll_to(scrollcenter - Pos(self.width*0.5/self.zoom, self.height*0.5/self.zoom))
         self.zoomref = None
+        
+        log.debug('zoom %f', self.zoom)
+        self.flush_entire_canvas()
 
     def zoom_in (self):
-        if self.zoom == 0.75:
-            self.zoom_to(1.0)
-            self.scroll_to(Pos(0,0))
-        elif self.zoom == 1.0:
+        #if self.zoom == 0.75:
+        #    self.zoom_to(1.0)
+        #    self.scroll_to(Pos(0,0))
+        if self.zoom == 1.0:
             self.zoom_to(2.0)
 
     def zoom_out (self):
         if self.zoom == 2.0:
             self.zoom_to(1.0)
             self.scroll_to(Pos(0,0))
-        elif self.zoom == 1.0:
-            self.zoom_to(0.75)
+        #elif self.zoom == 1.0:
+        #    self.zoom_to(0.75)
 
     #-----------------------------------------------------------------------------------------------------------------
     # Drawing commands
@@ -1037,7 +1033,7 @@ class Colors(activity.Activity, ExportedGObject):
     # be played back.
 
     def draw (self, pos):
-        relpos = pos * Pos(self.easel.width, self.easel.height) / Pos(self.zoom, self.zoom) + self.scroll
+        relpos = pos * Pos(self.easel.width, self.easel.height) / Pos(self.zoom, self.zoom) - self.scroll
         relpos = relpos / Pos(self.easel.width, self.easel.height)
         self.easel.play_command(DrawCommand.create_draw(relpos, int(self.pressure)), True)
 
@@ -1289,7 +1285,7 @@ class Colors(activity.Activity, ExportedGObject):
                     move = mpos - self.scrollref
                     if move.x != 0 or move.y != 0:
                         self.scroll_to(self.scroll - move)
-                        #self.scrollref = mpos
+                        self.scrollref = mpos
             else:
                 self.scrollref = None
                 # Smoothly pull back towards the image when out of reasonable bounds.
@@ -1353,11 +1349,18 @@ class Colors(activity.Activity, ExportedGObject):
         gc = self.easelarea.get_style().fg_gc[gtk.STATE_NORMAL]
 
         # Blit dirty rectangle of canvas into the image.
-        self.easel.blit_2x(
-            self.easelimage, 
-            int(event.area.x/2), int(event.area.y/2), int(event.area.width/2), int(event.area.height/2),
-            int(self.scroll.x), int(self.scroll.y),
-            self.overlay_active)
+        if self.zoom == 1.0:
+            self.easel.blit_2x(
+                self.easelimage, 
+                int(event.area.x), int(event.area.y), int(event.area.width), int(event.area.height),
+                int(-self.scroll.x), int(-self.scroll.y),
+                self.overlay_active)
+        elif self.zoom == 2.0:
+            self.easel.blit_4x(
+                self.easelimage, 
+                int(event.area.x), int(event.area.y), int(event.area.width), int(event.area.height),
+                int(-self.scroll.x/2), int(-self.scroll.y/2),
+                self.overlay_active)
 
         # Then draw the image to the screen.
         self.easelarea.bin_window.draw_image(
@@ -1375,7 +1378,7 @@ class Colors(activity.Activity, ExportedGObject):
             y = self.height-50-size[1]/pango.SCALE
             self.easelarea.bin_window.draw_layout(gc, x, y, layout)
 
-        self.draw_cursor()
+        #self.draw_cursor()
 
         # Hack to keep toolbar up to date.  For some reason it fails to draw pretty often.
         #self.toolbox.queue_draw()

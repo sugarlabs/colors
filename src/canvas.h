@@ -1033,76 +1033,43 @@ public:
         unsigned short* pixels = (unsigned short*)img->mem;
         int pitch = img->bpl/sizeof(unsigned short);
 
+        // Round to multiple of 2.
+        x &= ~1;
+        y &= ~1;
+        w = (w+1) & ~1;
+        h = (h+1) & ~1;
+        
+        // Clip rectangle.
+        if (x < 0)
+        {
+            w += x;
+            x = 0;
+        }
+        if (y < 0)
+        {
+            h += y;
+            y = 0;
+        }
+        if (x+w > (width-1)*2)
+            w = (width-1)*2-x;
+        if (y+h > (height-1)*2)
+            h = (height-1)*2-y;
+            
         // Translate origin to output location.
-        unsigned short* dest_pixels = pixels + y*pitch+x;
+        int src_x = (x - scroll_x);
+        int src_y = (y - scroll_y);
 
-        int src_x = (x - scroll_x)/2;
-        int src_y = (y - scroll_y)/2;
-
-        if (src_x < 0) src_x = 0;
-
-        while (src_y < 0)
+        int csy = src_y;
+        for (int cy = y; cy < y+h; cy += 2)
         {
-            unsigned short* __restrict row0 = dest_pixels;
-            unsigned short* __restrict row1 = dest_pixels + pitch;
-            dest_pixels += pitch*2;
-            for (int cx = 0; cx < w; cx++)
-            {
-                unsigned int rgb = 0;
-                row0[0] = rgb;
-                row0[1] = rgb;
-                row1[0] = rgb;
-                row1[1] = rgb;
-                row0 += 2;
-                row1 += 2;
-            }
-            src_y++;
-            h--;
-        }
+            unsigned short* __restrict row0 = &pixels[cy*pitch+x];
+            unsigned short* __restrict row1 = row0 + pitch;
 
-        unsigned int* src_pixels = &image[src_y*width+src_x];
-
-        for (int cy = 0; cy < h; cy++)
-        {
-            unsigned int* __restrict src = src_pixels;
-            unsigned short* __restrict row0 = dest_pixels;
-            unsigned short* __restrict row1 = dest_pixels + pitch;
-            src_pixels += width;
-            dest_pixels += pitch*2;
-            for (int cx = 0; cx < w; cx++)
+            if (csy < 0 || csy >= height) 
             {
-                unsigned int p = *src++;
-                unsigned int r = (((p>>16)&0xff)>>3)<<11;
-                unsigned int g = (((p>> 8)&0xff)>>2)<<5;
-                unsigned int b = (((p>> 0)&0xff)>>3);
-                unsigned int rgb = r|g|b;
-                row0[0] = rgb;
-                row0[1] = rgb;
-                row1[0] = rgb;
-                row1[1] = rgb;
-                row0 += 2;
-                row1 += 2;
-            }
-        }
-    
-/*    
-        if (overlay)
-        {
-
-            for (int cy = 0; cy < h; cy++)
-            {
-                unsigned int* __restrict src = &image[(y+cy)*width+x];
-                unsigned short* __restrict row0 = &pixels[((y+cy)*2+0)*pitch+x*2];
-                unsigned short* __restrict row1 = &pixels[((y+cy)*2+1)*pitch+x*2];
-                for (int cx = 0; cx < w; cx++)
+                for (int cx = 0; cx < w; cx += 2)
                 {
-                    unsigned int p = *src++;
-                    p &= ~0x03030303;
-                    p >>= 2;
-                    unsigned int r = (((p>>16)&0xff)>>3)<<11;
-                    unsigned int g = (((p>> 8)&0xff)>>2)<<5;
-                    unsigned int b = (((p>> 0)&0xff)>>3);
-                    unsigned int rgb = r|g|b;
+                    unsigned int rgb = 0;
                     row0[0] = rgb;
                     row0[1] = rgb;
                     row1[0] = rgb;
@@ -1111,9 +1078,292 @@ public:
                     row1 += 2;
                 }
             }
+            else
+            {
+                unsigned int* __restrict src = &image[csy*width+src_x];
+
+                int cx = 0;
+                int csx = src_x;
+
+                while (csx < 0 && cx < w)
+                {
+                    unsigned int rgb = 0;
+                    row0[0] = rgb;
+                    row0[1] = rgb;
+                    row1[0] = rgb;
+                    row1[1] = rgb;
+                    row0 += 2;
+                    row1 += 2;
+                    src++;
+                    csx++;
+                    cx += 2;
+                }
+                
+                if (overlay)
+                {
+                    while (csx < width && cx < w)
+                    {
+                        unsigned int p = *src;
+                        p &= ~0x03030303;
+                        p >>= 2;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        row0[0] = rgb;
+                        row0[1] = rgb;
+                        row1[0] = rgb;
+                        row1[1] = rgb;
+                        row0 += 2;
+                        row1 += 2;
+                        src++;
+                        csx++;
+                        cx += 2;
+                    }
+                }
+                else
+                {
+                    while (csx < width && cx < w)
+                    {
+                        unsigned int p = *src;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        row0[0] = rgb;
+                        row0[1] = rgb;
+                        row1[0] = rgb;
+                        row1[1] = rgb;
+                        row0 += 2;
+                        row1 += 2;
+                        src++;
+                        csx++;
+                        cx += 2;
+                    }
+                }
+                
+                while (cx < w)                
+                {
+                    unsigned int rgb = 0;
+                    row0[0] = rgb;
+                    row0[1] = rgb;
+                    row1[0] = rgb;
+                    row1[1] = rgb;
+                    row0 += 2;
+                    row1 += 2;
+                    src++;
+                    csx++;
+                    cx += 2;
+                }
+            }
+
+            csy++;
         }
-        else
- */        
+    }
+
+    void blit_4x(GdkImage* img, int x, int y, int w, int h, int scroll_x, int scroll_y, bool overlay)
+    {
+        unsigned short* pixels = (unsigned short*)img->mem;
+        int pitch = img->bpl/sizeof(unsigned short);
+
+        // Clip rectangle.
+        if (x < 0)
+        {
+            w += x;
+            x = 0;
+        }
+        if (y < 0)
+        {
+            h += y;
+            y = 0;
+        }
+
+        x &= ~3;
+        y &= ~3;
+        w = (w) & ~3;
+        h = (h) & ~3;
+        
+        if (x+w > (width-7)*4)
+            w = (width-7)*4-x;
+        if (y+h > (height-7)*4)
+            h = (height-7)*4-y;
+
+        // Translate origin to output location.
+        int src_x = (x - scroll_x);
+        int src_y = (y - scroll_y);
+
+        int csy = src_y;
+        for (int cy = y; cy < y+h; cy += 4)
+        {
+            unsigned short* __restrict row0 = &pixels[cy*pitch+x];
+            unsigned short* __restrict row1 = row0 + pitch;
+            unsigned short* __restrict row2 = row1 + pitch;
+            unsigned short* __restrict row3 = row2 + pitch;
+
+            if (csy < 0 || csy >= height) 
+            {
+                for (int cx = 0; cx < w; cx += 4)
+                {
+                    unsigned int rgb = 0;
+                    row0[0] = rgb;
+                    row0[1] = rgb;
+                    row0[2] = rgb;
+                    row0[3] = rgb;
+                    row1[0] = rgb;
+                    row1[1] = rgb;
+                    row1[2] = rgb;
+                    row1[3] = rgb;
+                    row2[0] = rgb;
+                    row2[1] = rgb;
+                    row2[2] = rgb;
+                    row2[3] = rgb;
+                    row3[0] = rgb;
+                    row3[1] = rgb;
+                    row3[2] = rgb;
+                    row3[3] = rgb;
+                    row0 += 4;
+                    row1 += 4;
+                    row2 += 4;
+                    row3 += 4;
+                }
+            }
+            else
+            {
+                unsigned int* __restrict src = &image[csy*width+src_x];
+
+                int cx = 0;
+                int csx = src_x;
+
+                while (csx < 0 && cx < w)
+                {
+                    unsigned int rgb = 0;
+                    row0[0] = rgb;
+                    row0[1] = rgb;
+                    row0[2] = rgb;
+                    row0[3] = rgb;
+                    row1[0] = rgb;
+                    row1[1] = rgb;
+                    row1[2] = rgb;
+                    row1[3] = rgb;
+                    row2[0] = rgb;
+                    row2[1] = rgb;
+                    row2[2] = rgb;
+                    row2[3] = rgb;
+                    row3[0] = rgb;
+                    row3[1] = rgb;
+                    row3[2] = rgb;
+                    row3[3] = rgb;
+                    row0 += 4;
+                    row1 += 4;
+                    row2 += 4;
+                    row3 += 4;
+                    src++;
+                    csx++;
+                    cx += 4;
+                }
+                
+                if (overlay)
+                {
+                    while (csx < width && cx < w)
+                    {
+                        unsigned int p = *src;
+                        p &= ~0x03030303;
+                        p >>= 2;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        row0[0] = rgb;
+                        row0[1] = rgb;
+                        row0[2] = rgb;
+                        row0[3] = rgb;
+                        row1[0] = rgb;
+                        row1[1] = rgb;
+                        row1[2] = rgb;
+                        row1[3] = rgb;
+                        row2[0] = rgb;
+                        row2[1] = rgb;
+                        row2[2] = rgb;
+                        row2[3] = rgb;
+                        row3[0] = rgb;
+                        row3[1] = rgb;
+                        row3[2] = rgb;
+                        row3[3] = rgb;
+                        row0 += 4;
+                        row1 += 4;
+                        row2 += 4;
+                        row3 += 4;
+                        src++;
+                        csx++;
+                        cx += 4;
+                    }
+                }
+                else
+                {
+                    while (csx < width && cx < w)
+                    {
+                        unsigned int p = *src;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        row0[0] = rgb;
+                        row0[1] = rgb;
+                        row0[2] = rgb;
+                        row0[3] = rgb;
+                        row1[0] = rgb;
+                        row1[1] = rgb;
+                        row1[2] = rgb;
+                        row1[3] = rgb;
+                        row2[0] = rgb;
+                        row2[1] = rgb;
+                        row2[2] = rgb;
+                        row2[3] = rgb;
+                        row3[0] = rgb;
+                        row3[1] = rgb;
+                        row3[2] = rgb;
+                        row3[3] = rgb;
+                        row0 += 4;
+                        row1 += 4;
+                        row2 += 4;
+                        row3 += 4;
+                        src++;
+                        csx++;
+                        cx += 4;
+                    }
+                }
+                
+                while (cx < w)                
+                {
+                    unsigned int rgb = 0;
+                    row0[0] = rgb;
+                    row0[1] = rgb;
+                    row0[2] = rgb;
+                    row0[3] = rgb;
+                    row1[0] = rgb;
+                    row1[1] = rgb;
+                    row1[2] = rgb;
+                    row1[3] = rgb;
+                    row2[0] = rgb;
+                    row2[1] = rgb;
+                    row2[2] = rgb;
+                    row2[3] = rgb;
+                    row3[0] = rgb;
+                    row3[1] = rgb;
+                    row3[2] = rgb;
+                    row3[3] = rgb;
+                    row0 += 4;
+                    row1 += 4;
+                    row2 += 4;
+                    row3 += 4;
+                    src++;
+                    csx++;
+                    cx += 4;
+                }
+            }
+
+            csy++;
+        }
     }
 
     //---------------------------------------------------------------------------------------------
