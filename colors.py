@@ -1508,7 +1508,7 @@ class Colors(activity.Activity, ExportedGObject):
 
     def take_screenshot (self):
         if self.easelarea and self.easelarea.bin_window:
-            self._preview.take_screenshot(self.easelarea.bin_window)
+            self._preview.take_screenshot(self.easelarea)
 
     def save_thumbnail(self, filename):
         pbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, self.width, self.height)
