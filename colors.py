@@ -40,6 +40,9 @@ import gobject, pygtk, gtk, pango
 # Needed to avoid thread crashes with GStreamer
 gobject.threads_init()  
 
+# Import PyGame.  Used for a few realtime aspects.
+import pygame
+
 # Import DBUS and mesh networking modules.
 import dbus, telepathy, telepathy.client
 from dbus import Interface
@@ -58,7 +61,7 @@ from sugar.graphics import toggletoolbutton
 import pygst, gst
 
 # Initialize logging.
-log = logging.getLogger('Colors run')
+log = logging.getLogger('Colors')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
@@ -361,9 +364,6 @@ class Colors(activity.Activity, ExportedGObject):
         # Set up mesh networking.
         self.init_mesh()
 
-        # Start the framerate timer.
-        gobject.idle_add(self.tick)
-
         # This has to happen last, because it calls the read_file method when restoring from the Journal.
         self.set_canvas(self.easelarea)
         
@@ -372,6 +372,9 @@ class Colors(activity.Activity, ExportedGObject):
         self.brush_controls.hide()
         self.progress.hide()
         self.overlay_active = False
+
+        # Get the mainloop ready to run (this should come last).
+        gobject.timeout_add(50, self.mainloop)
 
     #-----------------------------------------------------------------------------------------------------------------
     # User interface construction
@@ -1049,6 +1052,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.zoomref = Pos(self.mx, self.my)
 
     def set_brush (self, brush):
+        log.debug("set_brush color=%d,%d,%d type=%d size=%d opacity=%d", brush.color.r, brush.color.g, brush.color.b, brush.type, brush.size, brush.opacity)
         self.easel.play_command(DrawCommand.create_color_change(brush.color), True)
         self.easel.play_command(DrawCommand.create_size_change(brush.control, brush.type, brush.size/float(self.easel.width), brush.opacity), True)
 
@@ -1057,6 +1061,8 @@ class Colors(activity.Activity, ExportedGObject):
         the given position is before the current position, since it is impossible to play commands backwards.
         Called to skip the playback position, for example when fast forwarding or rewinding or dragging the scrollbar."""
         self.playbackposbar.ignore_change += 1
+
+        #log.debug("play_to_playbackpos %d easel_pos=%d", int(self.playbackpos.get_value()/100.0*self.easel.playback_length()), self.easel.playback_pos())
 
         total_left = 0
 
@@ -1071,6 +1077,8 @@ class Colors(activity.Activity, ExportedGObject):
         # as checking the gtk.events_pending() function leads to an infinite loop.
         for i in range(0, 5):
             if gtk.main_iteration(False):
+                self.playbackposbar.ignore_change -= 1
+                log.debug("play_to_playbackpos: main loop quit requested.")
                 return
 
         # Keep looping until the position is reached.  Since we activate the GTK event loop processing from within
@@ -1114,6 +1122,8 @@ class Colors(activity.Activity, ExportedGObject):
             # as checking the gtk.events_pending() function leads to an infinite loop.
             for i in range(0, 5):
                 if gtk.main_iteration(False):
+                    self.playbackposbar.ignore_change -= 1
+                    log.debug("play_to_playbackpos: main loop quit requested.")
                     return
 
         self.overlay_active = False
@@ -1135,6 +1145,7 @@ class Colors(activity.Activity, ExportedGObject):
     def flush_entire_canvas (self):
         """Causes a redraw of the entire canvas area."""
         self.easelarea.queue_draw()
+        self.easel.reset_dirty_rect()
 
     def flush_cursor (self):
         """Causes a redraw of the canvas area covered by the cursor."""
@@ -1147,6 +1158,7 @@ class Colors(activity.Activity, ExportedGObject):
             self.easelarea.queue_draw_area(x0, y0, x1-x0+2, y1-y0+2)
         except:
             # WTB- Temporary workaround for invalid values!
+            # Need to remove this when I have more time and track them down for real.
             self.lastmx = 0
             self.lastmy = 0
             self.lastr = 0
@@ -1178,8 +1190,14 @@ class Colors(activity.Activity, ExportedGObject):
         if self.mode == Colors.MODE_CANVAS:
             # Clear any existing button pressure to avoid a blotch on the screen when entering Canvas mode.
             self.cur_buttons = 0
+
             # Reset the brush.
             self.set_brush(self.easel.brush)
+
+            # Progress bar fixes at 100 when painting.
+            self.playbackposbar.ignore_change += 1
+            self.playbackpos.set_value(100)
+            self.playbackposbar.ignore_change -= 1
 
         if self.mode == Colors.MODE_SCROLL:
             self.scrollref = None
@@ -1187,6 +1205,7 @@ class Colors(activity.Activity, ExportedGObject):
         if self.mode == Colors.MODE_PALETTE:
             # This simply darkens the canvas slightly to prepare for an overlay to be drawn on top.
             #self.easel.render_overlay()
+
             # Show the brush controls window.
             self.easelarea.set_double_buffered(True)
             self.brush_controls.set_brush(self.easel.brush)
@@ -1209,10 +1228,6 @@ class Colors(activity.Activity, ExportedGObject):
 
         if self.mode == Colors.MODE_PLAYBACK:
             self.easel.stop_playback()
-            # Progress bar goes to 100 when painting.
-            self.playbackposbar.ignore_change += 1
-            self.playbackpos.set_value(100)
-            self.playbackposbar.ignore_change -= 1
 
         if self.mode == Colors.MODE_CANVAS:
             self.end_draw()
@@ -1256,6 +1271,7 @@ class Colors(activity.Activity, ExportedGObject):
                 self.playbackposbar.ignore_change += 1
                 self.playbackpos.set_value(progress_percent)
                 self.playbackposbar.ignore_change -= 1
+
             # Painting during playback mode allows you start where the painter left off.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
                 self.easel.truncate_at_playback()
@@ -1266,6 +1282,7 @@ class Colors(activity.Activity, ExportedGObject):
             # Receive any drawing commands from peers, if not currently drawing.
             if not self.easel.stroke:
                 self.send_and_receive_draw_commands()
+
             # Update drawing.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
                 if self.mx != self.lastmx or self.my != self.lastmy:
@@ -1312,10 +1329,18 @@ class Colors(activity.Activity, ExportedGObject):
         if not self.overlay_active:
             self.update_mode()
 
-    def tick (self):
-        # todo- Return False when nothing is going on (to idle the XO), then restart the idle event when something happens.
-        self.update()
-        return True
+    def mainloop (self):
+        """Runs the game loop.  Note that this doesn't actually return until the activity ends."""
+        clock = pygame.time.Clock()
+        while True:
+            clock.tick(20.0)
+            self.update()
+            # TODO- Detect idle state (paint mode, no mouse movement, no 
+            # scroll, etc) and sleep.
+            for i in range(0, 5):
+                if gtk.main_iteration(False):
+                    return False
+        return False
 
     #-----------------------------------------------------------------------------------------------------------------
     # Event handlers
@@ -1497,14 +1522,17 @@ class Colors(activity.Activity, ExportedGObject):
         self.set_mode(Colors.MODE_CANVAS)
         self.easel.clear()
         self.easel.load(file_path.encode())
-        log.debug("Playing back %d commands", self.easel.playback_length())
         self.set_mode(Colors.MODE_PLAYBACK)
+        self.easel.start_playback()
+        self.easel.finish_playback()
         self.playbackpos.set_value(100)
+        self.flush_entire_canvas()
+        log.debug("Played back %d commands", self.easel.playback_length())
 
     def write_file(self, file_path):
         log.debug("Saving to journal %s", file_path)
-        log.debug("Saving %d commands", self.easel.playback_length())
         self.easel.save(file_path.encode())
+        log.debug("Saved %d commands", self.easel.playback_length())
 
     def take_screenshot (self):
         if self.easelarea and self.easelarea.bin_window:
