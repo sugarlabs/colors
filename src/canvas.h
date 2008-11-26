@@ -452,8 +452,8 @@ public:
         lastorgpos = Pos(0,0);
         lastpressure = 0;
 
-        dirtymin = Pos(-1,-1);
-        dirtymax = Pos(-1,-1);
+        dirtymin = Pos(FLT_MAX,FLT_MAX);
+        dirtymax = Pos(-FLT_MAX,-FLT_MAX);
 
         strokemin = Pos(0,0);
         strokemax = Pos(0,0);
@@ -624,8 +624,8 @@ public:
             draw_brush(pos, size, opacity);
 
             // Reset stroke dirty regions
-            strokemin = Pos(-1, -1);
-            strokemax = Pos(-1, -1);
+            strokemin = pos;
+            strokemax = pos;
 
             lastpos = pos;
             lastpressure = pressure;
@@ -743,8 +743,8 @@ public:
     // The dirty rectangle keeps accumulating until reset_dirty_rect is called, at which point it is cleared to empty.
     void reset_dirty_rect()
     {
-        dirtymin = Pos(-1,-1);
-        dirtymax = Pos(-1,-1);
+        dirtymin = Pos(FLT_MAX,FLT_MAX);
+        dirtymax = Pos(-FLT_MAX,-FLT_MAX);
     }
 
     // Rasters a brush with specified width and opacity into alpha at a specified position using lookup-tables.
@@ -770,16 +770,8 @@ public:
         // Accumulate dirty regions.
         strokemin = Pos::create_from_min(strokemin, Pos(x0, y0));
         strokemax = Pos::create_from_max(strokemax, Pos(x1, y1));
-        if (dirtymin.x == -1)
-        {
-            dirtymin = strokemin;
-            dirtymax = strokemax;
-        }
-        else
-        {
-            dirtymin = Pos::create_from_min(dirtymin, strokemin);
-            dirtymax = Pos::create_from_max(dirtymax, strokemax);
-        }
+        dirtymin = Pos::create_from_min(dirtymin, Pos(x0, y0));
+        dirtymax = Pos::create_from_max(dirtymax, Pos(x1, y1));
 
         // Calculate interpolation constants
         float db = (BrushType::DIST_TABLE_WIDTH-1) / float(brushwidth);
@@ -1054,17 +1046,17 @@ public:
             w = (width-1)*2-x;
         if (y+h > (height-1)*2)
             h = (height-1)*2-y;
-            
+        
         // Translate origin to output location.
-        int src_x = (x - scroll_x);
-        int src_y = (y - scroll_y);
-
+        int src_x = (x - scroll_x)/2;
+        int src_y = (y - scroll_y)/2;
+        
         int csy = src_y;
         for (int cy = y; cy < y+h; cy += 2)
         {
             unsigned short* __restrict row0 = &pixels[cy*pitch+x];
             unsigned short* __restrict row1 = row0 + pitch;
-
+            
             if (csy < 0 || csy >= height) 
             {
                 for (int cx = 0; cx < w; cx += 2)

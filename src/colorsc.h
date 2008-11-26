@@ -25,6 +25,7 @@
 using namespace std;
 
 #include <cmath>
+#include <float.h>
 
 // todo- Include the real GTK headers when installed.
 #include "gtk_types.h"

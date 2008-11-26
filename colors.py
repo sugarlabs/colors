@@ -810,7 +810,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.lastr = 0
 
     def on_key_event (self, widget, event):
-        log.debug("on_key_event: %d", event.keyval)  # Useful for manually working out keyvals for OLPC keys.
+        #log.debug("on_key_event: %d", event.keyval)  # Useful for manually working out keyvals for OLPC keys.
 
         # OLPC keymap is designed to allow left or right handed stylus use, with lots of redundancy.
         # So each major key should appear at least once on each side of the keyboard.
@@ -974,20 +974,11 @@ class Colors(activity.Activity, ExportedGObject):
         self.scroll = pos
 
         # Clamp scroll position to within absolute limits.
-        self.scroll.x = min(max(self.scroll.x, -self.easel.width * 0.125), self.easel.width * 0.875)
-        self.scroll.y = min(max(self.scroll.y, -self.easel.height * 0.125), self.easel.height * 0.875)
+        self.scroll.x = min(max(self.scroll.x, 0), self.easel.width)
+        self.scroll.y = min(max(self.scroll.y, 0), self.easel.height)
 
-        log.debug("scroll: %f, %f" % (self.scroll.x, self.scroll.y))
+        #log.debug("scroll: %f, %f" % (self.scroll.x, self.scroll.y))
         
-    def snap_scroll (self):
-        """Animates the scroll position back towards reasonable bounds."""
-        if self.scroll.x < self.easel.width *-0.05: self.scroll.x = self.scroll.x * 0.9
-        if self.scroll.y < self.easel.height*-0.05: self.scroll.y = self.scroll.y * 0.9
-        if self.scroll.x+self.width > self.easel.width*1.05:
-            self.scroll.x = (self.easel.width - self.width)*0.5 + self.scroll.x*0.5
-        if self.scroll.y+self.height > self.easel.height*1.05:
-            self.scroll.y = (self.easel.height - self.height)*0.5 + self.scroll.x*0.5
-
     #-----------------------------------------------------------------------------------------------------------------
     # Zoom code
 
@@ -1009,7 +1000,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.scroll_to(scrollcenter - Pos(self.width*0.5/self.zoom, self.height*0.5/self.zoom))
         self.zoomref = None
         
-        log.debug('zoom %f', self.zoom)
+        #log.debug('zoom %f', self.zoom)
         self.flush_entire_canvas()
 
     def zoom_in (self):
@@ -1051,7 +1042,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.zoomref = Pos(self.mx, self.my)
 
     def set_brush (self, brush):
-        log.debug("set_brush color=%d,%d,%d type=%d size=%d opacity=%d", brush.color.r, brush.color.g, brush.color.b, brush.type, brush.size, brush.opacity)
+        #log.debug("set_brush color=%d,%d,%d type=%d size=%d opacity=%d", brush.color.r, brush.color.g, brush.color.b, brush.type, brush.size, brush.opacity)
         self.easel.play_command(DrawCommand.create_color_change(brush.color), True)
         self.easel.play_command(DrawCommand.create_size_change(brush.control, brush.type, brush.size/float(self.easel.width), brush.opacity), True)
 
@@ -1077,7 +1068,7 @@ class Colors(activity.Activity, ExportedGObject):
         for i in range(0, 5):
             if gtk.main_iteration(False):
                 self.playbackposbar.ignore_change -= 1
-                log.debug("play_to_playbackpos: main loop quit requested.")
+                #log.debug("play_to_playbackpos: main loop quit requested.")
                 return
 
         # Keep looping until the position is reached.  Since we activate the GTK event loop processing from within
@@ -1122,7 +1113,7 @@ class Colors(activity.Activity, ExportedGObject):
             for i in range(0, 5):
                 if gtk.main_iteration(False):
                     self.playbackposbar.ignore_change -= 1
-                    log.debug("play_to_playbackpos: main loop quit requested.")
+                    #log.debug("play_to_playbackpos: main loop quit requested.")
                     return
 
         self.overlay_active = False
@@ -1135,10 +1126,18 @@ class Colors(activity.Activity, ExportedGObject):
     # Canvas repainting.  These methods draw portions of the canvas to the canvasarea.
     def flush_dirty_canvas (self):
         """Causes a redraw of the canvas area which has been modified since the last call to this function."""
-        self.easelarea.queue_draw_area(
-            int(self.easel.dirtymin.x*2), int(self.easel.dirtymin.y*2), 
-            int(self.easel.dirtymax.x*2-self.easel.dirtymin.x*2+1), 
-            int(self.easel.dirtymax.y*2-self.easel.dirtymin.y*2+1)) 
+        # Skip on negative area rectangle.
+        if self.easel.dirtymin.x > self.easel.dirtymax.x:
+            return
+        
+        x = int(self.easel.dirtymin.x*2)
+        y = int(self.easel.dirtymin.y*2)
+        w = int(self.easel.dirtymax.x*2-x+1) 
+        h = int(self.easel.dirtymax.y*2-y+1)
+        #log.debug("x=%d y=%d width=%d height=%d" % (x, y, w, h))
+        
+        self.easelarea.queue_draw_area(x, y, w, h)
+        
         self.easel.reset_dirty_rect()
 
     def flush_entire_canvas (self):
@@ -1148,19 +1147,17 @@ class Colors(activity.Activity, ExportedGObject):
 
     def flush_cursor (self):
         """Causes a redraw of the canvas area covered by the cursor."""
-        try:
-            r = int(self.easel.brush.size*2*self.pressure/256)
-            x0 = min(self.lastmx-self.lastr/2, self.mx-r/2)
-            y0 = min(self.lastmy-self.lastr/2, self.my-r/2)
-            x1 = max(self.lastmx+self.lastr/2, self.mx+r/2)
-            y1 = max(self.lastmy+self.lastr/2, self.my+r/2)
-            self.easelarea.queue_draw_area(x0, y0, x1-x0+2, y1-y0+2)
-        except:
-            # WTB- Temporary workaround for invalid values!
-            # Need to remove this when I have more time and track them down for real.
-            self.lastmx = 0
-            self.lastmy = 0
-            self.lastr = 0
+        r = int(self.easel.brush.size*2*self.pressure/256)
+        
+        #log.debug("mx=%d my=%d r=%d lastmx=%d lastmy=%d lastr=%d" % \
+        #    (self.mx, self.my, r, self.lastmx, self.lastmy, self.lastr))
+        
+        x0 = min(self.lastmx-self.lastr/2, self.mx-r/2)
+        y0 = min(self.lastmy-self.lastr/2, self.my-r/2)
+        x1 = max(self.lastmx+self.lastr/2, self.mx+r/2)
+        y1 = max(self.lastmy+self.lastr/2, self.my+r/2)
+        
+        self.easelarea.queue_draw_area(x0, y0, x1-x0+2, y1-y0+2)
 
     #-----------------------------------------------------------------------------------------------------------------
     # Application states
@@ -1304,8 +1301,6 @@ class Colors(activity.Activity, ExportedGObject):
                         self.scrollref = mpos
             else:
                 self.scrollref = None
-                # Smoothly pull back towards the image when out of reasonable bounds.
-                #self.snap_scroll()
             self.flush_entire_canvas()
 
         if self.mode == Colors.MODE_PALETTE:
@@ -1315,7 +1310,7 @@ class Colors(activity.Activity, ExportedGObject):
         #    pass
 
     def set_mode (self, mode):
-        log.debug("set mode %d", mode)
+        #log.debug("set mode %d", mode)
         if self.mode != None:
             self.leave_mode()
         self.mode = mode
@@ -1346,7 +1341,7 @@ class Colors(activity.Activity, ExportedGObject):
 
     def on_canvasarea_resize (self):
         rect = self.easelarea.get_allocation()
-        log.debug("Canvas resized to %dx%d", rect[2], rect[3])
+        #log.debug("Canvas resized to %dx%d", rect[2], rect[3])
         self.width = rect[2]
         self.height = rect[3]
         
@@ -1369,9 +1364,9 @@ class Colors(activity.Activity, ExportedGObject):
         rect = self.easelarea.get_allocation()
         if self.easelimage is None or (rect[2] != self.width or rect[3] != self.height):
             self.on_canvasarea_resize()
-
+        
         gc = self.easelarea.get_style().fg_gc[gtk.STATE_NORMAL]
-
+        
         # Blit dirty rectangle of canvas into the image.
         if self.zoom == 1.0:
             self.easel.blit_2x(
@@ -1379,19 +1374,27 @@ class Colors(activity.Activity, ExportedGObject):
                 int(event.area.x), int(event.area.y), int(event.area.width), int(event.area.height),
                 int(-self.scroll.x), int(-self.scroll.y),
                 self.overlay_active)
+            #self.easel.blit_2x(
+            #    self.easelimage, 
+            #    0, 0, rect.width, rect.height,
+            #    int(-self.scroll.x), int(-self.scroll.y),
+            #    self.overlay_active)
         elif self.zoom == 2.0:
             self.easel.blit_4x(
                 self.easelimage, 
                 int(event.area.x), int(event.area.y), int(event.area.width), int(event.area.height),
                 int(-self.scroll.x/2), int(-self.scroll.y/2),
                 self.overlay_active)
-
+        
         # Then draw the image to the screen.
         self.easelarea.bin_window.draw_image(
             gc, self.easelimage, 
             event.area.x, event.area.y, 
             event.area.x, event.area.y, event.area.width, event.area.height)
-
+        
+        # Debug rectangle to test the dirty rectangle code.  It should tightly box the brush at all times.
+        #self.easelarea.bin_window.draw_rectangle(gc, False, event.area.x, event.area.y, event.area.width, event.area.height)
+        
         # Draw introduction text.
         if self.mode == Colors.MODE_INTRO:
             context = self.easelarea.create_pango_context()
@@ -1401,18 +1404,14 @@ class Colors(activity.Activity, ExportedGObject):
             x = (self.width-size[0]/pango.SCALE)/2
             y = self.height-50-size[1]/pango.SCALE
             self.easelarea.bin_window.draw_layout(gc, x, y, layout)
-
-        #self.draw_cursor()
-
-        # Hack to keep toolbar up to date.  For some reason it fails to draw pretty often.
-        #self.toolbox.queue_draw()
-
-    def draw_cursor (self):
-        r = int(self.easel.brush.size*2*self.pressure/256)
-        self.easelarea.bin_window.draw_arc(self.easelarea.get_style().black_gc, False, self.mx-r/2, self.my-r/2, r, r, 0, 360*64)
-        self.lastr = r
+        
+        #self.easelarea.bin_window.draw_arc(self.easelarea.get_style().black_gc, False, self.mx-r/2, self.my-r/2, r, r, 0, 360*64)
+        self.lastr = int(self.easel.brush.size*2*self.pressure/256)
         self.lastmx = self.mx
         self.lastmy = self.my
+        
+        # Hack to keep toolbar up to date.  For some reason it fails to draw pretty often.
+        #self.toolbox.queue_draw()
 
     def on_palette (self, button):
         if button.get_active():

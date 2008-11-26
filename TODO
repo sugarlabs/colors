@@ -13,5 +13,6 @@
 + Use image paste for reference picture.  Actually paste into the canvas.
 + Implement joypad key bindings.
 + Implement stylus support using evtest.
-
-
++ Speed up large brushes.
++ Single stroke fast undo.
++ Adjust playback speed.
