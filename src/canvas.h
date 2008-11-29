@@ -1181,8 +1181,8 @@ public:
             h = (height-7)*4-y;
 
         // Translate origin to output location.
-        int src_x = (x - scroll_x);
-        int src_y = (y - scroll_y);
+        int src_x = (x - scroll_x)/4;
+        int src_y = (y - scroll_y)/4;
 
         int csy = src_y;
         for (int cy = y; cy < y+h; cy += 4)
