@@ -112,7 +112,7 @@ class BrushControlsPanel(gtk.HBox):
         sizebox = gtk.VBox()
         sizelabel = gtk.Label(_('Brush Size'))
         sizebox.pack_end(sizelabel, False)
-        self.size = gtk.Adjustment(50, 1, 260, 1, 10, 10)
+        self.size = gtk.Adjustment(50, 1, 130, 1, 10, 10)
         self.sizebar = gtk.VScale(self.size)
         self.sizebar.set_property("draw-value", False)
         self.sizebar.set_property("inverted", True)
@@ -395,7 +395,7 @@ class Colors(activity.Activity, ExportedGObject):
 
         # The actual drawing canvas is at 1/2 resolution, which improves performance by 4x and still leaves a decent
         # painting resolution of 600x400 on the XO.
-        self.easel = Canvas(self.width/2, self.height/2)
+        self.easel = Canvas(800, 400)
         self.set_brush(self.easel.brush)
 
         # The Canvas internally stores the image as 32bit.  When rendering, it scales up and blits into canvasimage, 
@@ -974,16 +974,14 @@ class Colors(activity.Activity, ExportedGObject):
         self.scroll = pos
 
         # Clamp scroll position to within absolute limits.
-        self.scroll.x = min(max(self.scroll.x, 0), self.easel.width)
-        self.scroll.y = min(max(self.scroll.y, 0), self.easel.height)
+        self.scroll.x = min(max(self.scroll.x, -100), self.easel.width*self.zoom - self.width + 100)
+        self.scroll.y = min(max(self.scroll.y, -100), self.easel.height*self.zoom - self.height + 100)
 
-        #log.debug("scroll: %f, %f" % (self.scroll.x, self.scroll.y))
-        
     #-----------------------------------------------------------------------------------------------------------------
     # Zoom code
 
     def init_zoom (self):
-        self.zoom = 1.0
+        self.zoom = 2.0
         self.zoomref = None
 
     def zoom_to (self, zoom):
@@ -991,32 +989,50 @@ class Colors(activity.Activity, ExportedGObject):
         self.end_draw()
 
         # Adjust scroll position to keep the same point centered on screen while the zoom changes.
-        # This is either the reference point (the center of the last stroke) or else the screen center.
+        # This is either the reference point (the center of the last stroke) or else the mouse pointer.
         if self.zoomref != None:
             scrollcenter = self.zoomref
         else:
-            scrollcenter = self.scroll + Pos(self.width*0.5/self.zoom, self.height*0.5/self.zoom)
+            scrollcenter = self.screen_to_easel(Pos(self.mx, self.my))
         self.zoom = zoom
-        self.scroll_to(scrollcenter - Pos(self.width*0.5/self.zoom, self.height*0.5/self.zoom))
+        self.scroll_to(self.easel_to_screen(scrollcenter) - Pos(self.mx, self.my))
         self.zoomref = None
         
         #log.debug('zoom %f', self.zoom)
         self.flush_entire_canvas()
 
     def zoom_in (self):
-        #if self.zoom == 0.75:
-        #    self.zoom_to(1.0)
-        #    self.scroll_to(Pos(0,0))
         if self.zoom == 1.0:
             self.zoom_to(2.0)
+        elif self.zoom == 2.0:
+            self.zoom_to(4.0)
+        elif self.zoom == 4.0:
+            self.zoom_to(8.0)
 
     def zoom_out (self):
-        if self.zoom == 2.0:
+        if self.zoom == 8.0:
+            self.zoom_to(4.0)
+        elif self.zoom == 4.0:
+            self.zoom_to(2.0)
+        elif self.zoom == 2.0:
             self.zoom_to(1.0)
-            self.scroll_to(Pos(0,0))
-        #elif self.zoom == 1.0:
-        #    self.zoom_to(0.75)
 
+    def easel_to_screen(self, pos):
+        r = pos
+        #r = r / Pos(self.easel.width, self.easel.height)
+        #r = r * Pos(self.width, self.height)
+        r = r * Pos(self.zoom, self.zoom)
+        r = r - self.scroll
+        return r
+    
+    def screen_to_easel(self, pos):
+        r = pos
+        r = r + self.scroll
+        r = r / Pos(self.zoom, self.zoom)
+        #r = r / Pos(self.width, self.height)
+        #r = r * Pos(self.easel.width, self.easel.height)
+        return r
+    
     #-----------------------------------------------------------------------------------------------------------------
     # Drawing commands
     # 
@@ -1026,7 +1042,7 @@ class Colors(activity.Activity, ExportedGObject):
     # be played back.
 
     def draw (self, pos):
-        relpos = pos * Pos(self.easel.width, self.easel.height) / Pos(self.zoom, self.zoom) - self.scroll
+        relpos = self.screen_to_easel(pos)
         relpos = relpos / Pos(self.easel.width, self.easel.height)
         self.easel.play_command(DrawCommand.create_draw(relpos, int(self.pressure)), True)
 
@@ -1039,7 +1055,6 @@ class Colors(activity.Activity, ExportedGObject):
 
         # Record a new default zoom-in focal point.
         #self.zoomref = (self.easel.strokemin + self.easel.strokemax) * Pos(0.5,0.5)
-        self.zoomref = Pos(self.mx, self.my)
 
     def set_brush (self, brush):
         #log.debug("set_brush color=%d,%d,%d type=%d size=%d opacity=%d", brush.color.r, brush.color.g, brush.color.b, brush.type, brush.size, brush.opacity)
@@ -1130,13 +1145,12 @@ class Colors(activity.Activity, ExportedGObject):
         if self.easel.dirtymin.x > self.easel.dirtymax.x:
             return
         
-        x = int(self.easel.dirtymin.x*2)
-        y = int(self.easel.dirtymin.y*2)
-        w = int(self.easel.dirtymax.x*2-x+1) 
-        h = int(self.easel.dirtymax.y*2-y+1)
+        mn = self.easel_to_screen(self.easel.dirtymin)
+        mx = self.easel_to_screen(self.easel.dirtymax)
+        
         #log.debug("x=%d y=%d width=%d height=%d" % (x, y, w, h))
         
-        self.easelarea.queue_draw_area(x, y, w, h)
+        self.easelarea.queue_draw_area(int(mn.x), int(mn.y), int(mx.x-mn.x+1), int(mx.y-mn.y+1))
         
         self.easel.reset_dirty_rect()
 
@@ -1147,15 +1161,15 @@ class Colors(activity.Activity, ExportedGObject):
 
     def flush_cursor (self):
         """Causes a redraw of the canvas area covered by the cursor."""
-        r = int(self.easel.brush.size*2*self.pressure/256)
+        r = int(self.easel.brush.size*self.zoom/2*self.pressure/256)
         
         #log.debug("mx=%d my=%d r=%d lastmx=%d lastmy=%d lastr=%d" % \
         #    (self.mx, self.my, r, self.lastmx, self.lastmy, self.lastr))
         
-        x0 = min(self.lastmx-self.lastr/2, self.mx-r/2)
-        y0 = min(self.lastmy-self.lastr/2, self.my-r/2)
-        x1 = max(self.lastmx+self.lastr/2, self.mx+r/2)
-        y1 = max(self.lastmy+self.lastr/2, self.my+r/2)
+        x0 = min(self.lastmx-self.lastr, self.mx-r)
+        y0 = min(self.lastmy-self.lastr, self.my-r)
+        x1 = max(self.lastmx+self.lastr, self.mx+r)
+        y1 = max(self.lastmy+self.lastr, self.my+r)
         
         self.easelarea.queue_draw_area(x0, y0, x1-x0+2, y1-y0+2)
 
@@ -1282,8 +1296,7 @@ class Colors(activity.Activity, ExportedGObject):
             # Update drawing.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
                 if self.mx != self.lastmx or self.my != self.lastmy:
-                    mpos = Pos(float(self.mx)/self.width, float(self.my)/self.height)
-                    self.draw(mpos)
+                    self.draw(Pos(self.mx, self.my))
                     self.flush_dirty_canvas()
             elif self.easel.stroke:
                 self.end_draw()
@@ -1347,14 +1360,11 @@ class Colors(activity.Activity, ExportedGObject):
         
         # Rebuild easelimage.
         self.easelimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), rect[2], rect[3])
-
-        # Reconfigure canvas.
-        self.easel.resize(rect[2]/2, rect[3]/2)
         
         # Resize panels.
         self.brush_controls.set_size_request(rect[2], rect[3])
         self.progress.set_size_request(rect[2], rect[3])
-
+        
         return True
 
     def on_canvasarea_expose (self, widget, event):
@@ -1368,23 +1378,43 @@ class Colors(activity.Activity, ExportedGObject):
         gc = self.easelarea.get_style().fg_gc[gtk.STATE_NORMAL]
         
         # Blit dirty rectangle of canvas into the image.
+        src_x = int(event.area.x/self.zoom+self.scroll.x)
+        src_y = int(event.area.y/self.zoom+self.scroll.y)
+        
+        dest_x = int(event.area.x)
+        dest_y = int(event.area.y)
+        dest_w = int(event.area.width)
+        dest_h = int(event.area.height)
+        
         if self.zoom == 1.0:
-            self.easel.blit_2x(
-                self.easelimage, 
-                int(event.area.x), int(event.area.y), int(event.area.width), int(event.area.height),
-                int(-self.scroll.x), int(-self.scroll.y),
-                self.overlay_active)
+            spos = self.screen_to_easel(Pos(dest_x, dest_y))
+            self.easel.blit_1x(self.easelimage, int(spos.x), int(spos.y), dest_x, dest_y, dest_w, dest_h, self.overlay_active)
+        elif self.zoom == 2.0:
+            dest_x = dest_x & ~1
+            dest_y = dest_y & ~1
+            dest_w = (dest_w+1) & ~1
+            dest_h = (dest_h+1) & ~1
+            spos = self.screen_to_easel(Pos(dest_x, dest_y))
+            self.easel.blit_2x(self.easelimage, int(spos.x), int(spos.y), dest_x, dest_y, dest_w, dest_h, self.overlay_active)
             #self.easel.blit_2x(
             #    self.easelimage, 
             #    0, 0, rect.width, rect.height,
             #    int(-self.scroll.x), int(-self.scroll.y),
             #    self.overlay_active)
-        elif self.zoom == 2.0:
-            self.easel.blit_4x(
-                self.easelimage, 
-                int(event.area.x), int(event.area.y), int(event.area.width), int(event.area.height),
-                int(-self.scroll.x/2), int(-self.scroll.y/2),
-                self.overlay_active)
+        elif self.zoom == 4.0:
+            dest_x = dest_x & ~3
+            dest_y = dest_y & ~3
+            dest_w = (dest_w+3) & ~3
+            dest_h = (dest_h+3) & ~3
+            spos = self.screen_to_easel(Pos(dest_x, dest_y))
+            self.easel.blit_4x(self.easelimage, int(spos.x), int(spos.y), dest_x, dest_y, dest_w, dest_h, self.overlay_active)
+        elif self.zoom == 8.0:
+            dest_x = dest_x & ~7
+            dest_y = dest_y & ~7
+            dest_w = (dest_w+7) & ~7
+            dest_h = (dest_h+7) & ~7
+            spos = self.screen_to_easel(Pos(dest_x, dest_y))
+            self.easel.blit_8x(self.easelimage, int(spos.x), int(spos.y), dest_x, dest_y, dest_w, dest_h, self.overlay_active)
         
         # Then draw the image to the screen.
         self.easelarea.bin_window.draw_image(
@@ -1405,8 +1435,8 @@ class Colors(activity.Activity, ExportedGObject):
             y = self.height-50-size[1]/pango.SCALE
             self.easelarea.bin_window.draw_layout(gc, x, y, layout)
         
-        #self.easelarea.bin_window.draw_arc(self.easelarea.get_style().black_gc, False, self.mx-r/2, self.my-r/2, r, r, 0, 360*64)
-        self.lastr = int(self.easel.brush.size*2*self.pressure/256)
+        #self.easelarea.bin_window.draw_arc(self.easelarea.get_style().black_gc, False, self.mx-r, self.my-r, r, r, 0, 360*64)
+        self.lastr = int(self.easel.brush.size*self.pressure/256)
         self.lastmx = self.mx
         self.lastmy = self.my
         

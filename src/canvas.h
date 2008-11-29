@@ -1020,80 +1020,63 @@ public:
     // Draws a region of the canvas into a GdkImage for display on the screen, with optional scaling
     // and darkening.
 
-    void blit_2x(GdkImage* img, int x, int y, int w, int h, int scroll_x, int scroll_y, bool overlay)
+    void blit_1x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
     {
         unsigned short* pixels = (unsigned short*)img->mem;
         int pitch = img->bpl/sizeof(unsigned short);
 
-        // Round to multiple of 2.
-        x &= ~1;
-        y &= ~1;
-        w = (w+1) & ~1;
-        h = (h+1) & ~1;
-        
-        // Clip rectangle.
-        if (x < 0)
+        // Clip destination rectangle.  Source clipping is handled per pixel.
+        if (dest_x < 0)
         {
-            w += x;
-            x = 0;
+            dest_w += dest_x;
+            dest_x = 0;
         }
-        if (y < 0)
+        if (dest_y < 0)
         {
-            h += y;
-            y = 0;
+            dest_h += dest_y;
+            dest_y = 0;
         }
-        if (x+w > (width-1)*2)
-            w = (width-1)*2-x;
-        if (y+h > (height-1)*2)
-            h = (height-1)*2-y;
-        
-        // Translate origin to output location.
-        int src_x = (x - scroll_x)/2;
-        int src_y = (y - scroll_y)/2;
+        if (dest_x+dest_w > img->width)
+            dest_w = img->width - dest_x;
+        if (dest_y+dest_h > img->height)
+            dest_h = img->height - dest_y;
         
         int csy = src_y;
-        for (int cy = y; cy < y+h; cy += 2)
+        for (int cdy = dest_y; cdy < dest_y+dest_h; cdy++)
         {
-            unsigned short* __restrict row0 = &pixels[cy*pitch+x];
-            unsigned short* __restrict row1 = row0 + pitch;
+            unsigned short* __restrict row = &pixels[cdy*pitch+dest_x];
             
+            // If out of bounds vertically, fill row with the background color.
             if (csy < 0 || csy >= height) 
             {
-                for (int cx = 0; cx < w; cx += 2)
+                for (int cdx = 0; cdx < dest_w; cdx++)
                 {
                     unsigned int rgb = 0;
-                    row0[0] = rgb;
-                    row0[1] = rgb;
-                    row1[0] = rgb;
-                    row1[1] = rgb;
-                    row0 += 2;
-                    row1 += 2;
+                    *row++ = rgb;
                 }
             }
             else
             {
                 unsigned int* __restrict src = &image[csy*width+src_x];
 
-                int cx = 0;
+                int cdx = 0;
                 int csx = src_x;
 
-                while (csx < 0 && cx < w)
+                // Fill any portion that is to the left of the src image with
+                // background color.
+                while (csx < 0 && cdx < dest_w)
                 {
                     unsigned int rgb = 0;
-                    row0[0] = rgb;
-                    row0[1] = rgb;
-                    row1[0] = rgb;
-                    row1[1] = rgb;
-                    row0 += 2;
-                    row1 += 2;
+                    *row++ = rgb;
                     src++;
                     csx++;
-                    cx += 2;
+                    cdx++;
                 }
                 
+                // Copy the pixels.
                 if (overlay)
                 {
-                    while (csx < width && cx < w)
+                    while (csx < width && cdx < dest_w)
                     {
                         unsigned int p = *src;
                         p &= ~0x03030303;
@@ -1102,50 +1085,36 @@ public:
                         unsigned int g = (((p>> 8)&0xff)>>2)<<5;
                         unsigned int b = (((p>> 0)&0xff)>>3);
                         unsigned int rgb = r|g|b;
-                        row0[0] = rgb;
-                        row0[1] = rgb;
-                        row1[0] = rgb;
-                        row1[1] = rgb;
-                        row0 += 2;
-                        row1 += 2;
+                        *row++ = rgb;
                         src++;
                         csx++;
-                        cx += 2;
+                        cdx++;
                     }
                 }
                 else
                 {
-                    while (csx < width && cx < w)
+                    while (csx < width && cdx < dest_w)
                     {
                         unsigned int p = *src;
                         unsigned int r = (((p>>16)&0xff)>>3)<<11;
                         unsigned int g = (((p>> 8)&0xff)>>2)<<5;
                         unsigned int b = (((p>> 0)&0xff)>>3);
                         unsigned int rgb = r|g|b;
-                        row0[0] = rgb;
-                        row0[1] = rgb;
-                        row1[0] = rgb;
-                        row1[1] = rgb;
-                        row0 += 2;
-                        row1 += 2;
+                        *row++ = rgb;
                         src++;
                         csx++;
-                        cx += 2;
+                        cdx++;
                     }
                 }
                 
-                while (cx < w)                
+                // Fill any portion to the right of src with background pixels.
+                while (cdx < dest_w)                
                 {
                     unsigned int rgb = 0;
-                    row0[0] = rgb;
-                    row0[1] = rgb;
-                    row1[0] = rgb;
-                    row1[1] = rgb;
-                    row0 += 2;
-                    row1 += 2;
+                    *row++ = rgb;
                     src++;
                     csx++;
-                    cx += 2;
+                    cdx++;
                 }
             }
 
@@ -1153,110 +1122,74 @@ public:
         }
     }
 
-    void blit_4x(GdkImage* img, int x, int y, int w, int h, int scroll_x, int scroll_y, bool overlay)
+    void blit_2x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
     {
         unsigned short* pixels = (unsigned short*)img->mem;
         int pitch = img->bpl/sizeof(unsigned short);
 
-        // Clip rectangle.
-        if (x < 0)
+        // Clip destination rectangle.  Source clipping is handled per pixel.
+        if (dest_x < 0)
         {
-            w += x;
-            x = 0;
+            dest_w += dest_x;
+            dest_x = 0;
         }
-        if (y < 0)
+        if (dest_y < 0)
         {
-            h += y;
-            y = 0;
+            dest_h += dest_y;
+            dest_y = 0;
         }
-
-        x &= ~3;
-        y &= ~3;
-        w = (w) & ~3;
-        h = (h) & ~3;
+        if (dest_x+dest_w > img->width-2)
+            dest_w = (img->width-2) - dest_x;
+        if (dest_y+dest_h > img->height-2)
+            dest_h = (img->height-2) - dest_y;
         
-        if (x+w > (width-7)*4)
-            w = (width-7)*4-x;
-        if (y+h > (height-7)*4)
-            h = (height-7)*4-y;
-
-        // Translate origin to output location.
-        int src_x = (x - scroll_x)/4;
-        int src_y = (y - scroll_y)/4;
-
         int csy = src_y;
-        for (int cy = y; cy < y+h; cy += 4)
+        for (int cdy = dest_y; cdy < dest_y+dest_h; cdy += 2)
         {
-            unsigned short* __restrict row0 = &pixels[cy*pitch+x];
+            unsigned short* __restrict row0 = &pixels[cdy*pitch+dest_x];
             unsigned short* __restrict row1 = row0 + pitch;
-            unsigned short* __restrict row2 = row1 + pitch;
-            unsigned short* __restrict row3 = row2 + pitch;
-
+            
+            // If out of bounds vertically, fill row with the background color.
             if (csy < 0 || csy >= height) 
             {
-                for (int cx = 0; cx < w; cx += 4)
+                for (int cdx = 0; cdx < dest_w; cdx += 2)
                 {
                     unsigned int rgb = 0;
                     row0[0] = rgb;
                     row0[1] = rgb;
-                    row0[2] = rgb;
-                    row0[3] = rgb;
                     row1[0] = rgb;
                     row1[1] = rgb;
-                    row1[2] = rgb;
-                    row1[3] = rgb;
-                    row2[0] = rgb;
-                    row2[1] = rgb;
-                    row2[2] = rgb;
-                    row2[3] = rgb;
-                    row3[0] = rgb;
-                    row3[1] = rgb;
-                    row3[2] = rgb;
-                    row3[3] = rgb;
-                    row0 += 4;
-                    row1 += 4;
-                    row2 += 4;
-                    row3 += 4;
+                    row0 += 2;
+                    row1 += 2;
                 }
             }
             else
             {
                 unsigned int* __restrict src = &image[csy*width+src_x];
 
-                int cx = 0;
+                int cdx = 0;
                 int csx = src_x;
 
-                while (csx < 0 && cx < w)
+                // Fill any portion that is to the left of the src image with
+                // background color.
+                while (csx < 0 && cdx < dest_w)
                 {
                     unsigned int rgb = 0;
                     row0[0] = rgb;
                     row0[1] = rgb;
-                    row0[2] = rgb;
-                    row0[3] = rgb;
                     row1[0] = rgb;
                     row1[1] = rgb;
-                    row1[2] = rgb;
-                    row1[3] = rgb;
-                    row2[0] = rgb;
-                    row2[1] = rgb;
-                    row2[2] = rgb;
-                    row2[3] = rgb;
-                    row3[0] = rgb;
-                    row3[1] = rgb;
-                    row3[2] = rgb;
-                    row3[3] = rgb;
-                    row0 += 4;
-                    row1 += 4;
-                    row2 += 4;
-                    row3 += 4;
+                    row0 += 2;
+                    row1 += 2;
                     src++;
                     csx++;
-                    cx += 4;
+                    cdx += 2;
                 }
                 
+                // Copy the pixels.
                 if (overlay)
                 {
-                    while (csx < width && cx < w)
+                    while (csx < width && cdx < dest_w)
                     {
                         unsigned int p = *src;
                         p &= ~0x03030303;
@@ -1267,32 +1200,18 @@ public:
                         unsigned int rgb = r|g|b;
                         row0[0] = rgb;
                         row0[1] = rgb;
-                        row0[2] = rgb;
-                        row0[3] = rgb;
                         row1[0] = rgb;
                         row1[1] = rgb;
-                        row1[2] = rgb;
-                        row1[3] = rgb;
-                        row2[0] = rgb;
-                        row2[1] = rgb;
-                        row2[2] = rgb;
-                        row2[3] = rgb;
-                        row3[0] = rgb;
-                        row3[1] = rgb;
-                        row3[2] = rgb;
-                        row3[3] = rgb;
-                        row0 += 4;
-                        row1 += 4;
-                        row2 += 4;
-                        row3 += 4;
+                        row0 += 2;
+                        row1 += 2;
                         src++;
                         csx++;
-                        cx += 4;
+                        cdx += 2;
                     }
                 }
                 else
                 {
-                    while (csx < width && cx < w)
+                    while (csx < width && cdx < dest_w)
                     {
                         unsigned int p = *src;
                         unsigned int r = (((p>>16)&0xff)>>3)<<11;
@@ -1301,58 +1220,262 @@ public:
                         unsigned int rgb = r|g|b;
                         row0[0] = rgb;
                         row0[1] = rgb;
-                        row0[2] = rgb;
-                        row0[3] = rgb;
                         row1[0] = rgb;
                         row1[1] = rgb;
-                        row1[2] = rgb;
-                        row1[3] = rgb;
-                        row2[0] = rgb;
-                        row2[1] = rgb;
-                        row2[2] = rgb;
-                        row2[3] = rgb;
-                        row3[0] = rgb;
-                        row3[1] = rgb;
-                        row3[2] = rgb;
-                        row3[3] = rgb;
-                        row0 += 4;
-                        row1 += 4;
-                        row2 += 4;
-                        row3 += 4;
+                        row0 += 2;
+                        row1 += 2;
                         src++;
                         csx++;
-                        cx += 4;
+                        cdx += 2;
                     }
                 }
                 
-                while (cx < w)                
+                // Fill any portion to the right of src with background pixels.
+                while (cdx < dest_w)                
                 {
                     unsigned int rgb = 0;
                     row0[0] = rgb;
                     row0[1] = rgb;
-                    row0[2] = rgb;
-                    row0[3] = rgb;
                     row1[0] = rgb;
                     row1[1] = rgb;
-                    row1[2] = rgb;
-                    row1[3] = rgb;
-                    row2[0] = rgb;
-                    row2[1] = rgb;
-                    row2[2] = rgb;
-                    row2[3] = rgb;
-                    row3[0] = rgb;
-                    row3[1] = rgb;
-                    row3[2] = rgb;
-                    row3[3] = rgb;
-                    row0 += 4;
-                    row1 += 4;
-                    row2 += 4;
-                    row3 += 4;
+                    row0 += 2;
+                    row1 += 2;
                     src++;
                     csx++;
-                    cx += 4;
+                    cdx += 2;
                 }
             }
+
+            csy++;
+        }
+    }
+
+    void blit_4x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
+    {
+        unsigned short* pixels = (unsigned short*)img->mem;
+        int pitch = img->bpl/sizeof(unsigned short);
+        
+        // Clip rectangle.
+        // Clip destination rectangle.  Source clipping is handled per pixel.
+        if (dest_x < 0)
+        {
+            dest_w += dest_x;
+            dest_x = 0;
+        }
+        if (dest_y < 0)
+        {
+            dest_h += dest_y;
+            dest_y = 0;
+        }
+        if (dest_x + dest_w > img->width-4)
+            dest_w = (img->width-4) - dest_x;
+        if (dest_y + dest_h > img->height-4)
+            dest_h = (img->height-4) - dest_y;
+
+        int csy = src_y;
+        for (int cdy = dest_y; cdy < dest_y+dest_h; cdy += 4)
+        {
+            unsigned short* __restrict row0 = &pixels[cdy*pitch+dest_x];
+            unsigned short* __restrict row1 = row0 + pitch;
+            unsigned short* __restrict row2 = row1 + pitch;
+            unsigned short* __restrict row3 = row2 + pitch;
+
+#define FILL_PIXEL(rgb) \
+    row0[0] = rgb; row0[1] = rgb; row0[2] = rgb; row0[3] = rgb; \
+    row1[0] = rgb; row1[1] = rgb; row1[2] = rgb; row1[3] = rgb; \
+    row2[0] = rgb; row2[1] = rgb; row2[2] = rgb; row2[3] = rgb; \
+    row3[0] = rgb; row3[1] = rgb; row3[2] = rgb; row3[3] = rgb; \
+    row0 += 4; row1 += 4; row2 += 4; row3 += 4;
+
+            if (csy < 0 || csy >= height) 
+            {
+                for (int cdx = 0; cdx < dest_w; cdx += 4)
+                {
+                    FILL_PIXEL(0)
+                }
+            }
+            else
+            {
+                unsigned int* __restrict src = &image[csy*width+src_x];
+
+                int cdx = 0;
+                int csx = src_x;
+
+                while (csx < 0 && cdx < dest_w)
+                {
+                    FILL_PIXEL(0)
+                    
+                    src++;
+                    csx++;
+                    cdx += 4;
+                }
+                
+                if (overlay)
+                {
+                    while (csx < width && cdx < dest_w)
+                    {
+                        unsigned int p = *src;
+                        p &= ~0x03030303;
+                        p >>= 2;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        FILL_PIXEL(rgb)
+                        
+                        src++;
+                        csx++;
+                        cdx += 4;
+                    }
+                }
+                else
+                {
+                    while (csx < width && cdx < dest_w)
+                    {
+                        unsigned int p = *src;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        FILL_PIXEL(rgb)
+                        
+                        src++;
+                        csx++;
+                        cdx += 4;
+                    }
+                }
+                
+                while (cdx < dest_w)                
+                {
+                    FILL_PIXEL(0)
+                    
+                    src++;
+                    csx++;
+                    cdx += 4;
+                }
+            }
+
+#undef FILL_PIXEL
+
+            csy++;
+        }
+    }
+    
+    void blit_8x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
+    {
+        unsigned short* pixels = (unsigned short*)img->mem;
+        int pitch = img->bpl/sizeof(unsigned short);
+        
+        // Clip rectangle.
+        // Clip destination rectangle.  Source clipping is handled per pixel.
+        if (dest_x < 0)
+        {
+            dest_w += dest_x;
+            dest_x = 0;
+        }
+        if (dest_y < 0)
+        {
+            dest_h += dest_y;
+            dest_y = 0;
+        }
+        if (dest_x + dest_w > img->width-8)
+            dest_w = (img->width-8) - dest_x;
+        if (dest_y + dest_h > img->height-8)
+            dest_h = (img->height-8) - dest_y;
+
+        int csy = src_y;
+        for (int cdy = dest_y; cdy < dest_y+dest_h; cdy += 8)
+        {
+            unsigned short* __restrict row0 = &pixels[cdy*pitch+dest_x];
+            unsigned short* __restrict row1 = row0 + pitch;
+            unsigned short* __restrict row2 = row1 + pitch;
+            unsigned short* __restrict row3 = row2 + pitch;
+            unsigned short* __restrict row4 = row3 + pitch;
+            unsigned short* __restrict row5 = row4 + pitch;
+            unsigned short* __restrict row6 = row5 + pitch;
+            unsigned short* __restrict row7 = row6 + pitch;
+
+#define FILL_PIXEL(rgb) \
+    row0[0] = rgb; row0[1] = rgb; row0[2] = rgb; row0[3] = rgb; row0[4] = rgb; row0[5] = rgb; row0[6] = rgb; row0[7] = rgb; \
+    row1[0] = rgb; row1[1] = rgb; row1[2] = rgb; row1[3] = rgb; row1[4] = rgb; row1[5] = rgb; row1[6] = rgb; row1[7] = rgb; \
+    row2[0] = rgb; row2[1] = rgb; row2[2] = rgb; row2[3] = rgb; row2[4] = rgb; row2[5] = rgb; row2[6] = rgb; row2[7] = rgb; \
+    row3[0] = rgb; row3[1] = rgb; row3[2] = rgb; row3[3] = rgb; row3[4] = rgb; row3[5] = rgb; row3[6] = rgb; row3[7] = rgb; \
+    row4[0] = rgb; row4[1] = rgb; row4[2] = rgb; row4[3] = rgb; row4[4] = rgb; row4[5] = rgb; row4[6] = rgb; row4[7] = rgb; \
+    row5[0] = rgb; row5[1] = rgb; row5[2] = rgb; row5[3] = rgb; row5[4] = rgb; row5[5] = rgb; row5[6] = rgb; row5[7] = rgb; \
+    row6[0] = rgb; row6[1] = rgb; row6[2] = rgb; row6[3] = rgb; row6[4] = rgb; row6[5] = rgb; row6[6] = rgb; row6[7] = rgb; \
+    row7[0] = rgb; row7[1] = rgb; row7[2] = rgb; row7[3] = rgb; row7[4] = rgb; row7[5] = rgb; row7[6] = rgb; row7[7] = rgb; \
+    row0 += 8; row1 += 8; row2 += 8; row3 += 8; row4 += 8; row5 += 8; row6 += 8; row7 += 8;
+
+            if (csy < 0 || csy >= height) 
+            {
+                for (int cdx = 0; cdx < dest_w; cdx += 8)
+                {
+                    FILL_PIXEL(0)
+                }
+            }
+            else
+            {
+                unsigned int* __restrict src = &image[csy*width+src_x];
+
+                int cdx = 0;
+                int csx = src_x;
+
+                while (csx < 0 && cdx < dest_w)
+                {
+                    FILL_PIXEL(0)
+                    
+                    src++;
+                    csx++;
+                    cdx += 8;
+                }
+                
+                if (overlay)
+                {
+                    while (csx < width && cdx < dest_w)
+                    {
+                        unsigned int p = *src;
+                        p &= ~0x03030303;
+                        p >>= 2;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        FILL_PIXEL(rgb)
+                        
+                        src++;
+                        csx++;
+                        cdx += 8;
+                    }
+                }
+                else
+                {
+                    while (csx < width && cdx < dest_w)
+                    {
+                        unsigned int p = *src;
+                        unsigned int r = (((p>>16)&0xff)>>3)<<11;
+                        unsigned int g = (((p>> 8)&0xff)>>2)<<5;
+                        unsigned int b = (((p>> 0)&0xff)>>3);
+                        unsigned int rgb = r|g|b;
+                        FILL_PIXEL(rgb)
+                        
+                        src++;
+                        csx++;
+                        cdx += 8;
+                    }
+                }
+                
+                while (cdx < dest_w)                
+                {
+                    unsigned int rgb = 0;
+                    FILL_PIXEL(rgb)
+                    
+                    src++;
+                    csx++;
+                    cdx += 8;
+                }
+            }
+
+#undef FILL_PIXEL
 
             csy++;
         }
