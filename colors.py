@@ -408,8 +408,8 @@ class Colors(activity.Activity, ExportedGObject):
         
         # Now that we have a canvas, connect the rest of the events.
         self.easelarea.connect('expose-event', self.on_canvasarea_expose)
-        self.easelarea.connect('key-press-event', self.on_key_event)
-        self.easelarea.connect('key-release-event', self.on_key_event)
+        self.connect('key-press-event', self.on_key_event)
+        self.connect('key-release-event', self.on_key_event)
         self.easelarea.connect('button-press-event', self.on_mouse_button)
         self.easelarea.connect('button-release-event', self.on_mouse_button)
         self.easelarea.connect('motion-notify-event', self.on_mouse_motion)
@@ -882,12 +882,16 @@ class Colors(activity.Activity, ExportedGObject):
             else:
                 self.pending_release = self.pending_release | button
                 
-            return False
         else:
+            # Not a known key.  Try to store / retrieve a brush.
             if self.cur_buttons & Colors.BUTTON_CONTROL:
-                self.brush_map[event.keyval] = self.brush
+                self.brush_map[event.keyval] = Brush(self.easel.brush)
+                
+            else:
+                if self.brush_map.has_key(event.keyval):
+                    self.set_brush(self.brush_map[event.keyval])
             
-            return True
+        return True
 
     def on_mouse_button(self, widget, event):
         if self.overlay_active:
@@ -1094,6 +1098,10 @@ class Colors(activity.Activity, ExportedGObject):
 
     def set_brush (self, brush):
         #log.debug("set_brush color=%d,%d,%d type=%d size=%d opacity=%d", brush.color.r, brush.color.g, brush.color.b, brush.type, brush.size, brush.opacity)
+        # End any current stroke.
+        if self.easel.stroke:
+            self.end_draw()
+
         self.easel.play_command(DrawCommand.create_color_change(brush.color), True)
         self.easel.play_command(DrawCommand.create_size_change(brush.control, brush.type, brush.size/float(self.easel.width), brush.opacity), True)
         self.brushpreviewarea.queue_draw()
