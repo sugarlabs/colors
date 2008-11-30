@@ -1,15 +1,15 @@
+- Save colors to letter keys using Ctrl+Letter.
+- Finish zooming and panning.
 + Toolbar repaint issue.
-+ Finish zooming and panning.
 + Get tutorial paintings from Scott Nash.
 + Improve opacity and size scrollbar behavior - custom?
 + Implement pick up color tool.
 + Add FPS counter.
 + Optimize framerate.
 + Improve videopaint - camera on only when in use.
-+ Save colors to letter keys using Ctrl+Letter.
++ Videopaint calibration button.
 + Test Journal save & resume.
 + Fix cursor drawing.
-+ Videopaint calibration button.
 + Use image paste for reference picture.  Actually paste into the canvas.
 + Implement joypad key bindings.
 + Implement stylus support using evtest.
