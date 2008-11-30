@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-12 00:26+0000\n"
+"POT-Creation-Date: 2008-11-30 19:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: activity/activity.info:2 colors.py:331
+#: activity/activity.info:2 colors.py:332
 msgid "Colors!"
 msgstr ""
 
@@ -36,62 +36,50 @@ msgstr ""
 msgid "Working..."
 msgstr ""
 
-#: colors.py:427
+#: colors.py:431
 msgid "Palette"
 msgstr ""
 
-#: colors.py:433
+#: colors.py:447
 msgid "Zoom Out"
 msgstr ""
 
-#: colors.py:435
+#: colors.py:450
 msgid "Zoom In"
 msgstr ""
 
-#: colors.py:440
-msgid "Take Reference Picture"
-msgstr ""
-
-#: colors.py:445
-msgid "Show Reference Picture"
-msgstr ""
-
-#: colors.py:451
-msgid "Video Paint"
-msgstr ""
-
-#: colors.py:466
+#: colors.py:482
 msgid "Start Over"
 msgstr ""
 
-#: colors.py:484
+#: colors.py:502
 msgid "Start Playback"
 msgstr ""
 
-#: colors.py:488
+#: colors.py:506
 msgid "Pause Playback"
 msgstr ""
 
-#: colors.py:492
+#: colors.py:510
 msgid "Skip To Beginning"
 msgstr ""
 
-#: colors.py:497
+#: colors.py:515
 msgid "Skip To End"
 msgstr ""
 
-#: colors.py:544
+#: colors.py:562
 msgid "Paint"
 msgstr ""
 
-#: colors.py:545
+#: colors.py:563
 msgid "Watch"
 msgstr ""
 
-#: colors.py:546
+#: colors.py:564
 msgid "Learn"
 msgstr ""
 
-#: colors.py:1399
+#: colors.py:1477
 msgid "Click anywhere to begin painting!"
 msgstr ""
