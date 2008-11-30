@@ -330,41 +330,41 @@ class Colors(activity.Activity, ExportedGObject):
     def __init__ (self, handle):
         activity.Activity.__init__(self, handle)
         self.set_title(_("Colors!"))
-
+        
         # Uncomment to test out a bunch of the C++ heavy lifting APIs.  Takes awhile on the XO though.
         #self.benchmark()
-
+        
         # Get activity size. What we really need is the size of the canvasarea, not including the toolbox.
         # This will be figured out on the first paint event, once everything is resized.
         self.width = gtk.gdk.screen_width()
         self.height = gtk.gdk.screen_height()
-
+        
         # Set up various systems.
         self.init_input()
         self.init_zoom()
         self.init_scroll()
-
+        
         # Build the toolbar.
         self.build_toolbar()
-
+        
         # Set up drawing canvas (which is also the parent for any popup widgets like the brush controls).
         self.build_canvas()
-
+        
         # Build the brush control popup window.
         self.build_brush_controls()
-
+        
         # Build the progress display popup window.
         self.build_progress()
-
+        
         # Start camera processing.
         #self.init_camera()
-
+        
         # Set the initial mode to None, it will be set to Intro on the first update.
         self.mode = None
-
+        
         # Set up mesh networking.
         self.init_mesh()
-
+        
         # This has to happen last, because it calls the read_file method when restoring from the Journal.
         self.set_canvas(self.easelarea)
         
@@ -373,9 +373,10 @@ class Colors(activity.Activity, ExportedGObject):
         self.brush_controls.hide()
         self.progress.hide()
         self.overlay_active = False
-
-        # Get the mainloop ready to run (this should come last).
-        gobject.timeout_add(50, self.mainloop)
+        
+        # Start it running.
+        self.update_timer = None
+        self.update()
 
     #-----------------------------------------------------------------------------------------------------------------
     # User interface construction
@@ -925,7 +926,8 @@ class Colors(activity.Activity, ExportedGObject):
         self.my = int(y)
         if not widget.is_focus():
             widget.grab_focus()
-        self.update()
+        if not self.update_timer:
+            self.update()
         self.flush_cursor()
         return True
 
@@ -1229,6 +1231,12 @@ class Colors(activity.Activity, ExportedGObject):
     # 
     # todo- Consider breaking up into enter_intro, enter_playback, enter_canvas, etc.
 
+    def start_update_timer(self):
+        if self.update_timer:
+            gobject.source_remove(self.update_timer)
+            
+        self.update_timer = gobject.timeout_add(50, self.update, priority=gobject.PRIORITY_HIGH_IDLE)
+        
     def enter_mode (self):
         if self.mode == Colors.MODE_INTRO:
             # Load and play intro movie.  It was created on a DS at 60hz, so we need to speed it up drastically to
@@ -1237,10 +1245,12 @@ class Colors(activity.Activity, ExportedGObject):
             self.easel.load(activity.get_bundle_path() + "/data/intro.drw")
             self.easel.set_playback_speed(8)
             self.easel.start_playback()
+            self.start_update_timer()
 
         if self.mode == Colors.MODE_PLAYBACK:
             self.easel.set_playback_speed(1)
             self.easel.start_playback()
+            self.start_update_timer()
 
         if self.mode == Colors.MODE_CANVAS:
             # Clear any existing button pressure to avoid a blotch on the screen when entering Canvas mode.
@@ -1380,19 +1390,13 @@ class Colors(activity.Activity, ExportedGObject):
         self.update_input()
         if not self.overlay_active:
             self.update_mode()
-
-    def mainloop (self):
-        """Runs the game loop.  Note that this doesn't actually return until the activity ends."""
-        #clock = pygame.time.Clock()
-        while True:
-            #clock.tick(20.0)
-            self.update()
-            # TODO- Detect idle state (paint mode, no mouse movement, no 
-            # scroll, etc) and sleep.
-            for i in range(0, 5):
-                if gtk.main_iteration(False):
-                    return False
-        return False
+            
+        # When called from timer events, stop timer when not in playback anymore.
+        if self.mode == Colors.MODE_PLAYBACK or self.mode == Colors.MODE_INTRO:
+            return True
+        else:
+            self.update_timer = None
+            return False
 
     #-----------------------------------------------------------------------------------------------------------------
     # Event handlers
