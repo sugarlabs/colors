@@ -321,6 +321,7 @@ class Colors(activity.Activity, ExportedGObject):
     BUTTON_SIZE_2     = 1<<9
     BUTTON_SIZE_3     = 1<<10
     BUTTON_TOUCH      = 1<<11
+    BUTTON_CONTROL    = 1<<12
 
     # Number of drawing steps to execute between progress bar updates.  More updates means faster overall drawing
     # but a less responsive UI.
@@ -384,24 +385,27 @@ class Colors(activity.Activity, ExportedGObject):
         self.easelarea = gtk.Layout()
         self.easelarea.set_size_request(gtk.gdk.screen_width(), gtk.gdk.screen_height())
         self.easelarea.set_flags(gtk.CAN_FOCUS)
-
+        
         self.set_double_buffered(False)
         self.easelarea.set_double_buffered(False)
-
+        
         # Set up GTK events for the canvasarea.
         self.easelarea.add_events(gtk.gdk.POINTER_MOTION_MASK|gtk.gdk.POINTER_MOTION_HINT_MASK)
         self.easelarea.add_events(gtk.gdk.BUTTON_PRESS_MASK|gtk.gdk.BUTTON_RELEASE_MASK)
         self.easelarea.add_events(gtk.gdk.KEY_PRESS_MASK|gtk.gdk.KEY_RELEASE_MASK)
-
+        
         # The actual drawing canvas is at 1/2 resolution, which improves performance by 4x and still leaves a decent
         # painting resolution of 600x400 on the XO.
         self.easel = Canvas(600, 400)
         self.set_brush(self.easel.brush)
-
+        
+        # Map of keyboard keys to brushes.
+        self.brush_map = {}
+        
         # The Canvas internally stores the image as 32bit.  When rendering, it scales up and blits into canvasimage, 
         # which is in the native 565 resolution of the XO.  Then canvasimage is drawn into the canvasarea DrawingArea.
         self.easelimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), self.width, self.height)
-
+        
         # Now that we have a canvas, connect the rest of the events.
         self.easelarea.connect('expose-event', self.on_canvasarea_expose)
         self.easelarea.connect('key-press-event', self.on_key_event)
@@ -425,6 +429,14 @@ class Colors(activity.Activity, ExportedGObject):
         self.palettebtn = toggletoolbutton.ToggleToolButton('palette')
         self.palettebtn.set_tooltip(_("Palette"))
         self.palettebtn.connect('clicked', self.on_palette)
+
+        self.brushpreview = BrushPreview(Canvas.VIDEO_HEIGHT)
+        self.brushpreviewimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), Canvas.VIDEO_HEIGHT, Canvas.VIDEO_HEIGHT)
+        self.brushpreviewarea = gtk.DrawingArea()
+        self.brushpreviewarea.set_size_request(Canvas.VIDEO_HEIGHT, Canvas.VIDEO_HEIGHT)
+        self.brushpreviewarea.connect('expose-event', self.on_brushpreview_expose)
+        self.brushpreviewitem = gtk.ToolItem()
+        self.brushpreviewitem.add(self.brushpreviewarea)
 
         # todo- Color picker button, similar semantics to scroll button.
 
@@ -471,6 +483,7 @@ class Colors(activity.Activity, ExportedGObject):
 
         paintbox = gtk.Toolbar()
         paintbox.insert(self.palettebtn, -1)
+        paintbox.insert(self.brushpreviewitem, -1)
         paintbox.insert(self.zoomsep, -1)
         paintbox.insert(self.zoomoutbtn, -1)
         paintbox.insert(self.zoominbtn, -1)
@@ -815,53 +828,66 @@ class Colors(activity.Activity, ExportedGObject):
         self.lastr = 0
 
     def on_key_event (self, widget, event):
-        #log.debug("on_key_event: %d", event.keyval)  # Useful for manually working out keyvals for OLPC keys.
-
+        key_name = gtk.gdk.keyval_name(event.keyval)
+        
+        # Useful for manually working out keyvals for OLPC keys.
+        log.debug("on_key_event: hardware_keycode=%d name=%s", event.hardware_keycode, key_name) 
+        
         # OLPC keymap is designed to allow left or right handed stylus use, with lots of redundancy.
         # So each major key should appear at least once on each side of the keyboard.
         button = 0
-
+        
+        if key_name == 'Control_L' or key_name == 'Control_R':
+            button = Colors.BUTTON_CONTROL
+        
         # Space bar for Palette (todo- need something better!).
-        if event.keyval == ord(' '): 
+        elif key_name == 'space': 
             button = Colors.BUTTON_PALETTE
-
+        
         # 'r' for Reference (todo- need something better!).
-        #if event.keyval == ord('r'): 
+        #elif event.keyval == ord('r'): 
         #    button = Colors.BUTTON_REFERENCE
-
+        
         # 'v' for Videopaint (todo- need something better!).
-        #if event.keyval == ord('v'): 
+        #elif event.keyval == ord('v'): 
         #    button = Colors.BUTTON_VIDEOPAINT
-
+        
         # 's' hotkey to save PNG thumbnail of the current canvas as 'thumb.png'.
-        if event.keyval == ord('s'): 
-            self.save_thumbnail(activity.get_bundle_path() + '/thumb.png')
-
+        #elif event.keyval == ord('s'): 
+        #    self.save_thumbnail(activity.get_bundle_path() + '/thumb.png')
+        
         # OLPC 'hand' buttons for scrolling.
-        if event.keyval == ord('c') or event.keyval == 311 or event.keyval == 312 or event.keyval == ord('s'): 
+        elif event.keyval == ord('c') or event.hardware_keycode == 133 or event.hardware_keycode == 134: 
             button = Colors.BUTTON_SCROLL
-
+        
         # OLPC 'size' buttons for intensity.
-        #if event.keyval == 286: button = Colors.BUTTON_SIZE_0
-        #if event.keyval == 287: button = Colors.BUTTON_SIZE_1
-        #if event.keyval == 288: button = Colors.BUTTON_SIZE_2
-        #if event.keyval == 289: button = Colors.BUTTON_SIZE_3
-
+        #elif event.keyval == 286: button = Colors.BUTTON_SIZE_0
+        #elif event.keyval == 287: button = Colors.BUTTON_SIZE_1
+        #elif event.keyval == 288: button = Colors.BUTTON_SIZE_2
+        #elif event.keyval == 289: button = Colors.BUTTON_SIZE_3
+        
         # Arrow keys, gamepad 'face' buttons, or 'z' and 'x' for Zoom.
-        if event.keyval == ord('z') or event.keyval == 264 or event.keyval == 265 or event.keyval == 273:
+        elif event.keyval == ord('z') or key_name == 'Up':
             button = Colors.BUTTON_ZOOM_IN
-        if event.keyval == ord('x') or event.keyval == 258 or event.keyval == 259 or event.keyval == 274:
+        elif event.keyval == ord('x') or key_name == 'Down':
             button = Colors.BUTTON_ZOOM_OUT
-
+        
         # Either Alt key for pick.
-        if event.keyval == 313 or event.keyval == 308:
+        elif key_name == 'Alt_L' or key_name == 'ISO_Level3_Shift':
             button = Colors.BUTTON_PICK
-
+        
         if button != 0:
             if event.type == gtk.gdk.KEY_PRESS:
                 self.pending_press = self.pending_press | button
             else:
                 self.pending_release = self.pending_release | button
+                
+            return False
+        else:
+            if self.cur_buttons & Colors.BUTTON_CONTROL:
+                self.brush_map[event.keyval] = self.brush
+            
+            return True
 
     def on_mouse_button(self, widget, event):
         if self.overlay_active:
@@ -1070,7 +1096,8 @@ class Colors(activity.Activity, ExportedGObject):
         #log.debug("set_brush color=%d,%d,%d type=%d size=%d opacity=%d", brush.color.r, brush.color.g, brush.color.b, brush.type, brush.size, brush.opacity)
         self.easel.play_command(DrawCommand.create_color_change(brush.color), True)
         self.easel.play_command(DrawCommand.create_size_change(brush.control, brush.type, brush.size/float(self.easel.width), brush.opacity), True)
-
+        self.brushpreviewarea.queue_draw()
+        
     def play_to_playbackpos (self):
         """Plays drawing commands until playbackpos.get_value() is reached.  This may involve resetting the canvas if
         the given position is before the current position, since it is impossible to play commands backwards.
@@ -1456,6 +1483,16 @@ class Colors(activity.Activity, ExportedGObject):
                 self.set_mode(Colors.MODE_PALETTE)
         else:
             self.set_mode(Colors.MODE_CANVAS)
+
+    def on_brushpreview_expose (self, widget, event):
+        self.brushpreview.brush = self.easel.brush  
+        self.brushpreview.brush.size = int(self.easel.brush.size * self.zoom)
+        self.brushpreview.render(self.brushpreviewimage)
+        
+        bounds = widget.get_allocation()
+        x = (bounds.width-self.brushpreview.size)/2
+        y = (bounds.height-self.brushpreview.size)/2
+        self.brushpreviewarea.window.draw_image(widget.get_style().fg_gc[gtk.STATE_NORMAL], self.brushpreviewimage, 0, 0, x, y, -1, -1)
 
     def on_zoom_in (self, button):
         self.zoom_in()

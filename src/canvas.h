@@ -342,6 +342,15 @@ public:
         control = 0;
         opacity = 1.0f;
     }
+    
+    Brush(const Brush& a)
+    {
+        type = a.type;
+        color = a.color;
+        size = a.size;
+        control = a.control;
+        opacity = a.opacity;
+    }
 };
 
 // The canvas represents the current state of the user's painting.  It maintains both the pixels representing the
