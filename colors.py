@@ -395,7 +395,7 @@ class Colors(activity.Activity, ExportedGObject):
 
         # The actual drawing canvas is at 1/2 resolution, which improves performance by 4x and still leaves a decent
         # painting resolution of 600x400 on the XO.
-        self.easel = Canvas(800, 400)
+        self.easel = Canvas(600, 400)
         self.set_brush(self.easel.brush)
 
         # The Canvas internally stores the image as 32bit.  When rendering, it scales up and blits into canvasimage, 
@@ -428,10 +428,14 @@ class Colors(activity.Activity, ExportedGObject):
 
         # todo- Color picker button, similar semantics to scroll button.
 
+        self.zoomsep = gtk.SeparatorToolItem()
+
         self.zoomoutbtn = toolbutton.ToolButton('zoom-out')
         self.zoomoutbtn.set_tooltip(_("Zoom Out"))
+        self.zoomoutbtn.connect('clicked', self.on_zoom_out)
         self.zoominbtn = toolbutton.ToolButton('zoom-in')
         self.zoominbtn.set_tooltip(_("Zoom In"))
+        self.zoominbtn.connect('clicked', self.on_zoom_in)
 
         #self.refsep = gtk.SeparatorToolItem()
         #
@@ -467,6 +471,7 @@ class Colors(activity.Activity, ExportedGObject):
 
         paintbox = gtk.Toolbar()
         paintbox.insert(self.palettebtn, -1)
+        paintbox.insert(self.zoomsep, -1)
         paintbox.insert(self.zoomoutbtn, -1)
         paintbox.insert(self.zoominbtn, -1)
         #paintbox.insert(self.refsep, -1)
@@ -963,19 +968,26 @@ class Colors(activity.Activity, ExportedGObject):
 
     #-----------------------------------------------------------------------------------------------------------------
     # Scroll code
-    # 
-    # todo- Scrolling is currently broken.  It needs to be bound to a key and the issues need to be fixed.
 
     def init_scroll (self):
         self.scroll = Pos(0,0)
         self.scrollref = None
 
     def scroll_to (self, pos):
-        self.scroll = pos
-
-        # Clamp scroll position to within absolute limits.
-        self.scroll.x = min(max(self.scroll.x, -100), self.easel.width*self.zoom - self.width + 100)
-        self.scroll.y = min(max(self.scroll.y, -100), self.easel.height*self.zoom - self.height + 100)
+        self.scroll = Pos(pos.x, pos.y)
+        
+        #log.debug('self.scroll: x=%f y=%f' % (self.scroll.x, self.scroll.y))
+        
+        # Clamp scroll position to within absolute limits or else center.
+        if self.easel.width*self.zoom < self.width:
+            self.scroll.x = (self.width-self.easel.width)/2
+        else:
+            self.scroll.x = max(min(self.scroll.x, 100), -(self.easel.width*self.zoom - self.width + 100))
+            
+        if self.easel.height*self.zoom < self.height:
+            self.scroll.y = (self.height-self.easel.height)/2
+        else:
+            self.scroll.y = max(min(self.scroll.y, 100), -(self.easel.height*self.zoom - self.height + 100))
 
     #-----------------------------------------------------------------------------------------------------------------
     # Zoom code
@@ -987,18 +999,20 @@ class Colors(activity.Activity, ExportedGObject):
     def zoom_to (self, zoom):
         # End any current stroke.
         self.end_draw()
-
-        # Adjust scroll position to keep the same point centered on screen while the zoom changes.
-        # This is either the reference point (the center of the last stroke) or else the mouse pointer.
-        if self.zoomref != None:
-            scrollcenter = self.zoomref
-        else:
-            scrollcenter = self.screen_to_easel(Pos(self.mx, self.my))
-        self.zoom = zoom
-        self.scroll_to(self.easel_to_screen(scrollcenter) - Pos(self.mx, self.my))
-        self.zoomref = None
         
+        # Adjust scroll position to keep the mouse centered on screen while the zoom changes.
+        scrollcenter = self.screen_to_easel(Pos(self.mx, self.my))
+        self.scroll = Pos(0,0)
+        
+        self.zoom = zoom
         #log.debug('zoom %f', self.zoom)
+        
+        scrollcenter = Pos(0,0) - self.easel_to_screen(scrollcenter) + Pos(self.mx, self.my)
+        self.scroll_to(scrollcenter) 
+       
+        self.zoominbtn.set_sensitive(self.zoom < 8.0)
+        self.zoomoutbtn.set_sensitive(self.zoom > 1.0)
+        
         self.flush_entire_canvas()
 
     def zoom_in (self):
@@ -1018,19 +1032,15 @@ class Colors(activity.Activity, ExportedGObject):
             self.zoom_to(1.0)
 
     def easel_to_screen(self, pos):
-        r = pos
-        #r = r / Pos(self.easel.width, self.easel.height)
-        #r = r * Pos(self.width, self.height)
+        r = Pos(pos.x, pos.y)
         r = r * Pos(self.zoom, self.zoom)
-        r = r - self.scroll
+        r = r + self.scroll
         return r
     
     def screen_to_easel(self, pos):
-        r = pos
-        r = r + self.scroll
+        r = Pos(pos.x, pos.y)
+        r = r - self.scroll
         r = r / Pos(self.zoom, self.zoom)
-        #r = r / Pos(self.width, self.height)
-        #r = r * Pos(self.easel.width, self.easel.height)
         return r
     
     #-----------------------------------------------------------------------------------------------------------------
@@ -1308,7 +1318,7 @@ class Colors(activity.Activity, ExportedGObject):
                 if self.scrollref == None:
                     self.scrollref = mpos
                 else:
-                    move = mpos - self.scrollref
+                    move = self.scrollref - mpos
                     if move.x != 0 or move.y != 0:
                         self.scroll_to(self.scroll - move)
                         self.scrollref = mpos
@@ -1378,9 +1388,6 @@ class Colors(activity.Activity, ExportedGObject):
         gc = self.easelarea.get_style().fg_gc[gtk.STATE_NORMAL]
         
         # Blit dirty rectangle of canvas into the image.
-        src_x = int(event.area.x/self.zoom+self.scroll.x)
-        src_y = int(event.area.y/self.zoom+self.scroll.y)
-        
         dest_x = int(event.area.x)
         dest_y = int(event.area.y)
         dest_w = int(event.area.width)
@@ -1449,6 +1456,12 @@ class Colors(activity.Activity, ExportedGObject):
                 self.set_mode(Colors.MODE_PALETTE)
         else:
             self.set_mode(Colors.MODE_CANVAS)
+
+    def on_zoom_in (self, button):
+        self.zoom_in()
+
+    def on_zoom_out (self, button):
+        self.zoom_out()
 
     #def on_take_reference (self, button):
     #    self.take_reference = True
