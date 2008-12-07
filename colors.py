@@ -365,6 +365,9 @@ class Colors(activity.Activity, ExportedGObject):
         # Set up mesh networking.
         self.init_mesh()
         
+        # Scan for input devices.
+        self.init_input_devices()
+        
         # This has to happen last, because it calls the read_file method when restoring from the Journal.
         self.set_canvas(self.easelarea)
         
@@ -815,24 +818,37 @@ class Colors(activity.Activity, ExportedGObject):
             s.set_sensitive(False)
 
     #-----------------------------------------------------------------------------------------------------------------
+    # Input device (Wacom etc.) code
+
+    def init_input_devices(self):
+        self.easelarea.set_extension_events(gtk.gdk.EXTENSION_EVENTS_CURSOR)
+
+        self.devices = gtk.gdk.devices_list()
+        for d in self.devices:
+            log.debug('Input Device: name=\'%s\'' % (d.name))
+            d.set_mode(gtk.gdk.MODE_SCREEN)
+
+    #-----------------------------------------------------------------------------------------------------------------
     # Input code
 
     def init_input (self):
         self.cur_buttons = 0
         self.pending_press = 0
         self.pending_release = 0
+        
         self.mx = 0
         self.my = 0
         self.pressure = 255
+        
         self.lastmx = 0
         self.lastmy = 0
-        self.lastr = 0
+        self.lastr = 0     
 
     def on_key_event (self, widget, event):
         key_name = gtk.gdk.keyval_name(event.keyval)
         
         # Useful for manually working out keyvals for OLPC keys.
-        log.debug("on_key_event: hardware_keycode=%d name=%s", event.hardware_keycode, key_name) 
+        #log.debug("on_key_event: hardware_keycode=%d name=%s", event.hardware_keycode, key_name) 
         
         # OLPC keymap is designed to allow left or right handed stylus use, with lots of redundancy.
         # So each major key should appear at least once on each side of the keyboard.
@@ -892,6 +908,8 @@ class Colors(activity.Activity, ExportedGObject):
                 if self.brush_map.has_key(event.keyval):
                     self.set_brush(self.brush_map[event.keyval])
             
+        self.update()
+
         return True
 
     def on_mouse_button(self, widget, event):
@@ -915,6 +933,14 @@ class Colors(activity.Activity, ExportedGObject):
     def on_mouse_motion (self, widget, event):
         if self.overlay_active:
             return
+		
+        state = event.device.get_state(self.easelarea.window)[0]
+        pressure = event.device.get_axis(state, gtk.gdk.AXIS_PRESSURE)
+        try:
+            self.pressure = int(pressure * 255)
+        except:
+            self.pressure = 255
+
         # Process mouse event normally.
         if event.is_hint:
             x, y, state = event.window.get_pointer()
@@ -924,11 +950,15 @@ class Colors(activity.Activity, ExportedGObject):
             state = event.state
         self.mx = int(x)
         self.my = int(y)
+
         if not widget.is_focus():
             widget.grab_focus()
+
         if not self.update_timer:
             self.update()
+        
         self.flush_cursor()
+		
         return True
 
     def update_input (self):

@@ -1,18 +1,21 @@
 - Save colors to letter keys using Ctrl+Letter.
 - Finish zooming and panning.
++ Sort out idle vs paint priority issue.
 + Toolbar repaint issue.
 + Get tutorial paintings from Scott Nash.
-+ Improve opacity and size scrollbar behavior - custom?
-+ Implement pick up color tool.
++ Improve opacity and size scrollbar behavior - click to set.  Maybe a custom widget?
++ Implement pickup color tool.
 + Add FPS counter.
 + Optimize framerate.
-+ Improve videopaint - camera on only when in use.
-+ Videopaint calibration button.
++ Improve videopaint
+ + Use Nirav's pygame extension.
+ + Calibration button.
 + Test Journal save & resume.
 + Fix cursor drawing.
-+ Use image paste for reference picture.  Actually paste into the canvas.
++ Implement Copy & Paste.
 + Implement joypad key bindings.
 + Implement stylus support using evtest.
-+ Speed up large brushes.
-+ Single stroke fast undo.
-+ Adjust playback speed.
++ Speed up painting performance of large brushes.
++ Single stroke quick undo.
++ Button to adjust playback speed.
++ Implement Wacom support.
