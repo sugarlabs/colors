@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"[
+     <!ENTITY stroke_color "#000000">
+     <!ENTITY fill_color "#FFFFFF">
+ ]>
+<svg version="1.1" id="Colors" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="55px" height="55px" viewBox="0 0 55 55" enable-background="new 0 0 55 55" xml:space="preserve">
+<path id="Paint" fill="&fill_color;" stroke="&stroke_color;" stroke-width="3.5" d="M30.814,32.609c1.34,1.188,6.019,5.182,5.269,7.349
+	S32,50.438,38.5,50.438s2.282-10.293,2.465-10.539c0.794-1.069,7.405-2.266,6.785-7.586c-0.3-2.578-3.973-6.417-9.5-10.813
+	c-0.299-0.238,4.834-1.417,7.584-5.5c3.291-5.125,1.416-11.813,1.416-11.188c-0.083,2.021-5.583,2.521-8.625,5.813
+	c-2.917,2.583-4.014,7.894-4.286,7.696c-7.748-5.597-16.93-10.485-21.984-10.482c0,0-4.26,5.072,2.38,6.281
+	c1.89,0.463-3.091,6.673-1.36,7.567s5.692,1.959,10.123,5.124"/>
+<path id="Brush" fill="&fill_color;" stroke="&stroke_color;" stroke-width="3.5" stroke-linejoin="round" d="M38.25,21.5
+	c0,0-3.666,4.917-5.333,6.917c-3.75,5.75-24.141,22.271-25.779,20.927C5.5,48,21.297,28.574,26.859,24.425
+	c1.854-1.649,7.48-6.104,7.48-6.104L38.25,21.5z"/>
+</svg>
