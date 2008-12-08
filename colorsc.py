@@ -481,6 +481,7 @@ class Canvas(_object):
     def command_enddraw(*args): return _colorsc.Canvas_command_enddraw(*args)
     def reset_dirty_rect(*args): return _colorsc.Canvas_reset_dirty_rect(*args)
     def draw_brush(*args): return _colorsc.Canvas_draw_brush(*args)
+    def pickup_color(*args): return _colorsc.Canvas_pickup_color(*args)
     def add_command(*args): return _colorsc.Canvas_add_command(*args)
     def play_command(*args): return _colorsc.Canvas_play_command(*args)
     def playback_done(*args): return _colorsc.Canvas_playback_done(*args)

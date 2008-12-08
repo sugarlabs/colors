@@ -8895,6 +8895,40 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Canvas_pickup_color(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Canvas *arg1 = (Canvas *) 0 ;
+  Pos *arg2 = 0 ;
+  Color result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:Canvas_pickup_color",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Canvas, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Canvas_pickup_color" "', argument " "1"" of type '" "Canvas *""'"); 
+  }
+  arg1 = reinterpret_cast< Canvas * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_Pos,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Canvas_pickup_color" "', argument " "2"" of type '" "Pos const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Canvas_pickup_color" "', argument " "2"" of type '" "Pos const &""'"); 
+  }
+  arg2 = reinterpret_cast< Pos * >(argp2);
+  result = (arg1)->pickup_color((Pos const &)*arg2);
+  resultobj = SWIG_NewPointerObj((new Color(static_cast< const Color& >(result))), SWIGTYPE_p_Color, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Canvas_add_command(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Canvas *arg1 = (Canvas *) 0 ;
@@ -11815,6 +11849,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Canvas_command_enddraw", _wrap_Canvas_command_enddraw, METH_VARARGS, NULL},
 	 { (char *)"Canvas_reset_dirty_rect", _wrap_Canvas_reset_dirty_rect, METH_VARARGS, NULL},
 	 { (char *)"Canvas_draw_brush", _wrap_Canvas_draw_brush, METH_VARARGS, NULL},
+	 { (char *)"Canvas_pickup_color", _wrap_Canvas_pickup_color, METH_VARARGS, NULL},
 	 { (char *)"Canvas_add_command", _wrap_Canvas_add_command, METH_VARARGS, NULL},
 	 { (char *)"Canvas_play_command", _wrap_Canvas_play_command, METH_VARARGS, NULL},
 	 { (char *)"Canvas_playback_done", _wrap_Canvas_playback_done, METH_VARARGS, NULL},

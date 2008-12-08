@@ -547,7 +547,7 @@ public:
         brush.type = BrushType::BRUSHTYPE_HARD;
         brush.color = Color::create_from_a8r8g8b8(0xff000000 | (255 << (c0 * 8) | ((rand()%255) << (c1 * 8))));
         brush.size = width/16;
-        brush.control = 0; //Brush::BRUSHCONTROL_VARIABLEOPACITY;
+        brush.control = Brush::BRUSHCONTROL_VARIABLESIZE;
         brush.opacity = 1.0f;
     }
 
@@ -844,6 +844,14 @@ public:
             brush.color.g = c.g / c.a;
             brush.color.b = c.b / c.a;
         }
+    }
+
+    // Return the color underneath the pos.
+    Color pickup_color(const Pos& pos)
+    {
+        int x = int(max(min(pos.x, float(width)), 0.0f));
+        int y = int(max(min(pos.y, float(height)), 0.0f));
+        return Color::create_from_a8r8g8b8(image[y*width+x]);
     }
 
     //---------------------------------------------------------------------------------------------

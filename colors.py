@@ -29,7 +29,7 @@
 # Sharing    - http://wiki.laptop.org/go/Shared_Sugar_Activities
 
 # Import standard Python modules.
-import logging, os, math, time, copy, json
+import logging, os, math, time, copy, json, tempfile
 from gettext import gettext as _
 
 # Import the C++ component of the activity.
@@ -58,7 +58,7 @@ from sugar.graphics import *
 from sugar.graphics import toggletoolbutton
 
 # Import GStreamer (for camera access).
-import pygst, gst
+#import pygst, gst
 
 # Initialize logging.
 log = logging.getLogger('Colors')
@@ -400,7 +400,7 @@ class Colors(activity.Activity, ExportedGObject):
         
         # The actual drawing canvas is at 1/2 resolution, which improves performance by 4x and still leaves a decent
         # painting resolution of 600x400 on the XO.
-        self.easel = Canvas(600, 400)
+        self.easel = Canvas(gtk.gdk.screen_width()/2, gtk.gdk.screen_height()/2)
         self.set_brush(self.easel.brush)
         
         # Map of keyboard keys to brushes.
@@ -433,7 +433,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.palettebtn = toggletoolbutton.ToggleToolButton('palette')
         self.palettebtn.set_tooltip(_("Palette"))
         self.palettebtn.connect('clicked', self.on_palette)
-
+        
         self.brushpreview = BrushPreview(Canvas.VIDEO_HEIGHT)
         self.brushpreviewimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), Canvas.VIDEO_HEIGHT, Canvas.VIDEO_HEIGHT)
         self.brushpreviewarea = gtk.DrawingArea()
@@ -441,18 +441,27 @@ class Colors(activity.Activity, ExportedGObject):
         self.brushpreviewarea.connect('expose-event', self.on_brushpreview_expose)
         self.brushpreviewitem = gtk.ToolItem()
         self.brushpreviewitem.add(self.brushpreviewarea)
-
+        
         # todo- Color picker button, similar semantics to scroll button.
-
+        
         self.zoomsep = gtk.SeparatorToolItem()
-
+        
         self.zoomoutbtn = toolbutton.ToolButton('zoom-out')
         self.zoomoutbtn.set_tooltip(_("Zoom Out"))
         self.zoomoutbtn.connect('clicked', self.on_zoom_out)
         self.zoominbtn = toolbutton.ToolButton('zoom-in')
         self.zoominbtn.set_tooltip(_("Zoom In"))
         self.zoominbtn.connect('clicked', self.on_zoom_in)
-
+        self.centerbtn = toolbutton.ToolButton('zoom-original')
+        self.centerbtn.set_tooltip(_("Center Image"))
+        self.centerbtn.connect('clicked', self.on_center)
+        
+        self.editsep = gtk.SeparatorToolItem()
+        
+        self.copybtn = toolbutton.ToolButton('edit-copy')
+        self.copybtn.set_tooltip(_("Copy"))
+        self.copybtn.connect('clicked', self.on_copy)
+        
         #self.refsep = gtk.SeparatorToolItem()
         #
         #self.takerefbtn = toolbutton.ToolButton('take-reference')
@@ -476,21 +485,35 @@ class Colors(activity.Activity, ExportedGObject):
         #self.videopaintitem.add(self.videopaintpreview)
         #self.videopaintimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), Canvas.VIDEO_WIDTH, Canvas.VIDEO_HEIGHT)
         #self.videopaint_enabled = False
-
+        
         self.clearsep = gtk.SeparatorToolItem()
         self.clearsep.set_expand(True)
         self.clearsep.set_draw(False)
-
+        
+        self.fullscreenbtn = toolbutton.ToolButton('view-fullscreen')
+        self.fullscreenbtn.set_tooltip(_("Fullscreen"))
+        self.fullscreenbtn.connect('clicked', self.on_fullscreen)
+        
         self.clearbtn = toolbutton.ToolButton('erase')
         self.clearbtn.set_tooltip(_("Start Over"))
         self.clearbtn.connect('clicked', self.on_clear)
-
+        
+        #editbox = activity.EditToolbar()
+        #editbox.undo.props.visible = False
+        #editbox.redo.props.visible = False
+        #editbox.separator.props.visible = False
+        #editbox.copy.connect('clicked', self.on_copy)
+        #editbox.paste.connect('clicked', self.on_paste)
+        
         paintbox = gtk.Toolbar()
         paintbox.insert(self.palettebtn, -1)
         paintbox.insert(self.brushpreviewitem, -1)
         paintbox.insert(self.zoomsep, -1)
         paintbox.insert(self.zoomoutbtn, -1)
         paintbox.insert(self.zoominbtn, -1)
+        paintbox.insert(self.centerbtn, -1)
+        paintbox.insert(self.editsep, -1)
+        paintbox.insert(self.copybtn, -1)
         #paintbox.insert(self.refsep, -1)
         #paintbox.insert(self.takerefbtn, -1)
         #paintbox.insert(self.showrefbtn, -1)
@@ -498,38 +521,39 @@ class Colors(activity.Activity, ExportedGObject):
         #paintbox.insert(self.videopaintbtn, -1)
         #paintbox.insert(self.videopaintitem, -1)
         paintbox.insert(self.clearsep, -1)
+        paintbox.insert(self.fullscreenbtn, -1)
         paintbox.insert(self.clearbtn, -1)
-
+        
         # Playback controls
         self.startbtn = toolbutton.ToolButton('media-playback-start')
         self.startbtn.set_tooltip(_("Start Playback"))
         self.startbtn.connect('clicked', self.on_play)
-
+        
         self.pausebtn = toolbutton.ToolButton('media-playback-pause')
         self.pausebtn.set_tooltip(_("Pause Playback"))
         self.pausebtn.connect('clicked', self.on_pause)
-
+        
         self.beginbtn = toolbutton.ToolButton('media-seek-backward')
         self.beginbtn.set_tooltip(_("Skip To Beginning"))
         self.beginbtn.connect('clicked', self.on_skip_begin)
-
+        
         self.endbtn = toolbutton.ToolButton('media-seek-forward')
         self.endbtn.connect('clicked', self.on_skip_end)
         self.endbtn.set_tooltip(_("Skip To End"))
-
+        
         # Position bar
         self.playbackpossep = gtk.SeparatorToolItem()
         self.playbackpossep.set_draw(True)
-
+        
         self.playbackpos = gtk.Adjustment(0, 0, 110, 1, 10, 10)
         self.playbackposbar = gtk.HScale(self.playbackpos)
         self.playbackposbar.connect('value-changed', self.on_playbackposbar_change)
         self.playbackposbar.ignore_change = 0
-
+        
         self.playbackpositem = gtk.ToolItem()
         self.playbackpositem.set_expand(True)
         self.playbackpositem.add(self.playbackposbar)
-
+        
         playbox = gtk.Toolbar()
         playbox.insert(self.startbtn, -1)
         playbox.insert(self.pausebtn, -1)
@@ -537,18 +561,18 @@ class Colors(activity.Activity, ExportedGObject):
         playbox.insert(self.endbtn, -1)
         playbox.insert(self.playbackpossep, -1)
         playbox.insert(self.playbackpositem, -1)
-
+        
         # Sample files to learn from.  Reads the list from an INDEX file in the data folder.
         samplebox = gtk.Toolbar()
         self.samplebtns = []
-
+        
         samples = []
         fd = open(activity.get_bundle_path() + '/data/INDEX', 'r')
         try:
             samples = json.read(fd.read())
         finally:
             fd.close()
-
+        
         log.debug("Samples: %r", samples)
         for s in samples:
             btn = toolbutton.ToolButton('media-playback-start')
@@ -560,9 +584,10 @@ class Colors(activity.Activity, ExportedGObject):
             btn.connect('clicked', self.on_sample)
             samplebox.insert(btn, -1)
             self.samplebtns.append(btn)
-
+        
         toolbar = activity.ActivityToolbox(self)
         toolbar.add_toolbar(_("Paint"),paintbox)
+        #toolbar.add_toolbar(_("Edit"),editbox)
         toolbar.add_toolbar(_("Watch"),playbox)
         toolbar.add_toolbar(_("Learn"),samplebox)
         toolbar.show_all()
@@ -783,7 +808,7 @@ class Colors(activity.Activity, ExportedGObject):
             if self.draw_command_sent < self.easel.get_num_commands():
                 buf = self.easel.send_drw_commands(self.draw_command_sent, self.easel.get_num_commands()-self.draw_command_sent)
                 self.BroadcastDrawCommands(buf.get_bytes(), buf.ncommands)
-
+            
             # Play any queued draw commands that were received from the host.  If there are any, we first reset the
             # canvas contents back to the last received state and then play them back.
             if self.draw_command_queue.ncommands:
@@ -796,7 +821,7 @@ class Colors(activity.Activity, ExportedGObject):
                 self.draw_command_queue.clear()
                 self.set_brush(saved_brush)
                 self.flush_dirty_canvas()
-
+            
             # Note that resetting the state above means "undoing" the commands we just broadcast.  We will receive them 
             # again by our ReceiveDrawCommands callback immediately, and will play them back so the user shouldn't notice.
             self.draw_command_sent = self.easel.get_num_commands()
@@ -805,14 +830,14 @@ class Colors(activity.Activity, ExportedGObject):
         """Disables UI controls which cannot be activated by non-host peers."""
         # Cannot clear the canvas.
         self.clearbtn.set_sensitive(False)
-
+        
         # Cannot control playback.
         self.startbtn.set_sensitive(False)
         self.pausebtn.set_sensitive(False)
         self.beginbtn.set_sensitive(False)
         self.endbtn.set_sensitive(False)
         self.playbackposbar.set_sensitive(False)
-
+        
         # Cannot activate sample drawings.
         for s in self.samplebtns:
             s.set_sensitive(False)
@@ -854,7 +879,7 @@ class Colors(activity.Activity, ExportedGObject):
         # So each major key should appear at least once on each side of the keyboard.
         button = 0
         
-        if key_name == 'Control_L' or key_name == 'Control_R':
+        if key_name == 'Alt_L' or key_name == 'ISO_Level3_Shift':
             button = Colors.BUTTON_CONTROL
         
         # Space bar for Palette (todo- need something better!).
@@ -899,6 +924,10 @@ class Colors(activity.Activity, ExportedGObject):
             else:
                 self.pending_release = self.pending_release | button
                 
+            self.update()
+            
+            return True
+        
         else:
             # Not a known key.  Try to store / retrieve a brush.
             if self.cur_buttons & Colors.BUTTON_CONTROL:
@@ -907,14 +936,13 @@ class Colors(activity.Activity, ExportedGObject):
             else:
                 if self.brush_map.has_key(event.keyval):
                     self.set_brush(self.brush_map[event.keyval])
-            
-        self.update()
-
-        return True
+                    
+            return False
 
     def on_mouse_button(self, widget, event):
         if self.overlay_active:
             return
+
         if event.button == 1:
             if event.type == gtk.gdk.BUTTON_PRESS:
                 self.pending_press = self.pending_press | Colors.BUTTON_TOUCH
@@ -925,22 +953,25 @@ class Colors(activity.Activity, ExportedGObject):
         #        self.pending_press = self.pending_press | Colors.BUTTON_PALETTE
         #    if event.type == gtk.gdk.BUTTON_RELEASE:
         #        self.pending_release = self.pending_release | Colors.BUTTON_PALETTE
+
         if not widget.is_focus():
             widget.grab_focus()
+
         self.update()
+
         return True
 
     def on_mouse_motion (self, widget, event):
         if self.overlay_active:
             return
-		
+        
         state = event.device.get_state(self.easelarea.window)[0]
         pressure = event.device.get_axis(state, gtk.gdk.AXIS_PRESSURE)
         try:
             self.pressure = int(pressure * 255)
         except:
             self.pressure = 255
-
+        
         # Process mouse event normally.
         if event.is_hint:
             x, y, state = event.window.get_pointer()
@@ -950,28 +981,28 @@ class Colors(activity.Activity, ExportedGObject):
             state = event.state
         self.mx = int(x)
         self.my = int(y)
-
+        
         if not widget.is_focus():
             widget.grab_focus()
-
+        
         if not self.update_timer:
             self.update()
         
         self.flush_cursor()
-		
+        
         return True
 
     def update_input (self):
         buttons = self.cur_buttons
-
+        
         buttons = buttons | self.pending_press
         self.pending_press = 0
-
+        
         buttons = buttons & ~self.pending_release
         self.pending_release = 0
-
+        
         hold = buttons & self.cur_buttons
-
+        
         if self.cur_buttons != buttons:
             changed = self.cur_buttons ^ buttons
             press = changed & buttons
@@ -981,7 +1012,7 @@ class Colors(activity.Activity, ExportedGObject):
                 self.on_press(press)
             if release != 0:
                 self.on_release(release)
-
+        
         if hold != 0:
             self.on_hold(hold)
 
@@ -989,15 +1020,15 @@ class Colors(activity.Activity, ExportedGObject):
         if button & Colors.BUTTON_ZOOM_IN:
             self.zoom_in()
             return
-
+        
         if button & Colors.BUTTON_ZOOM_OUT:
             self.zoom_out()
             return
-
+        
         #if button & Colors.BUTTON_VIDEOPAINT:
         #    self.videopaintbtn.set_active(not self.videopaint_enabled)
         #    return
-
+        
         if self.mode == Colors.MODE_CANVAS:
             if button & Colors.BUTTON_PALETTE:
                 self.set_mode(Colors.MODE_PALETTE)
@@ -1008,12 +1039,12 @@ class Colors(activity.Activity, ExportedGObject):
             if button & Colors.BUTTON_SCROLL:
                 self.set_mode(Colors.MODE_SCROLL)
                 return
-    
+        
         if self.mode == Colors.MODE_PALETTE:
             if button & Colors.BUTTON_PALETTE:
                 self.set_mode(Colors.MODE_CANVAS)
                 return
-
+        
         #if self.mode == Colors.MODE_REFERENCE:
         #    if button & Colors.BUTTON_REFERENCE:
         #        self.set_mode(Colors.MODE_CANVAS)
@@ -1050,6 +1081,12 @@ class Colors(activity.Activity, ExportedGObject):
             self.scroll.y = (self.height-self.easel.height)/2
         else:
             self.scroll.y = max(min(self.scroll.y, 100), -(self.easel.height*self.zoom - self.height + 100))
+
+    def center_image(self):
+        self.scroll.x = (self.width-self.easel.width*self.zoom)/2
+        self.scroll.y = (self.height-self.easel.height*self.zoom)/2
+        
+        self.flush_entire_canvas()
 
     #-----------------------------------------------------------------------------------------------------------------
     # Zoom code
@@ -1136,8 +1173,17 @@ class Colors(activity.Activity, ExportedGObject):
 
         self.easel.play_command(DrawCommand.create_color_change(brush.color), True)
         self.easel.play_command(DrawCommand.create_size_change(brush.control, brush.type, brush.size/float(self.easel.width), brush.opacity), True)
-        self.brushpreviewarea.queue_draw()
         
+        self.brushpreviewarea.queue_draw()
+    
+    def pickup_color(self, pos):
+        relpos = self.screen_to_easel(pos)
+        color = self.easel.pickup_color(relpos)
+        
+        self.easel.play_command(DrawCommand.create_color_change(color), True)
+        
+        self.brushpreviewarea.queue_draw()
+
     def play_to_playbackpos (self):
         """Plays drawing commands until playbackpos.get_value() is reached.  This may involve resetting the canvas if
         the given position is before the current position, since it is impossible to play commands backwards.
@@ -1265,7 +1311,8 @@ class Colors(activity.Activity, ExportedGObject):
         if self.update_timer:
             gobject.source_remove(self.update_timer)
             
-        self.update_timer = gobject.timeout_add(50, self.update, priority=gobject.PRIORITY_HIGH_IDLE)
+        # The timer priority is chosen to be above PRIORITY_REDRAW (which is PRIORITY_HIGH_IDLE_20, but not defined in PyGTK).
+        self.update_timer = gobject.timeout_add(1, self.update, priority=gobject.PRIORITY_HIGH_IDLE+30)
         
     def enter_mode (self):
         if self.mode == Colors.MODE_INTRO:
@@ -1368,7 +1415,8 @@ class Colors(activity.Activity, ExportedGObject):
                 self.playbackposbar.ignore_change -= 1
 
             # Painting during playback mode allows you start where the painter left off.
-            if self.cur_buttons & Colors.BUTTON_TOUCH:
+            # But only when playback is not active.
+            if not self.easel.playing and (self.cur_buttons & Colors.BUTTON_TOUCH):
                 self.easel.truncate_at_playback()
                 self.set_mode(Colors.MODE_CANVAS)
                 return
@@ -1380,12 +1428,17 @@ class Colors(activity.Activity, ExportedGObject):
 
             # Update drawing.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
-                if self.mx != self.lastmx or self.my != self.lastmy:
-                    self.draw(Pos(self.mx, self.my))
+                if self.cur_buttons & Colors.BUTTON_CONTROL:
+                    self.pickup_color(Pos(self.mx, self.my))
+                else:
+                    if self.mx != self.lastmx or self.my != self.lastmy:
+                        self.draw(Pos(self.mx, self.my))
+                        self.flush_dirty_canvas()
+
+            else:
+                if self.easel.stroke:
+                    self.end_draw()
                     self.flush_dirty_canvas()
-            elif self.easel.stroke:
-                self.end_draw()
-                self.flush_dirty_canvas()
 
         if self.mode == Colors.MODE_SCROLL:
             if self.cur_buttons & Colors.BUTTON_TOUCH:
@@ -1397,9 +1450,9 @@ class Colors(activity.Activity, ExportedGObject):
                     if move.x != 0 or move.y != 0:
                         self.scroll_to(self.scroll - move)
                         self.scrollref = mpos
+                        self.flush_entire_canvas()
             else:
                 self.scrollref = None
-            self.flush_entire_canvas()
 
         if self.mode == Colors.MODE_PALETTE:
             pass
@@ -1542,6 +1595,9 @@ class Colors(activity.Activity, ExportedGObject):
     def on_zoom_out (self, button):
         self.zoom_out()
 
+    def on_center (self, button):
+        self.center_image()
+
     #def on_take_reference (self, button):
     #    self.take_reference = True
 
@@ -1589,6 +1645,10 @@ class Colors(activity.Activity, ExportedGObject):
     #    self.update()
     #    
     #    return True
+    
+    def on_fullscreen(self, widget):
+        self.fullscreen()
+        self.center_image()
 
     def on_clear (self, button):
         if self.mode != Colors.MODE_CANVAS:
@@ -1663,6 +1723,37 @@ class Colors(activity.Activity, ExportedGObject):
         pbuf = pbuf.get_from_image(self.easelimage, self.easelarea.get_colormap(), 0, 0, 0, 0, self.width, self.height)
         pbuf = pbuf.scale_simple(80, 60, gtk.gdk.INTERP_BILINEAR)
         pbuf.save(filename, "png")
+
+    #-----------------------------------------------------------------------------------------------------------------
+    # Clipboard integration (ported from Oficina)
+
+    def on_copy(self, button):
+        pbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, self.width, self.height)
+        pbuf = pbuf.get_from_image(self.easelimage, self.easelarea.get_colormap(), 0, 0, 0, 0, self.width, self.height)
+        
+        temppath = os.path.join(os.environ.get('SUGAR_ACTIVITY_ROOT'), 'instance')
+        f, clipname = tempfile.mkstemp(suffix='.png', dir=temppath)
+        del f
+        
+        pbuf.save(clipname, 'png')
+        os.chmod(clipname, 0604)
+        
+        cb = gtk.Clipboard()
+        cb.set_with_data( [('text/uri-list', 0, 0)], self.copy_get_cb, self.copy_clear_cb, clipname)
+
+    def on_paste(self, button):
+        pass
+    
+    def copy_get_cb(self, clipboard, selection_data, info, data):
+        clipname = data
+        if selection_data.target == "text/uri-list":
+            selection_data.set_uris(['file://' + clipname])
+
+    def copy_clear_cb( self, clipboard, data ):
+        if data != None:
+            if os.path.exists(data):
+                os.remove(data)
+        data = None
 
     #-----------------------------------------------------------------------------------------------------------------
     # Benchmarking
