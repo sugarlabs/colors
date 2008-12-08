@@ -339,6 +339,9 @@ class Colors(activity.Activity, ExportedGObject):
         self.width = gtk.gdk.screen_width()
         self.height = gtk.gdk.screen_height()
         
+        # Set the initial mode to None, it will be set to Intro on the first update.
+        self.mode = None
+        
         # Set up various systems.
         self.init_input()
         self.init_zoom()
@@ -358,9 +361,6 @@ class Colors(activity.Activity, ExportedGObject):
         
         # Start camera processing.
         #self.init_camera()
-        
-        # Set the initial mode to None, it will be set to Intro on the first update.
-        self.mode = None
         
         # Set up mesh networking.
         self.init_mesh()
@@ -1174,6 +1174,10 @@ class Colors(activity.Activity, ExportedGObject):
         self.easel.play_command(DrawCommand.create_color_change(brush.color), True)
         self.easel.play_command(DrawCommand.create_size_change(brush.control, brush.type, brush.size/float(self.easel.width), brush.opacity), True)
         
+        if self.mode == Colors.MODE_PALETTE:
+            self.brush_controls.set_brush(self.easel.brush)
+            self.brush_controls.queue_draw()
+
         self.brushpreviewarea.queue_draw()
     
     def pickup_color(self, pos):
