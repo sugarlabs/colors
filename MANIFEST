@@ -1,11 +1,11 @@
 COPYING
 NEWS
 TODO
-xorg-dcon.conf
 colors.py
 colorsc.py
 _colorsc.so
 setup.py
+setupwacom.sh
 src/build.sh
 src/deploy.sh
 src/gtk_types.h

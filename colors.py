@@ -86,12 +86,12 @@ class BrushControlsPanel(gtk.HBox):
 
     def __init__ (self):
         gtk.HBox.__init__(self)
-        self.set_property("spacing", 20)
+        self.set_property("spacing", 10)
         self.set_border_width(50)
-
+        
         # Locally managed Brush object.
         self.brush = Brush()
-
+        
         # Palette wheel widget.
         palbox = gtk.VBox()
         self.palette = Palette(BrushControlsPanel.PALETTE_SIZE)
@@ -106,11 +106,10 @@ class BrushControlsPanel(gtk.HBox):
         self.palettearea.connect('button-press-event', self.on_palette_mouse)
         self.palettearea.connect('button-release-event', self.on_palette_mouse)
         palbox.pack_start(self.palettearea, False, False)
-        self.pack_start(palbox, False)
-
+        
         # Brush size scrollbar, label and pressure sensitivity checkbox.
         sizebox = gtk.VBox()
-        sizelabel = gtk.Label(_('Brush Size'))
+        sizelabel = gtk.Label(_('Size'))
         sizebox.pack_end(sizelabel, False)
         self.size = gtk.Adjustment(50, 1, 130, 1, 10, 10)
         self.sizebar = gtk.VScale(self.size)
@@ -121,11 +120,10 @@ class BrushControlsPanel(gtk.HBox):
         self.sizecheck = gtk.CheckButton(_('Sensitive'))
         self.sizecheck.connect('toggled', self.on_variable_size_toggle)
         sizebox.pack_end(self.sizecheck, False)
-        self.pack_start(sizebox, False)
-
+        
         # Brush opacity scrollbar, label and pressure sensitivity checkbox.
         opacitybox = gtk.VBox()
-        opacitylabel = gtk.Label(_('Brush Opacity'))
+        opacitylabel = gtk.Label(_('Opacity'))
         opacitybox.pack_end(opacitylabel, False)
         self.opacity = gtk.Adjustment(0, 0, 1.1, 0.001, 0.1, 0.1)
         self.opacitybar = gtk.VScale(self.opacity)
@@ -136,35 +134,37 @@ class BrushControlsPanel(gtk.HBox):
         self.opacitycheck = gtk.CheckButton(_('Sensitive'))
         self.opacitycheck.connect('toggled', self.on_variable_opacity_toggle)
         opacitybox.pack_end(self.opacitycheck, False)
-        self.pack_start(opacitybox, False)
-
+        
         # Force column scrollbars to be equal width.
         group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         group.add_widget(sizebox)
         group.add_widget(opacitybox)
-
+        
         # Brush preview widget.
         brushbox = gtk.VBox()
         brushbox.set_property("spacing", 20)
-
+        
         self.preview = BrushPreview(BrushControlsPanel.PREVIEW_SIZE)
         self.previewimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), BrushControlsPanel.PREVIEW_SIZE, BrushControlsPanel.PREVIEW_SIZE)
         self.previewarea = gtk.DrawingArea()
         self.previewarea.set_size_request(BrushControlsPanel.PREVIEW_SIZE, BrushControlsPanel.PREVIEW_SIZE)
         self.previewarea.connect('expose-event', self.on_preview_expose)
         brushbox.pack_start(self.previewarea, False)
-
+        
         # Brush type selection widgets.
         self.brushbtns = []
         brushtbl = gtk.Table(1, 2)
         brushtbl.set_col_spacings(5)
         brushtbl.attach(self.create_brushtype_widget(BrushType.BRUSHTYPE_SOFT), 0, 1, 0, 1)
         brushtbl.attach(self.create_brushtype_widget(BrushType.BRUSHTYPE_HARD), 1, 2, 0, 1)
-
+        
         brushbox.pack_start(brushtbl, False)
-
+        
+        self.pack_start(sizebox, True, False)
+        self.pack_start(opacitybox, True, False)
+        self.pack_start(palbox, True, False)
         self.pack_start(brushbox, False)
-
+        
         self.in_toggle_cb = False
 
     def create_brushtype_widget (self, type):
@@ -304,9 +304,10 @@ class Colors(activity.Activity, ExportedGObject):
     MODE_INTRO     = 0
     MODE_PLAYBACK  = 1
     MODE_CANVAS    = 2
-    MODE_SCROLL    = 3
-    MODE_PALETTE   = 4
-    MODE_REFERENCE = 5
+    MODE_PICK      = 3
+    MODE_SCROLL    = 4
+    MODE_PALETTE   = 5
+    MODE_REFERENCE = 6
 
     # Button definitions
     BUTTON_PALETTE    = 1<<0
@@ -316,12 +317,9 @@ class Colors(activity.Activity, ExportedGObject):
     BUTTON_PICK       = 1<<4
     BUTTON_ZOOM_IN    = 1<<5
     BUTTON_ZOOM_OUT   = 1<<6
-    BUTTON_SIZE_0     = 1<<7
-    BUTTON_SIZE_1     = 1<<8
-    BUTTON_SIZE_2     = 1<<9
-    BUTTON_SIZE_3     = 1<<10
-    BUTTON_TOUCH      = 1<<11
-    BUTTON_CONTROL    = 1<<12
+    BUTTON_CENTER     = 1<<7
+    BUTTON_TOUCH      = 1<<8
+    BUTTON_CONTROL    = 1<<9
 
     # Number of drawing steps to execute between progress bar updates.  More updates means faster overall drawing
     # but a less responsive UI.
@@ -411,12 +409,12 @@ class Colors(activity.Activity, ExportedGObject):
         self.easelimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), self.width, self.height)
         
         # Now that we have a canvas, connect the rest of the events.
-        self.easelarea.connect('expose-event', self.on_canvasarea_expose)
+        self.easelarea.connect('expose-event', self.on_easelarea_expose)
         self.connect('key-press-event', self.on_key_event)
         self.connect('key-release-event', self.on_key_event)
-        self.easelarea.connect('button-press-event', self.on_mouse_button)
-        self.easelarea.connect('button-release-event', self.on_mouse_button)
-        self.easelarea.connect('motion-notify-event', self.on_mouse_motion)
+        self.easelarea.connect('button-press-event', self.on_mouse_event)
+        self.easelarea.connect('button-release-event', self.on_mouse_event)
+        self.easelarea.connect('motion-notify-event', self.on_mouse_event)
 
     def build_brush_controls (self):
         self.brush_controls = BrushControlsPanel()
@@ -429,6 +427,8 @@ class Colors(activity.Activity, ExportedGObject):
         self.easelarea.put(self.progress, 0, 0)
 
     def build_toolbar (self):
+        self.add_accel_group(gtk.AccelGroup())
+        
         # Painting controls (palette, zoom, etc)
         self.palettebtn = toggletoolbutton.ToggleToolButton('palette')
         self.palettebtn.set_tooltip(_("Palette"))
@@ -445,23 +445,36 @@ class Colors(activity.Activity, ExportedGObject):
         # todo- Color picker button, similar semantics to scroll button.
         
         self.zoomsep = gtk.SeparatorToolItem()
+        self.zoomsep.set_expand(True)
+        self.zoomsep.set_draw(False)
         
         self.zoomoutbtn = toolbutton.ToolButton('zoom-out')
         self.zoomoutbtn.set_tooltip(_("Zoom Out"))
         self.zoomoutbtn.connect('clicked', self.on_zoom_out)
+        self.zoomoutbtn.props.accelerator = '<Ctrl>X'
         self.zoominbtn = toolbutton.ToolButton('zoom-in')
         self.zoominbtn.set_tooltip(_("Zoom In"))
+        self.zoominbtn.props.accelerator = '<Ctrl>Z'
         self.zoominbtn.connect('clicked', self.on_zoom_in)
         self.centerbtn = toolbutton.ToolButton('zoom-original')
         self.centerbtn.set_tooltip(_("Center Image"))
         self.centerbtn.connect('clicked', self.on_center)
+        self.centerbtn.props.accelerator = '<Ctrl>A'
+        
+        self.fullscreenbtn = toolbutton.ToolButton('view-fullscreen')
+        self.fullscreenbtn.set_tooltip(_("Fullscreen"))
+        self.fullscreenbtn.connect('clicked', self.on_fullscreen)
+        self.fullscreenbtn.props.accelerator = '<Alt>Enter'
         
         self.editsep = gtk.SeparatorToolItem()
-        
+        self.editsep.set_expand(True)
+        self.editsep.set_draw(False)
+
         self.copybtn = toolbutton.ToolButton('edit-copy')
         self.copybtn.set_tooltip(_("Copy"))
         self.copybtn.connect('clicked', self.on_copy)
-        
+        self.copybtn.props.accelerator = '<Ctrl>C'
+
         #self.refsep = gtk.SeparatorToolItem()
         #
         #self.takerefbtn = toolbutton.ToolButton('take-reference')
@@ -490,13 +503,10 @@ class Colors(activity.Activity, ExportedGObject):
         self.clearsep.set_expand(True)
         self.clearsep.set_draw(False)
         
-        self.fullscreenbtn = toolbutton.ToolButton('view-fullscreen')
-        self.fullscreenbtn.set_tooltip(_("Fullscreen"))
-        self.fullscreenbtn.connect('clicked', self.on_fullscreen)
-        
         self.clearbtn = toolbutton.ToolButton('erase')
-        self.clearbtn.set_tooltip(_("Start Over"))
+        self.clearbtn.set_tooltip(_("Erase Image"))
         self.clearbtn.connect('clicked', self.on_clear)
+        self.clearbtn.props.accelerator = '<Ctrl>E'
         
         #editbox = activity.EditToolbar()
         #editbox.undo.props.visible = False
@@ -512,6 +522,7 @@ class Colors(activity.Activity, ExportedGObject):
         paintbox.insert(self.zoomoutbtn, -1)
         paintbox.insert(self.zoominbtn, -1)
         paintbox.insert(self.centerbtn, -1)
+        paintbox.insert(self.fullscreenbtn, -1)
         paintbox.insert(self.editsep, -1)
         paintbox.insert(self.copybtn, -1)
         #paintbox.insert(self.refsep, -1)
@@ -521,7 +532,6 @@ class Colors(activity.Activity, ExportedGObject):
         #paintbox.insert(self.videopaintbtn, -1)
         #paintbox.insert(self.videopaintitem, -1)
         paintbox.insert(self.clearsep, -1)
-        paintbox.insert(self.fullscreenbtn, -1)
         paintbox.insert(self.clearbtn, -1)
         
         # Playback controls
@@ -879,7 +889,7 @@ class Colors(activity.Activity, ExportedGObject):
         # So each major key should appear at least once on each side of the keyboard.
         button = 0
         
-        if key_name == 'Alt_L' or key_name == 'ISO_Level3_Shift':
+        if key_name == 'Shift_L' or key_name == 'Shift_R':
             button = Colors.BUTTON_CONTROL
         
         # Space bar for Palette (todo- need something better!).
@@ -899,7 +909,7 @@ class Colors(activity.Activity, ExportedGObject):
         #    self.save_thumbnail(activity.get_bundle_path() + '/thumb.png')
         
         # OLPC 'hand' buttons for scrolling.
-        elif event.keyval == ord('c') or event.hardware_keycode == 133 or event.hardware_keycode == 134: 
+        elif event.hardware_keycode == 133 or event.hardware_keycode == 134: 
             button = Colors.BUTTON_SCROLL
         
         # OLPC 'size' buttons for intensity.
@@ -908,11 +918,13 @@ class Colors(activity.Activity, ExportedGObject):
         #elif event.keyval == 288: button = Colors.BUTTON_SIZE_2
         #elif event.keyval == 289: button = Colors.BUTTON_SIZE_3
         
-        # Arrow keys, gamepad 'face' buttons, or 'z' and 'x' for Zoom.
-        elif event.keyval == ord('z') or key_name == 'Up':
+        # Arrow keys, gamepad 'face' buttons for zooming and centering.
+        elif key_name == 'Up':
             button = Colors.BUTTON_ZOOM_IN
-        elif event.keyval == ord('x') or key_name == 'Down':
+        elif key_name == 'Down':
             button = Colors.BUTTON_ZOOM_OUT
+        elif key_name == 'Right' or key_name == 'Left':
+            button = Colors.BUTTON_CENTER
         
         # Either Alt key for pick.
         elif key_name == 'Alt_L' or key_name == 'ISO_Level3_Shift':
@@ -930,65 +942,53 @@ class Colors(activity.Activity, ExportedGObject):
         
         else:
             # Not a known key.  Try to store / retrieve a brush.
+            key = unichr(event.keyval).lower()
             if self.cur_buttons & Colors.BUTTON_CONTROL:
-                self.brush_map[event.keyval] = Brush(self.easel.brush)
+                self.brush_map[key] = Brush(self.easel.brush)
                 
             else:
-                if self.brush_map.has_key(event.keyval):
-                    self.set_brush(self.brush_map[event.keyval])
-                    
+                if self.brush_map.has_key(key):
+                    self.set_brush(self.brush_map[key])
+            
             return False
 
-    def on_mouse_button(self, widget, event):
+    def on_mouse_event (self, widget, event):
         if self.overlay_active:
             return
-
-        if event.button == 1:
-            if event.type == gtk.gdk.BUTTON_PRESS:
+        
+        if event.type == gtk.gdk.BUTTON_PRESS:
+            if event.button == 1:
                 self.pending_press = self.pending_press | Colors.BUTTON_TOUCH
-            if event.type == gtk.gdk.BUTTON_RELEASE:
+        if event.type == gtk.gdk.BUTTON_RELEASE:
+            if event.button == 1:
                 self.pending_release = self.pending_release | Colors.BUTTON_TOUCH
-        #else:
-        #    if event.type == gtk.gdk.BUTTON_PRESS:
-        #        self.pending_press = self.pending_press | Colors.BUTTON_PALETTE
-        #    if event.type == gtk.gdk.BUTTON_RELEASE:
-        #        self.pending_release = self.pending_release | Colors.BUTTON_PALETTE
 
-        if not widget.is_focus():
-            widget.grab_focus()
-
-        self.update()
-
-        return True
-
-    def on_mouse_motion (self, widget, event):
-        if self.overlay_active:
-            return
-        
-        state = event.device.get_state(self.easelarea.window)[0]
-        pressure = event.device.get_axis(state, gtk.gdk.AXIS_PRESSURE)
-        try:
+        x, y = event.get_coords()
+        state = event.get_state()
+            
+        # Read pressure information if available.
+        pressure = event.get_axis(gtk.gdk.AXIS_PRESSURE)
+        if pressure:
             self.pressure = int(pressure * 255)
-        except:
-            self.pressure = 255
-        
-        # Process mouse event normally.
-        if event.is_hint:
-            x, y, state = event.window.get_pointer()
         else:
-            x = event.x
-            y = event.y
-            state = event.state
+            self.pressure = 255
+         
+        # When 0 pressure is received, simulate a button release.
+        if self.pressure <= 0:
+            self.pending_release = self.pending_release | Colors.BUTTON_TOUCH
+        
         self.mx = int(x)
         self.my = int(y)
         
+        # Any mouse movement over the canvas grabs focus, so we keyboard events.
         if not widget.is_focus():
             widget.grab_focus()
         
+        # Process the update (unless we are animating).
         if not self.update_timer:
             self.update()
         
-        self.flush_cursor()
+        #self.flush_cursor()
         
         return True
 
@@ -1039,6 +1039,9 @@ class Colors(activity.Activity, ExportedGObject):
             if button & Colors.BUTTON_SCROLL:
                 self.set_mode(Colors.MODE_SCROLL)
                 return
+            if self.cur_buttons & Colors.BUTTON_PICK:
+                self.set_mode(Colors.MODE_PICK)
+                return
         
         if self.mode == Colors.MODE_PALETTE:
             if button & Colors.BUTTON_PALETTE:
@@ -1053,6 +1056,10 @@ class Colors(activity.Activity, ExportedGObject):
     def on_release (self, button):
         if self.mode == Colors.MODE_SCROLL:
             if button & Colors.BUTTON_SCROLL:
+                self.set_mode(Colors.MODE_CANVAS)
+                return
+        if self.mode == Colors.MODE_PICK:
+            if button & Colors.BUTTON_PICK:
                 self.set_mode(Colors.MODE_CANVAS)
                 return
 
@@ -1277,7 +1284,7 @@ class Colors(activity.Activity, ExportedGObject):
         
         #log.debug("x=%d y=%d width=%d height=%d" % (x, y, w, h))
         
-        self.easelarea.queue_draw_area(int(mn.x), int(mn.y), int(mx.x-mn.x+1), int(mx.y-mn.y+1))
+        self.draw_easelarea(gtk.gdk.Rectangle(int(mn.x), int(mn.y), int(mx.x-mn.x+1), int(mx.y-mn.y+1)))
         
         self.easel.reset_dirty_rect()
 
@@ -1298,7 +1305,7 @@ class Colors(activity.Activity, ExportedGObject):
         x1 = max(self.lastmx+self.lastr, self.mx+r)
         y1 = max(self.lastmy+self.lastr, self.my+r)
         
-        self.easelarea.queue_draw_area(x0, y0, x1-x0+2, y1-y0+2)
+        self.draw_easelarea(gtk.gdk.Rectangle(x0, y0, x1-x0+2, y1-y0+2))
 
     #-----------------------------------------------------------------------------------------------------------------
     # Application states
@@ -1345,8 +1352,11 @@ class Colors(activity.Activity, ExportedGObject):
             self.playbackpos.set_value(100)
             self.playbackposbar.ignore_change -= 1
 
+        if self.mode == Colors.MODE_PICK:
+            self.easelarea.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.CROSSHAIR))
+
         if self.mode == Colors.MODE_SCROLL:
-            self.scrollref = None
+            self.easelarea.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.FLEUR))
 
         if self.mode == Colors.MODE_PALETTE:
             # This simply darkens the canvas slightly to prepare for an overlay to be drawn on top.
@@ -1356,8 +1366,8 @@ class Colors(activity.Activity, ExportedGObject):
             self.easelarea.set_double_buffered(True)
             self.brush_controls.set_brush(self.easel.brush)
             self.brush_controls.show_all()
-            self.flush_entire_canvas()
             self.overlay_active = True
+            self.flush_entire_canvas()
             self.palettebtn.set_active(True)
             
         #if self.mode == Colors.MODE_REFERENCE:
@@ -1371,16 +1381,19 @@ class Colors(activity.Activity, ExportedGObject):
             self.easel.clear()
             self.easel.reset_brush()
             self.flush_entire_canvas()
-
+        
         if self.mode == Colors.MODE_PLAYBACK:
             self.easel.stop_playback()
-
+        
         if self.mode == Colors.MODE_CANVAS:
             self.end_draw()
-
+        
+        if self.mode == Colors.MODE_PICK:
+            self.easelarea.window.set_cursor(None)
+        
         if self.mode == Colors.MODE_SCROLL:
-            pass
-
+            self.easelarea.window.set_cursor(None)
+        
         if self.mode == Colors.MODE_PALETTE:
             self.set_brush(self.brush_controls.brush)
             #self.easel.clear_overlay()
@@ -1432,18 +1445,19 @@ class Colors(activity.Activity, ExportedGObject):
 
             # Update drawing.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
-                if self.cur_buttons & Colors.BUTTON_CONTROL:
-                    self.pickup_color(Pos(self.mx, self.my))
-                else:
-                    if self.mx != self.lastmx or self.my != self.lastmy:
-                        self.draw(Pos(self.mx, self.my))
-                        self.flush_dirty_canvas()
+                if self.mx != self.lastmx or self.my != self.lastmy:
+                    self.draw(Pos(self.mx, self.my))
+                    self.flush_dirty_canvas()
 
             else:
                 if self.easel.stroke:
                     self.end_draw()
                     self.flush_dirty_canvas()
-
+        
+        if self.mode == Colors.MODE_PICK:
+            if self.cur_buttons & Colors.BUTTON_TOUCH:
+                self.pickup_color(Pos(self.mx, self.my))
+        
         if self.mode == Colors.MODE_SCROLL:
             if self.cur_buttons & Colors.BUTTON_TOUCH:
                 mpos = Pos(self.mx, self.my)
@@ -1474,10 +1488,12 @@ class Colors(activity.Activity, ExportedGObject):
     def update (self):
         if self.easel == None:
             return
+
         self.update_input()
+
         if not self.overlay_active:
             self.update_mode()
-            
+        
         # When called from timer events, stop timer when not in playback anymore.
         if self.mode == Colors.MODE_PLAYBACK or self.mode == Colors.MODE_INTRO:
             return True
@@ -1500,24 +1516,26 @@ class Colors(activity.Activity, ExportedGObject):
         # Resize panels.
         self.brush_controls.set_size_request(rect[2], rect[3])
         self.progress.set_size_request(rect[2], rect[3])
-        
-        return True
 
-    def on_canvasarea_expose (self, widget, event):
+    def draw_easelarea(self, bounds):
         if not self.easelarea.bin_window:
-            return True
+            return
         
         rect = self.easelarea.get_allocation()
         if self.easelimage is None or (rect[2] != self.width or rect[3] != self.height):
             self.on_canvasarea_resize()
+
+        bounds = bounds.intersect(rect)
+        if bounds.width <= 0 or bounds.height <= 0:
+            return
         
         gc = self.easelarea.get_style().fg_gc[gtk.STATE_NORMAL]
         
         # Blit dirty rectangle of canvas into the image.
-        dest_x = int(event.area.x)
-        dest_y = int(event.area.y)
-        dest_w = int(event.area.width)
-        dest_h = int(event.area.height)
+        dest_x = int(bounds.x)
+        dest_y = int(bounds.y)
+        dest_w = int(bounds.width)
+        dest_h = int(bounds.height)
         
         if self.zoom == 1.0:
             spos = self.screen_to_easel(Pos(dest_x, dest_y))
@@ -1552,11 +1570,11 @@ class Colors(activity.Activity, ExportedGObject):
         # Then draw the image to the screen.
         self.easelarea.bin_window.draw_image(
             gc, self.easelimage, 
-            event.area.x, event.area.y, 
-            event.area.x, event.area.y, event.area.width, event.area.height)
+            bounds.x, bounds.y, 
+            bounds.x, bounds.y, bounds.width, bounds.height)
         
         # Debug rectangle to test the dirty rectangle code.  It should tightly box the brush at all times.
-        #self.easelarea.bin_window.draw_rectangle(gc, False, event.area.x, event.area.y, event.area.width, event.area.height)
+        #self.easelarea.bin_window.draw_rectangle(gc, False, bounds.x, bounds.y, bounds.width, bounds.height)
         
         # Draw introduction text.
         if self.mode == Colors.MODE_INTRO:
@@ -1575,7 +1593,12 @@ class Colors(activity.Activity, ExportedGObject):
         
         # Hack to keep toolbar up to date.  For some reason it fails to draw pretty often.
         #self.toolbox.queue_draw()
-
+    
+    def on_easelarea_expose (self, widget, event):
+        self.draw_easelarea(event.area)
+        
+        return False
+    
     def on_palette (self, button):
         if button.get_active():
             if self.mode != Colors.MODE_PALETTE:
@@ -1595,9 +1618,13 @@ class Colors(activity.Activity, ExportedGObject):
 
     def on_zoom_in (self, button):
         self.zoom_in()
+        if self.my <= 0:
+            self.center_image()
 
     def on_zoom_out (self, button):
         self.zoom_out()
+        if self.my <= 0:
+            self.center_image()
 
     def on_center (self, button):
         self.center_image()
@@ -1652,13 +1679,25 @@ class Colors(activity.Activity, ExportedGObject):
     
     def on_fullscreen(self, widget):
         self.fullscreen()
-        self.center_image()
+        self.scroll = Pos(0, 0)
 
     def on_clear (self, button):
-        if self.mode != Colors.MODE_CANVAS:
-            self.set_mode(Colors.MODE_CANVAS)
-        self.easel.clear()
-        self.flush_entire_canvas()
+        msg = alert.ConfirmationAlert()
+        msg.props.title = _('Clear Canvas?')
+        msg.props.msg = _('This will erase the entire image, including the history.')
+
+        def alert_response_cb(alert, response_id, self):
+            self.remove_alert(alert)
+            if response_id is gtk.RESPONSE_OK:
+                if self.mode != Colors.MODE_CANVAS:
+                    self.set_mode(Colors.MODE_CANVAS)
+                self.easel.clear()
+                self.flush_entire_canvas()
+        
+        msg.connect('response', alert_response_cb, self)
+        
+        self.add_alert(msg)
+        msg.show_all()
 
     def on_play (self, button):
         # Change to playback mode when the Play button is first pressed.
@@ -1706,11 +1745,11 @@ class Colors(activity.Activity, ExportedGObject):
         self.set_mode(Colors.MODE_CANVAS)
         self.easel.clear()
         self.easel.load(file_path.encode())
-        self.set_mode(Colors.MODE_PLAYBACK)
         self.easel.start_playback()
         self.easel.finish_playback()
         self.playbackpos.set_value(100)
-        self.flush_entire_canvas()
+        #self.play_to_playbackpos()
+        self.set_mode(Colors.MODE_CANVAS)
         log.debug("Played back %d commands", self.easel.playback_length())
 
     def write_file(self, file_path):
@@ -1732,33 +1771,21 @@ class Colors(activity.Activity, ExportedGObject):
     # Clipboard integration (ported from Oficina)
 
     def on_copy(self, button):
-        pbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, self.width, self.height)
-        pbuf = pbuf.get_from_image(self.easelimage, self.easelarea.get_colormap(), 0, 0, 0, 0, self.width, self.height)
+        w = self.easel.width*2
+        h = self.easel.height*2
         
-        temppath = os.path.join(os.environ.get('SUGAR_ACTIVITY_ROOT'), 'instance')
-        f, clipname = tempfile.mkstemp(suffix='.png', dir=temppath)
-        del f
+        image = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), w, h)
+        self.easel.blit_2x(image, 0, 0, 0, 0, w, h, False)
         
-        pbuf.save(clipname, 'png')
-        os.chmod(clipname, 0604)
+        pbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, w, h)
+        pbuf = pbuf.get_from_image(image, self.easelarea.get_colormap(), 0, 0, 0, 0, w, h)
         
-        cb = gtk.Clipboard()
-        cb.set_with_data( [('text/uri-list', 0, 0)], self.copy_get_cb, self.copy_clear_cb, clipname)
+        cb = gtk.clipboard_get()
+        cb.set_image(pbuf)
 
     def on_paste(self, button):
         pass
     
-    def copy_get_cb(self, clipboard, selection_data, info, data):
-        clipname = data
-        if selection_data.target == "text/uri-list":
-            selection_data.set_uris(['file://' + clipname])
-
-    def copy_clear_cb( self, clipboard, data ):
-        if data != None:
-            if os.path.exists(data):
-                os.remove(data)
-        data = None
-
     #-----------------------------------------------------------------------------------------------------------------
     # Benchmarking
     # 
