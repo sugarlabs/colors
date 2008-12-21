@@ -702,9 +702,6 @@ class Colors(activity.Activity, ExportedGObject):
         self.tubes_chan[telepathy.CHANNEL_TYPE_TUBES].ListTubes(
             reply_handler=self.on_list_tubes_reply, error_handler=self.on_list_tubes_error)
 
-        # Limit UI choices for non-host users.
-        self.disable_shared_commands()
-
         # Cancel the intro if playing.
         self.set_mode(Colors.MODE_CANVAS)
 
@@ -729,24 +726,27 @@ class Colors(activity.Activity, ExportedGObject):
             # If the new tube is waiting for us to finalize it, do so.
             if state == telepathy.TUBE_STATE_LOCAL_PENDING:
                 self.tubes_chan[telepathy.CHANNEL_TYPE_TUBES].AcceptDBusTube(id)
-
+            
             if not self.connected:
                 # Create the TubeConnection object to manage the connection.
                 self.tube = TubeConnection(self.conn, 
                     self.tubes_chan[telepathy.CHANNEL_TYPE_TUBES],
                     id, group_iface=self.text_chan[telepathy.CHANNEL_INTERFACE_GROUP])
                 ExportedGObject.__init__(self, self.tube, DBUS_PATH)
-
+                
                 # Set up DBUS Signal receiviers.
                 self.tube.add_signal_receiver(self.ReceiveHello,        'BroadcastHello',        DBUS_IFACE, path=DBUS_PATH)
                 self.tube.add_signal_receiver(self.ReceiveCanvasMode,   'BroadcastCanvasMode',   DBUS_IFACE, path=DBUS_PATH)
                 self.tube.add_signal_receiver(self.ReceiveClear,        'BroadcastClear',        DBUS_IFACE, path=DBUS_PATH)
                 self.tube.add_signal_receiver(self.ReceiveDrawCommands, 'BroadcastDrawCommands', DBUS_IFACE, path=DBUS_PATH)
                 self.tube.add_signal_receiver(self.ReceivePlayback,     'BroadcastPlayback',     DBUS_IFACE, path=DBUS_PATH)
-
+                
                 log.debug("Connected.")
                 self.connected = True
-
+                
+                # Limit UI choices when sharing.
+                self.disable_shared_commands()
+                
                 # Announce our presence to the server.
                 if not self.initiating:
                     self.BroadcastHello()
@@ -768,6 +768,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.BroadcastClear()
         buf = self.easel.send_drw_commands(0, self.easel.get_num_commands())
         self.BroadcastDrawCommands(buf.get_bytes(), buf.ncommands)
+        self.update()
 
     @signal(dbus_interface=DBUS_IFACE, signature='')
     def BroadcastCanvasMode (self):
@@ -777,6 +778,7 @@ class Colors(activity.Activity, ExportedGObject):
         log.debug("ReceiveCanvasMode")
         if self.mode != Colors.MODE_CANVAS:
             self.set_mode(Colors.MODE_CANVAS)
+        self.update()
 
     @signal(dbus_interface=DBUS_IFACE, signature='')
     def BroadcastClear (self):
@@ -786,6 +788,7 @@ class Colors(activity.Activity, ExportedGObject):
         log.debug("ReceiveClear")
         self.easel.clear()
         self.easel.save_shared_image()
+        self.update()
 
     @signal(dbus_interface=DBUS_IFACE, signature='ayi')
     def BroadcastDrawCommands (self, cmds, ncommands):
@@ -795,6 +798,7 @@ class Colors(activity.Activity, ExportedGObject):
         log.debug("ReceiveDrawCommands")
         s = "".join(chr(b) for b in cmds)  # Convert dbus.ByteArray to Python string.
         self.draw_command_queue.append(DrawCommandBuffer(s, ncommands))
+        self.update()
 
     @signal(dbus_interface=DBUS_IFACE, signature='bii')
     def BroadcastPlayback (self, playing, playback_pos, playback_speed):
@@ -810,6 +814,7 @@ class Colors(activity.Activity, ExportedGObject):
                 self.set_mode(Colors.MODE_CANVAS)
         self.easel.playback_to(playback_pos)
         self.easel.set_playback_speed(playback_speed)
+        self.update()
 
     def on_buddy_joined (self, activity, buddy):
         log.debug('Buddy %s joined', buddy.props.nick)
@@ -843,9 +848,6 @@ class Colors(activity.Activity, ExportedGObject):
 
     def disable_shared_commands (self):
         """Disables UI controls which cannot be activated by non-host peers."""
-        # Cannot clear the canvas.
-        self.clearbtn.set_sensitive(False)
-        
         # Cannot control playback.
         self.startbtn.set_sensitive(False)
         self.pausebtn.set_sensitive(False)
