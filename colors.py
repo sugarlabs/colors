@@ -214,31 +214,36 @@ class BrushControlsPanel(gtk.HBox):
             self.brush.control &= ~Brush.BRUSHCONTROL_VARIABLEOPACITY
 
     def on_palette_expose (self, widget, event):
-        self.cur_style = self.palettearea.get_style()
-        self.cur_gc = self.cur_style.fg_gc[gtk.STATE_NORMAL]
-
+        gc = self.palettearea.get_style().fg_gc[gtk.STATE_NORMAL]
+        
+        old_foreground = gc.foreground
+        old_line_width = gc.line_width
+        
         # Draw palette image.
         self.palette.render_triangle(self.paletteimage)
-        self.palettearea.window.draw_image(self.cur_gc, self.paletteimage, 0, 0, 0, 0, -1, -1)
-
+        self.palettearea.window.draw_image(gc, self.paletteimage, 0, 0, 0, 0, -1, -1)
+        
         # Draw circles to indicate selected color.
         # todo- Better looking circles.
         r = int(self.palette.WHEEL_WIDTH*0.75)
-
-        self.cur_gc.foreground = self.palettearea.get_colormap().alloc_color(16384,16384,16384)
-        self.cur_gc.line_width = 2
-
+        
+        gc.foreground = self.palettearea.get_colormap().alloc_color(16384,16384,16384)
+        gc.line_width = 2
+        
         wheel_pos = self.palette.get_wheel_pos()
         tri_pos = self.palette.get_triangle_pos()
-
-        self.palettearea.window.draw_arc(self.cur_gc, False, int(wheel_pos.x-r/2+2), int(wheel_pos.y-r/2+2), r-4, r-4, 0, 360*64)
-        self.palettearea.window.draw_arc(self.cur_gc, False, int(tri_pos.x-r/2+2), int(tri_pos.y-r/2+2), r-4, r-4, 0, 360*64)
-
-        self.cur_gc.foreground = self.palettearea.get_colormap().alloc_color(65535,65535,65535)
-        self.cur_gc.line_width = 2
-
-        self.palettearea.window.draw_arc(self.cur_gc, False, int(wheel_pos.x-r/2), int(wheel_pos.y-r/2), r, r, 0, 360*64)
-        self.palettearea.window.draw_arc(self.cur_gc, False, int(tri_pos.x-r/2), int(tri_pos.y-r/2), r, r, 0, 360*64)
+        
+        self.palettearea.window.draw_arc(gc, False, int(wheel_pos.x-r/2+2), int(wheel_pos.y-r/2+2), r-4, r-4, 0, 360*64)
+        self.palettearea.window.draw_arc(gc, False, int(tri_pos.x-r/2+2), int(tri_pos.y-r/2+2), r-4, r-4, 0, 360*64)
+        
+        gc.foreground = self.palettearea.get_colormap().alloc_color(65535,65535,65535)
+        gc.line_width = 2
+        
+        self.palettearea.window.draw_arc(gc, False, int(wheel_pos.x-r/2), int(wheel_pos.y-r/2), r, r, 0, 360*64)
+        self.palettearea.window.draw_arc(gc, False, int(tri_pos.x-r/2), int(tri_pos.y-r/2), r, r, 0, 360*64)
+        
+        gc.foreground = old_foreground
+        gc.line_width = old_line_width
 
     def on_palette_mouse (self, widget, event):
         if event.state & gtk.gdk.BUTTON1_MASK:
@@ -936,6 +941,7 @@ class Colors(activity.Activity, ExportedGObject):
             else:
                 self.pending_release = self.pending_release | button
                 
+            self.update_input()
             self.update()
             
             return True
@@ -955,34 +961,46 @@ class Colors(activity.Activity, ExportedGObject):
     def on_mouse_event (self, widget, event):
         if self.overlay_active:
             return
-        
+
         if event.type == gtk.gdk.BUTTON_PRESS:
             if event.button == 1:
                 self.pending_press = self.pending_press | Colors.BUTTON_TOUCH
+                
         if event.type == gtk.gdk.BUTTON_RELEASE:
             if event.button == 1:
                 self.pending_release = self.pending_release | Colors.BUTTON_TOUCH
+        
+        if event.type == gtk.gdk.MOTION_NOTIFY:
+            if event.is_hint:
+                x, y, state = event.window.get_pointer()
+            else:
+                x, y = event.get_coords()
+                state = event.get_state()
+        
+            # Read pressure information if available.
+            pressure = event.get_axis(gtk.gdk.AXIS_PRESSURE)
+            if pressure != None:
+                self.pressure = int(pressure * 255)
+            else:
+                self.pressure = 255
+             
+            # When 0 pressure is received, simulate a button release.
+            if self.pressure <= 0:
+                self.pending_release = self.pending_release | Colors.BUTTON_TOUCH
 
-        x, y = event.get_coords()
-        state = event.get_state()
-            
-        # Read pressure information if available.
-        pressure = event.get_axis(gtk.gdk.AXIS_PRESSURE)
-        if pressure:
-            self.pressure = int(pressure * 255)
-        else:
-            self.pressure = 255
-         
-        # When 0 pressure is received, simulate a button release.
-        if self.pressure <= 0:
-            self.pending_release = self.pending_release | Colors.BUTTON_TOUCH
-        
-        self.mx = int(x)
-        self.my = int(y)
-        
+            # Sometimes x, y comes back as inf, inf.    
+            try:
+                self.mx = int(x)
+                self.my = int(y)
+            except:
+                self.mx = 0
+                self.my = 0
+
         # Any mouse movement over the canvas grabs focus, so we keyboard events.
         if not widget.is_focus():
             widget.grab_focus()
+        
+        self.update_input()
         
         # Process the update (unless we are animating).
         if not self.update_timer:
@@ -1489,10 +1507,11 @@ class Colors(activity.Activity, ExportedGObject):
         if self.easel == None:
             return
 
-        self.update_input()
-
         if not self.overlay_active:
             self.update_mode()
+
+        # Request additional mouse events once processing is complete.
+        #gtk.gdk.event_request_motions()
         
         # When called from timer events, stop timer when not in playback anymore.
         if self.mode == Colors.MODE_PLAYBACK or self.mode == Colors.MODE_INTRO:
