@@ -29,7 +29,7 @@
 # Sharing    - http://wiki.laptop.org/go/Shared_Sugar_Activities
 
 # Import standard Python modules.
-import logging, os, math, time, copy, json, tempfile
+import logging, os, sys, math, time, copy, json, tempfile
 from gettext import gettext as _
 
 # Import the C++ component of the activity.
@@ -40,8 +40,12 @@ import gobject, pygtk, gtk, pango
 # Needed to avoid thread crashes with GStreamer
 gobject.threads_init()  
 
+sys.path.insert(0,"")
 # Import PyGame.  Used for a few realtime aspects.
 import pygame
+from pygame import camera
+from pygame import transform
+from pygame import mask
 
 # Import DBUS and mesh networking modules.
 import dbus, telepathy, telepathy.client
@@ -317,7 +321,7 @@ class Colors(activity.Activity, ExportedGObject):
     # Button definitions
     BUTTON_PALETTE    = 1<<0
     #BUTTON_REFERENCE  = 1<<1
-    #BUTTON_VIDEOPAINT = 1<<2
+    BUTTON_VIDEOPAINT = 1<<2
     BUTTON_SCROLL     = 1<<3
     BUTTON_PICK       = 1<<4
     BUTTON_ZOOM_IN    = 1<<5
@@ -363,7 +367,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.build_progress()
         
         # Start camera processing.
-        #self.init_camera()
+        self.init_camera()
         
         # Set up mesh networking.
         self.init_mesh()
@@ -491,18 +495,18 @@ class Colors(activity.Activity, ExportedGObject):
         #self.showrefbtn.set_tooltip(_("Show Reference Picture"))
         #self.showrefbtn.connect('clicked', self.on_show_reference)
         #
-        #self.videopaintsep = gtk.SeparatorToolItem()
+        self.videopaintsep = gtk.SeparatorToolItem()
         #
-        #self.videopaintbtn = toggletoolbutton.ToggleToolButton('video-paint')
-        #self.videopaintbtn.set_tooltip(_("Video Paint"))
-        #self.videopaintbtn.connect('clicked', self.on_videopaint)
+        self.videopaintbtn = toggletoolbutton.ToggleToolButton('video-paint')
+        self.videopaintbtn.set_tooltip(_("Video Paint"))
+        self.videopaintbtn.connect('clicked', self.on_videopaint)
         #self.videopaintpreview = gtk.DrawingArea()
         #self.videopaintpreview.set_size_request(Canvas.VIDEO_WIDTH, Canvas.VIDEO_HEIGHT)
         #self.videopaintpreview.connect('expose-event', self.on_videopaintpreview_expose)
         #self.videopaintitem = gtk.ToolItem()
         #self.videopaintitem.add(self.videopaintpreview)
         #self.videopaintimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), Canvas.VIDEO_WIDTH, Canvas.VIDEO_HEIGHT)
-        #self.videopaint_enabled = False
+        self.videopaint_enabled = False
         
         self.clearsep = gtk.SeparatorToolItem()
         self.clearsep.set_expand(True)
@@ -533,8 +537,8 @@ class Colors(activity.Activity, ExportedGObject):
         #paintbox.insert(self.refsep, -1)
         #paintbox.insert(self.takerefbtn, -1)
         #paintbox.insert(self.showrefbtn, -1)
-        #paintbox.insert(self.videopaintsep, -1)
-        #paintbox.insert(self.videopaintbtn, -1)
+        paintbox.insert(self.videopaintsep, -1)
+        paintbox.insert(self.videopaintbtn, -1)
         #paintbox.insert(self.videopaintitem, -1)
         paintbox.insert(self.clearsep, -1)
         paintbox.insert(self.clearbtn, -1)
@@ -613,7 +617,12 @@ class Colors(activity.Activity, ExportedGObject):
     # 
     # todo- Consider going straight to video4linux2's C API, we aren't really using any features of GStreamer.
 
-    #def init_camera (self):
+    def init_camera (self):
+        self.cam = camera.Camera("/dev/video0",(320,240),"RGB")
+        self.camcapture = pygame.surface.Surface((320,240),0,16,(63488,2016,31,0))
+        self.camsmall = pygame.surface.Surface((160,120),0,self.camcapture)
+        self.camhsv = pygame.surface.Surface((160,120),0,self.camcapture)
+
     #    self.gstpipe = gst.parse_launch("v4l2src ! fakesink name=fakesink signal-handoffs=true")
     #    self.gstfakesink = self.gstpipe.get_by_name('fakesink')
     #    self.gstfakesink.connect("handoff", self.on_gst_buffer)
@@ -908,8 +917,8 @@ class Colors(activity.Activity, ExportedGObject):
         #    button = Colors.BUTTON_REFERENCE
         
         # 'v' for Videopaint (todo- need something better!).
-        #elif event.keyval == ord('v'): 
-        #    button = Colors.BUTTON_VIDEOPAINT
+        elif event.keyval == ord('v'): 
+            button = Colors.BUTTON_VIDEOPAINT
         
         # 's' hotkey to save PNG thumbnail of the current canvas as 'thumb.png'.
         #elif event.keyval == ord('s'): 
@@ -1045,9 +1054,9 @@ class Colors(activity.Activity, ExportedGObject):
             self.zoom_out()
             return
         
-        #if button & Colors.BUTTON_VIDEOPAINT:
-        #    self.videopaintbtn.set_active(not self.videopaint_enabled)
-        #    return
+        if button & Colors.BUTTON_VIDEOPAINT:
+            self.videopaintbtn.set_active(not self.videopaint_enabled)
+            return
         
         if self.mode == Colors.MODE_CANVAS:
             if button & Colors.BUTTON_PALETTE:
@@ -1660,6 +1669,14 @@ class Colors(activity.Activity, ExportedGObject):
     #    else:
     #        self.set_mode(Colors.MODE_CANVAS)
 
+    def on_videopaint (self, button):
+        self.videopaint_enabled = button.get_active()
+        if button.get_active():
+            self.cam.start()
+            self.cam.set_controls(hflip = 1)
+            gobject.timeout_add(33, self.on_videopaint_tick)
+
+
     #def on_videopaint (self, button):
     #    self.videopaint_enabled = button.get_active()
     #    if button.get_active():
@@ -1697,6 +1714,30 @@ class Colors(activity.Activity, ExportedGObject):
     #    self.update()
     #    
     #    return True
+
+    def on_videopaint_tick (self):
+        if not self.videopaint_enabled:
+            return False
+        if self.cam.query_image():
+            self.camcapture = self.cam.get_image(self.camcapture)
+            self.camsmall = transform.scale(self.camcapture,(160,120),self.camsmall)
+            self.camhsv = camera.colorspace(self.camsmall,"HSV",self.camhsv)
+            cammask = mask.from_threshold(self.camhsv,(90,128,128),(50,120,120))
+            camcomponent = cammask.connected_component()
+            camcount = camcomponent.count()
+            print camcount
+            if camcount > 1500:
+
+                campos = camcomponent.centroid()
+                size = self.window.get_size()
+                self.mx = int(25+max(0.0, min(1.0, campos[0]/160.0))*(size[0]-50))
+                self.my = int(25+max(0.0, min(1.0, campos[1]/120.0))*(size[1]-50))
+                gtk.gdk.display_get_default().warp_pointer(self.get_screen(), self.mx, self.my)
+                self.flush_cursor()
+                self.update()
+    #    
+        return True
+
     
     def on_fullscreen(self, widget):
         self.fullscreen()
