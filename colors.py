@@ -1474,7 +1474,9 @@ class Colors(activity.Activity, ExportedGObject):
 
             # Update drawing.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
-                if self.mx != self.lastmx or self.my != self.lastmy:
+                if self.mx != self.lastmx or self.my != self.lastmy or self.videopaint_enabled:
+                #    if self.videopaint_enabled:
+                #        print "got here" 
                     self.draw(Pos(self.mx, self.my))
                     self.flush_dirty_canvas()
 
@@ -1673,8 +1675,11 @@ class Colors(activity.Activity, ExportedGObject):
         self.videopaint_enabled = button.get_active()
         if button.get_active():
             self.cam.start()
+            # flips the image to start with
             self.cam.set_controls(hflip = 1)
             gobject.timeout_add(33, self.on_videopaint_tick)
+        else:
+            self.cam.stop()
 
 
     #def on_videopaint (self, button):
@@ -1718,24 +1723,31 @@ class Colors(activity.Activity, ExportedGObject):
     def on_videopaint_tick (self):
         if not self.videopaint_enabled:
             return False
+        # by using query_image, we avoid tieing the framerate to the camera
         if self.cam.query_image():
+            # get the new frame
             self.camcapture = self.cam.get_image(self.camcapture)
+            # scale it to a quarter the size before colorspace conversion
             self.camsmall = transform.scale(self.camcapture,(160,120),self.camsmall)
+            # convert colorspace to HSV, good for object tracking
             self.camhsv = camera.colorspace(self.camsmall,"HSV",self.camhsv)
+            # currently just threshold the OLPC green color.
             cammask = mask.from_threshold(self.camhsv,(90,128,128),(50,120,120))
+            # find the largest object in the mask
             camcomponent = cammask.connected_component()
             camcount = camcomponent.count()
-            print camcount
+            # make sure its not just noise
             if camcount > 1500:
-
                 campos = camcomponent.centroid()
                 size = self.window.get_size()
-                self.mx = int(25+max(0.0, min(1.0, campos[0]/160.0))*(size[0]-50))
-                self.my = int(25+max(0.0, min(1.0, campos[1]/120.0))*(size[1]-50))
+                self.lastmx = self.mx
+                self.lastmy = self.my
+                # scale and adjust it so the borders can still be reached
+                self.mx = int(25+max(0.0, min(1.0, (campos[0]*1.2-16)/160.0))*(size[0]-50))
+                self.my = int(25+max(0.0, min(1.0, (campos[1]*1.2-12)/120.0))*(size[1]-50))
                 gtk.gdk.display_get_default().warp_pointer(self.get_screen(), self.mx, self.my)
                 self.flush_cursor()
                 self.update()
-    #    
         return True
 
     
