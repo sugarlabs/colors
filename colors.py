@@ -1737,11 +1737,13 @@ class Colors(activity.Activity, ExportedGObject):
             camcomponent = cammask.connected_component()
             camcount = camcomponent.count()
             # make sure its not just noise
-            if camcount > 1500:
+            if camcount > 1000:
                 campos = camcomponent.centroid()
                 size = self.window.get_size()
                 self.lastmx = self.mx
                 self.lastmy = self.my
+                self.lastr = self.pressure
+                self.pressure = int(min(255,camcount/20))
                 # scale and adjust it so the borders can still be reached
                 self.mx = int(25+max(0.0, min(1.0, (campos[0]*1.2-16)/160.0))*(size[0]-50))
                 self.my = int(25+max(0.0, min(1.0, (campos[1]*1.2-12)/120.0))*(size[1]-50))
