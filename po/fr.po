@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-30 19:10+0000\n"
+"PO-Revision-Date: 2009-01-10 01:04-0500\n"
+"Last-Translator: Cecile Wyler <cecile.r@bluewin.ch>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2 colors.py:332
+msgid "Colors!"
+msgstr "Couleurs!"
+
+#: colors.py:113
+msgid "Brush Size"
+msgstr "Taille du pinceau"
+
+#: colors.py:121 colors.py:136
+msgid "Sensitive"
+msgstr "Sensible"
+
+#: colors.py:128
+msgid "Brush Opacity"
+msgstr "Opacité du pinceau"
+
+#: colors.py:286
+msgid "Working..."
+msgstr "En travail..."
+
+#: colors.py:431
+msgid "Palette"
+msgstr "Palette"
+
+#: colors.py:447
+msgid "Zoom Out"
+msgstr "Zoom arrière"
+
+#: colors.py:450
+msgid "Zoom In"
+msgstr "Zoom avant"
+
+#: colors.py:482
+msgid "Start Over"
+msgstr "Début"
+
+#: colors.py:502
+msgid "Start Playback"
+msgstr "Commencer le playback"
+
+#: colors.py:506
+msgid "Pause Playback"
+msgstr "Arrêter le playback"
+
+#: colors.py:510
+msgid "Skip To Beginning"
+msgstr "Sauter au début"
+
+#: colors.py:515
+msgid "Skip To End"
+msgstr "Sauter à la fin"
+
+#: colors.py:562
+msgid "Paint"
+msgstr "Dessiner"
+
+#: colors.py:563
+msgid "Watch"
+msgstr "Regarder"
+
+#: colors.py:564
+msgid "Learn"
+msgstr "Apprendre"
+
+#: colors.py:1477
+msgid "Click anywhere to begin painting!"
+msgstr "Cliquez n'importe où pour commencer à dessiner"
