@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-30 19:10+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.1.1rc4\n"
+
+#: activity/activity.info:2 colors.py:332
+msgid "Colors!"
+msgstr ""
+
+#: colors.py:113
+msgid "Brush Size"
+msgstr ""
+
+#: colors.py:121 colors.py:136
+msgid "Sensitive"
+msgstr ""
+
+#: colors.py:128
+msgid "Brush Opacity"
+msgstr ""
+
+#: colors.py:286
+msgid "Working..."
+msgstr ""
+
+#: colors.py:431
+msgid "Palette"
+msgstr ""
+
+#: colors.py:447
+msgid "Zoom Out"
+msgstr ""
+
+#: colors.py:450
+msgid "Zoom In"
+msgstr ""
+
+#: colors.py:482
+msgid "Start Over"
+msgstr ""
+
+#: colors.py:502
+msgid "Start Playback"
+msgstr ""
+
+#: colors.py:506
+msgid "Pause Playback"
+msgstr ""
+
+#: colors.py:510
+msgid "Skip To Beginning"
+msgstr ""
+
+#: colors.py:515
+msgid "Skip To End"
+msgstr ""
+
+#: colors.py:562
+msgid "Paint"
+msgstr ""
+
+#: colors.py:563
+msgid "Watch"
+msgstr ""
+
+#: colors.py:564
+msgid "Learn"
+msgstr ""
+
+#: colors.py:1477
+msgid "Click anywhere to begin painting!"
+msgstr ""
