@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-30 19:10+0000\n"
+"PO-Revision-Date: 2008-12-28 13:21-0500\n"
+"Last-Translator: Yuan Chao <yuanchao@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2 colors.py:332
+msgid "Colors!"
+msgstr "調色盤！"
+
+#: colors.py:113
+msgid "Brush Size"
+msgstr "畫筆粗細"
+
+#: colors.py:121 colors.py:136
+msgid "Sensitive"
+msgstr "敏感度"
+
+#: colors.py:128
+msgid "Brush Opacity"
+msgstr "筆畫透明度"
+
+#: colors.py:286
+msgid "Working..."
+msgstr "電腦工作中…"
+
+#: colors.py:431
+msgid "Palette"
+msgstr "調色盤"
+
+#: colors.py:447
+msgid "Zoom Out"
+msgstr "縮小"
+
+#: colors.py:450
+msgid "Zoom In"
+msgstr "放大"
+
+#: colors.py:482
+msgid "Start Over"
+msgstr "清空並重新開始"
+
+#: colors.py:502
+msgid "Start Playback"
+msgstr "開始播放"
+
+#: colors.py:506
+msgid "Pause Playback"
+msgstr "暫停播放"
+
+#: colors.py:510
+msgid "Skip To Beginning"
+msgstr "跳回起點"
+
+#: colors.py:515
+msgid "Skip To End"
+msgstr "跳到終點"
+
+#: colors.py:562
+msgid "Paint"
+msgstr "繪圖"
+
+#: colors.py:563
+msgid "Watch"
+msgstr "觀賞"
+
+#: colors.py:564
+msgid "Learn"
+msgstr "學習"
+
+#: colors.py:1477
+msgid "Click anywhere to begin painting!"
+msgstr "在任意處點選以開始繪圖"
