@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-30 19:10+0000\n"
+"PO-Revision-Date: 2008-12-16 14:09-0500\n"
+"Last-Translator: Guy Sheffer <guysoft@ort.org.il>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2 colors.py:332
+msgid "Colors!"
+msgstr "צבעים!"
+
+#: colors.py:113
+msgid "Brush Size"
+msgstr "גודל מכחול"
+
+#: colors.py:121 colors.py:136
+msgid "Sensitive"
+msgstr "רגישות"
+
+#: colors.py:128
+msgid "Brush Opacity"
+msgstr "שקיפות מכחול"
+
+#: colors.py:286
+msgid "Working..."
+msgstr "עובד..."
+
+#: colors.py:431
+msgid "Palette"
+msgstr "לוח צבעים"
+
+#: colors.py:447
+msgid "Zoom Out"
+msgstr "התרחק"
+
+#: colors.py:450
+msgid "Zoom In"
+msgstr "התקרב"
+
+#: colors.py:482
+msgid "Start Over"
+msgstr "התחלה מחדש"
+
+#: colors.py:502
+msgid "Start Playback"
+msgstr "התחל הקרנה"
+
+#: colors.py:506
+msgid "Pause Playback"
+msgstr "הקפא הקרנה"
+
+#: colors.py:510
+msgid "Skip To Beginning"
+msgstr "דילוג להתחלה"
+
+#: colors.py:515
+msgid "Skip To End"
+msgstr "דילוג לסוף"
+
+#: colors.py:562
+msgid "Paint"
+msgstr "ציור"
+
+#: colors.py:563
+msgid "Watch"
+msgstr "צפייה"
+
+#: colors.py:564
+msgid "Learn"
+msgstr "למידה"
+
+#: colors.py:1477
+msgid "Click anywhere to begin painting!"
+msgstr "ניתן ללחוץ בכל מקום על מנת להתחיל לצייר!"
