@@ -1,5 +1,11 @@
-To build C library(you need swig and python-devel):
+To build C library:
 $ make
+you need:
+- swig
+- gtk-devel
+- python-devel
+- gstreamer-devel
+- pygtk-devel
 
 To make regular sugar procedures:
 $ ./setup.py

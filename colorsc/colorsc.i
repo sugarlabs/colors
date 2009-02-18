@@ -18,6 +18,8 @@
 %module colorsc 
 
 %{
+#include <pygobject.h>
+
 #include "canvas.h"
 #include "palette.h"
 %}

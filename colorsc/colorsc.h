@@ -27,9 +27,6 @@ using namespace std;
 #include <cmath>
 #include <float.h>
 
-// todo- Include the real GTK headers when installed.
-#include "gtk_types.h"
-
 static const float PI = 3.14159f;
 
 inline float sgn(float a) { if (a>0) return 1; if (a<0) return -1; return 0; }
