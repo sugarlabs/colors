@@ -21,6 +21,8 @@
 #include "colorsc.h"
 #include "drwfile.h"
 
+using namespace std;
+
 // Uncomment this to print all executed drawing commands to stdout.
 //#define CANVAS_DEBUG_COMMANDS
 
@@ -1611,7 +1613,7 @@ public:
             printf("Invalid Gst reference buffer size %d\n", buf->size);
             return;
         }
-        memcpy(image_reference, buf->data, min(buf->size, REFERENCE_WIDTH*REFERENCE_HEIGHT*sizeof(unsigned short)));
+        memcpy(image_reference, buf->data, min(size_t(buf->size), size_t(REFERENCE_WIDTH*REFERENCE_HEIGHT*sizeof(unsigned short))));
     }
 
     void render_reference_overlay()

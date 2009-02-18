@@ -33,7 +33,7 @@ import logging, os, math, time, copy, json, tempfile
 from gettext import gettext as _
 
 # Import the C++ component of the activity.
-from colorsc import *
+from colorsc.colorsc import *
 
 # Import PyGTK.
 import gobject, pygtk, gtk, pango

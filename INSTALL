@@ -1,0 +1,8 @@
+To build C library(you need swig and python-devel):
+$ make
+
+To make regular sugar procedures:
+$ ./setup.py
+
+To install binaries:
+$ make DESTDIR=<path_to_install> install
