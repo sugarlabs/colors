@@ -1076,7 +1076,6 @@ public:
         void fill_pixel(pixel_t **rows, pixel_t value)
         {
             *rows[0]++ = value; *rows[0]++ = value;
-
             *rows[1]++ = value; *rows[1]++ = value;
         }
     };
@@ -1090,9 +1089,12 @@ public:
         {
             *rows[0]++ = value; *rows[0]++ = value;
             *rows[0]++ = value; *rows[0]++ = value;
-
             *rows[1]++ = value; *rows[1]++ = value;
             *rows[1]++ = value; *rows[1]++ = value;
+            *rows[2]++ = value; *rows[2]++ = value;
+            *rows[2]++ = value; *rows[2]++ = value;
+            *rows[3]++ = value; *rows[3]++ = value;
+            *rows[3]++ = value; *rows[3]++ = value;
         }
     };
 
@@ -1107,11 +1109,34 @@ public:
             *rows[0]++ = value; *rows[0]++ = value;
             *rows[0]++ = value; *rows[0]++ = value;
             *rows[0]++ = value; *rows[0]++ = value;
-
             *rows[1]++ = value; *rows[1]++ = value;
             *rows[1]++ = value; *rows[1]++ = value;
             *rows[1]++ = value; *rows[1]++ = value;
             *rows[1]++ = value; *rows[1]++ = value;
+            *rows[2]++ = value; *rows[2]++ = value;
+            *rows[2]++ = value; *rows[2]++ = value;
+            *rows[2]++ = value; *rows[2]++ = value;
+            *rows[2]++ = value; *rows[2]++ = value;
+            *rows[3]++ = value; *rows[3]++ = value;
+            *rows[3]++ = value; *rows[3]++ = value;
+            *rows[3]++ = value; *rows[3]++ = value;
+            *rows[3]++ = value; *rows[3]++ = value;
+            *rows[4]++ = value; *rows[4]++ = value;
+            *rows[4]++ = value; *rows[4]++ = value;
+            *rows[4]++ = value; *rows[4]++ = value;
+            *rows[4]++ = value; *rows[4]++ = value;
+            *rows[5]++ = value; *rows[5]++ = value;
+            *rows[5]++ = value; *rows[5]++ = value;
+            *rows[5]++ = value; *rows[5]++ = value;
+            *rows[5]++ = value; *rows[5]++ = value;
+            *rows[6]++ = value; *rows[6]++ = value;
+            *rows[6]++ = value; *rows[6]++ = value;
+            *rows[6]++ = value; *rows[6]++ = value;
+            *rows[6]++ = value; *rows[6]++ = value;
+            *rows[7]++ = value; *rows[7]++ = value;
+            *rows[7]++ = value; *rows[7]++ = value;
+            *rows[7]++ = value; *rows[7]++ = value;
+            *rows[7]++ = value; *rows[7]++ = value;
         }
     };
 
@@ -1119,8 +1144,7 @@ public:
     void blit(GdkImage *img, int src_x, int src_y, int dest_x,
             int dest_y, int dest_w, int dest_h, bool overlay)
     {
-        if (scale_t::value != 2) return;
-        int scale = 2;
+        int scale = scale_t::value;
         pixel_t *pixels = (pixel_t*)img->mem;
         int pitch = img->bpl/sizeof(pixel_t);
         
@@ -1147,7 +1171,7 @@ public:
             pixel_t* __restrict rows[scale];
 
             rows[0] = &pixels[cdy*pitch+dest_x];
-            rows[1] = rows[0] + pitch;
+            for (int i = 1; i < scale; ++i) rows[i] = rows[i-1] + pitch;
 
             if (csy < 0 || csy >= height) 
             {
@@ -1237,7 +1261,8 @@ public:
     void blit_2x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
             int dest_w, int dest_h, bool overlay)
     {
-        blit<depth16_t, scale2_t>(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h, overlay);
+        blit_x<scale2_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+                overlay);
     }
 
     void blit_4x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
