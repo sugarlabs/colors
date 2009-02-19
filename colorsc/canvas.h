@@ -1059,8 +1059,6 @@ public:
 
     struct scale1_t
     {
-        static const int value = 1;
-
         template <typename pixel_t> inline static
         void fill_pixel(pixel_t **rows, pixel_t value)
         {
@@ -1070,8 +1068,6 @@ public:
 
     struct scale2_t
     {
-        static const int value = 2;
-
         template <typename pixel_t> inline static
         void fill_pixel(pixel_t **rows, pixel_t value)
         {
@@ -1082,8 +1078,6 @@ public:
 
     struct scale4_t
     {
-        static const int value = 4;
-
         template <typename pixel_t> inline static 
         void fill_pixel(pixel_t **rows, pixel_t value)
         {
@@ -1100,8 +1094,6 @@ public:
 
     struct scale8_t
     {
-        static const int value = 8;
-
         template <typename pixel_t> inline static
         void fill_pixel(pixel_t **rows, pixel_t value)
         {
@@ -1140,11 +1132,10 @@ public:
         }
     };
 
-    template <typename pixel_t, typename scale_t> inline
+    template <typename pixel_t, typename scale_t, int scale> inline
     void blit(GdkImage *img, int src_x, int src_y, int dest_x,
             int dest_y, int dest_w, int dest_h, bool overlay)
     {
-        int scale = scale_t::value;
         pixel_t *pixels = (pixel_t*)img->mem;
         int pitch = img->bpl/sizeof(pixel_t);
         
@@ -1239,36 +1230,36 @@ public:
         }
     }
 
-    template <typename scale_t> inline
+    template <typename scale_t, int scale> inline
     void blit_x(GdkImage *img, int src_x, int src_y, int dest_x, int dest_y,
             int dest_w, int dest_h, bool overlay)
     {
         if (img->depth == 16)
-            blit<depth16_t, scale_t>(img, src_x, src_y, dest_x, dest_y,
+            blit<depth16_t, scale_t, scale>(img, src_x, src_y, dest_x, dest_y,
                     dest_w, dest_h, overlay);
         else
-            blit<depth24_t, scale_t>(img, src_x, src_y, dest_x, dest_y,
+            blit<depth24_t, scale_t, scale>(img, src_x, src_y, dest_x, dest_y,
                     dest_w, dest_h, overlay);
     }
 
     void blit_1x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
             int dest_w, int dest_h, bool overlay)
     {
-        blit_x<scale1_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+        blit_x<scale1_t, 1> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
                 overlay);
     }
 
     void blit_2x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
             int dest_w, int dest_h, bool overlay)
     {
-        blit_x<scale2_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+        blit_x<scale2_t, 2> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
                 overlay);
     }
 
     void blit_4x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
             int dest_w, int dest_h, bool overlay)
     {
-        blit_x<scale4_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+        blit_x<scale4_t, 4> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
                 overlay);
     }
 
@@ -1276,7 +1267,7 @@ public:
     void blit_8x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
             int dest_w, int dest_h, bool overlay)
     {
-        blit_x<scale8_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+        blit_x<scale8_t, 8> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
                 overlay);
     }
 
