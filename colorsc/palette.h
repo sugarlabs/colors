@@ -181,10 +181,10 @@ public:
         *p2 = center + Pos::create_from_angle(palette_h+240.0f, size/2-WHEEL_WIDTH);
     }
 
-    // The wheel never changes, so it can be rendered once here.  This also clears the image background.
-    void render_wheel(GdkImage* image)
+    template <typename pixel_t> inline
+    void _render_wheel(GdkImage* image)
     {
-        if (image->width != size || image->height != size || image->bits_per_pixel != 16)
+        if (image->width != size || image->height != size)
         {
             fprintf(stderr, "Error: Invalid Palette GdkImage.\n");
             return;
@@ -196,12 +196,12 @@ public:
         float ring_min_sqr = sqr(wheel_radius-WHEEL_WIDTH);
         float ring_max_sqr = sqr(wheel_radius);
 
-        unsigned short* pixels = (unsigned short*)image->mem;
-        int stride = image->bpl/sizeof(unsigned short);
+        pixel_t* pixels = (pixel_t*)image->mem;
+        int stride = image->bpl/sizeof(pixel_t);
 
         for (int y = 0; y < size; y++)
         {
-            unsigned short* row = &pixels[y*stride];
+            pixel_t* row = &pixels[y*stride];
             for (int x = 0; x < size; x++)
             {
                 // Get radius from center of palette.
@@ -218,28 +218,36 @@ public:
                     while (h>360.0f) h -= 360.0f;
                     float r, g, b;
                     hsv_to_rgb(&r, &g, &b, h, 1.0f, 1.0f);
-                    *row++ = Color::create_from_float(r, g, b, 1).get_r5g6b5();
+                    Color::create_from_float(r, g, b, 1).to_pixel(row);
                 }
                 else
-                    *row++ = bkg.get_r5g6b5();
+                    bkg.to_pixel(row);
+                ++row;
             }
         }
     }
 
-    // Clears out the inner circle and redraws the color triangle, as fast as possible.  
-    // Scales up implicitly by 2x to improve performance.
-    // The appearance was an accident which creates a kind of blobby triangle, like the intersection of three circles.
-    // But I like the look so I'm keeping it!
-    void render_triangle(GdkImage* image)
+    // The wheel never changes, so it can be rendered once here.  This also clears the image background.
+    void render_wheel(GdkImage* image)
     {
-        if (image->width != size || image->height != size || image->bits_per_pixel != 16 || (size&1))
+        if (image->depth == 16)
+            _render_wheel<depth16_t>(image);
+        else
+            _render_wheel<depth24_t>(image);
+    }
+
+    template <typename pixel_t>
+    void _render_triangle(GdkImage* image)
+    {
+        if (image->width != size || image->height != size || (size&1))
         {
             fprintf(stderr, "Error: Invalid Palette GdkImage.\n");
             return;
         }
 
         Color bkg(64, 64, 64, 0);
-        unsigned short bkgc = bkg.get_r5g6b5();
+        pixel_t bkgc;
+        bkg.to_pixel(&bkgc);
 
         Pos p0, p1, p2;
         get_triangle_points(&p0, &p1, &p2);
@@ -253,15 +261,15 @@ public:
         int x0 = WHEEL_WIDTH;
         int x1 = size-WHEEL_WIDTH;
 
-        unsigned short* pixels = (unsigned short*)image->mem;
-        int stride = image->bpl/sizeof(unsigned short);
+        pixel_t* pixels = (pixel_t*)image->mem;
+        int stride = image->bpl/sizeof(pixel_t);
 
         Pos p(x0,x0);
         for (int y = x0; y < x1; y+=2, p.y += 2.0f)
         {
             p.x = x0;
-            unsigned short* __restrict row0 = &pixels[(y+0)*stride+x0];
-            unsigned short* __restrict row1 = &pixels[(y+1)*stride+x0];
+            pixel_t* __restrict row0 = &pixels[(y+0)*stride+x0];
+            pixel_t* __restrict row1 = &pixels[(y+1)*stride+x0];
             for (int x = x0; x < x1; x+=2, p.x += 2.0f)
             {
                 // Calculate position inside triangle.  If inside, then use as HSV.  
@@ -272,7 +280,8 @@ public:
                 {
                     float r, g, b;
                     hsv_to_rgb(&r, &g, &b, palette_h, 1.0f-sqrtf(d0_sqr)*inv_triangle_side, sqrtf(d2_sqr)*inv_triangle_side);
-                    unsigned short c = Color::create_from_float(r, g, b, 1).get_r5g6b5();
+                    pixel_t c;
+                    Color::create_from_float(r, g, b, 1).to_pixel(&c);
                     row0[0] = c; 
                     row0[1] = c;
                     row1[0] = c; 
@@ -293,6 +302,18 @@ public:
                 row1 += 2;
             }
         }
+    }
+
+    // Clears out the inner circle and redraws the color triangle, as fast as possible.  
+    // Scales up implicitly by 2x to improve performance.
+    // The appearance was an accident which creates a kind of blobby triangle, like the intersection of three circles.
+    // But I like the look so I'm keeping it!
+    void render_triangle(GdkImage* image)
+    {
+        if (image->depth == 16)
+            _render_triangle<depth16_t>(image);
+        else
+            _render_triangle<depth24_t>(image);
     }
 
     Pos get_wheel_pos()
@@ -388,9 +409,10 @@ public:
     {
     }
 
-    void render(GdkImage* image)
+    template <typename pixel_t> inline
+    void _render(GdkImage* image)
     {
-        if (image->width != size || image->height != size || image->bits_per_pixel != 16 || (size&1))
+        if (image->width != size || image->height != size || (size&1))
         {
             fprintf(stderr, "Error: Invalid BrushPreview GdkImage.\n");
             return;
@@ -410,16 +432,20 @@ public:
 
         int opacity = int(round(255.0f * brush.opacity));
 
-        unsigned short* pixels = (unsigned short*)image->mem;
-        int stride = image->bpl/sizeof(unsigned short);
+        pixel_t* pixels = (pixel_t*)image->mem;
+        int stride = image->bpl/sizeof(pixel_t);
+
+        Color bkg(0xff, 0xff, 0xff, 0);
+        pixel_t bkgc;
+        bkg.to_pixel(&bkgc);
 
         // Interpolate the distance table over the area. For each pixel find the distance, and look the 
         // brush-intensity up in the brush-table
         for (int y = 0; y < size; y+=2)
         {
             float x2b = xb;
-            unsigned short* __restrict row0 = &pixels[(y+0)*stride];
-            unsigned short* __restrict row1 = &pixels[(y+1)*stride];
+            pixel_t* __restrict row0 = &pixels[(y+0)*stride];
+            pixel_t* __restrict row1 = &pixels[(y+1)*stride];
             for (int x = 0; x < size; x+=2)
             {
                 // Find brush-intensity and mulitply that with incoming opacity
@@ -430,7 +456,8 @@ public:
                     Color i = Color::create_from_a8r8g8b8(0xffffffff);
                     //Color i = Color::create_from_a8r8g8b8(image[y*size+x]);
                     i = Color::create_from_lerp(brush.color, i, intensity);
-                    unsigned short c = i.get_r5g6b5();
+                    pixel_t c;
+                    i.to_pixel(&c);
                     row0[0] = c;
                     row0[1] = c;
                     row1[0] = c;
@@ -438,10 +465,10 @@ public:
                 }
                 else
                 {
-                    row0[0] = 0xffff;
-                    row0[1] = 0xffff;
-                    row1[0] = 0xffff;
-                    row1[1] = 0xffff;
+                    row0[0] = bkgc;
+                    row0[1] = bkgc;
+                    row1[0] = bkgc;
+                    row1[1] = bkgc;
                 }
 
                 row0 += 2;
@@ -451,6 +478,14 @@ public:
             }
             yb += db*2;
         }
+    }
+
+    void render(GdkImage* image)
+    {
+        if (image->depth == 16)
+            _render<depth16_t>(image);
+        else
+            _render<depth24_t>(image);
     }
 };
 

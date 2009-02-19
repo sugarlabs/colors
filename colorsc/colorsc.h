@@ -27,6 +27,9 @@ using namespace std;
 #include <cmath>
 #include <float.h>
 
+typedef guint16 depth16_t;
+typedef guint32 depth24_t;
+
 static const float PI = 3.14159f;
 
 inline float sgn(float a) { if (a>0) return 1; if (a<0) return -1; return 0; }
@@ -107,6 +110,17 @@ struct Color
         return c;
     }
     unsigned int get_r5g6b5() { return ((r>>3)<<11) | ((g>>2)<<5) | (b>>3); }
+
+    void to_pixel(depth16_t *pixel)
+    {
+        *pixel = ((r>>3)<<11) | ((g>>2)<<5) | (b>>3);
+    }
+
+    void to_pixel(depth24_t *pixel)
+    {
+        *pixel = (r<<16) | (g<<8) | b;
+    }
+
     static Color create_from_r5g6b5(unsigned short v)
     {
         Color c;

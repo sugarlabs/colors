@@ -1833,12 +1833,12 @@ class Colors(activity.Activity, ExportedGObject):
         canvasimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), 1200, 800)
         start = time.time()
         for i in range(0,100):
-            canvas.blit_2x(canvasimage, 0, 0, 600, 400)
+            canvas.blit_2x(canvasimage, 0, 0, 0, 0, 600, 400, False)
         log.debug("Canvas 2.0x blit benchmark: %f sec", time.time()-start)
 
         # Benchmark a Palette object.
         palette = Palette(500)
-        paletteimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), 500, 500)
+        paletteimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), BrushControlsPanel.PALETTE_SIZE, BrushControlsPanel.PALETTE_SIZE)
         start = time.time()
         for i in range(0,100):
             palette.render_wheel(paletteimage)

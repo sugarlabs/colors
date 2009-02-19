@@ -1042,9 +1042,6 @@ public:
     // Draws a region of the canvas into a GdkImage for display on the screen, with optional scaling
     // and darkening.
 
-    typedef guint16 depth16_t;
-    typedef guint32 depth24_t;
-
     inline
     void to_pixel(guint src, depth16_t *dst)
     {
@@ -1060,18 +1057,70 @@ public:
         *dst = src & 0xffffff;
     }
 
-    template <typename pixel_t> inline
-    void fill_pixel(pixel_t **rows, int scale, pixel_t value)
+    struct scale1_t
     {
-        for (int y = scale; y--;)
-            for (int x = scale; x--;)
-                *rows[y]++ = value;
-    }
+        static const int value = 1;
 
-    template <typename pixel_t>
-    void blit(GdkImage *img, int src_x, int src_y, int dest_x,
-            int dest_y, int dest_w, int dest_h, bool overlay, int scale)
+        template <typename pixel_t> inline static
+        void fill_pixel(pixel_t **rows, pixel_t value)
+        {
+            *rows[0]++ = value;
+        }
+    };
+
+    struct scale2_t
     {
+        static const int value = 2;
+
+        template <typename pixel_t> inline static
+        void fill_pixel(pixel_t **rows, pixel_t value)
+        {
+            *rows[0]++ = value; *rows[0]++ = value;
+
+            *rows[1]++ = value; *rows[1]++ = value;
+        }
+    };
+
+    struct scale4_t
+    {
+        static const int value = 4;
+
+        template <typename pixel_t> inline static 
+        void fill_pixel(pixel_t **rows, pixel_t value)
+        {
+            *rows[0]++ = value; *rows[0]++ = value;
+            *rows[0]++ = value; *rows[0]++ = value;
+
+            *rows[1]++ = value; *rows[1]++ = value;
+            *rows[1]++ = value; *rows[1]++ = value;
+        }
+    };
+
+    struct scale8_t
+    {
+        static const int value = 8;
+
+        template <typename pixel_t> inline static
+        void fill_pixel(pixel_t **rows, pixel_t value)
+        {
+            *rows[0]++ = value; *rows[0]++ = value;
+            *rows[0]++ = value; *rows[0]++ = value;
+            *rows[0]++ = value; *rows[0]++ = value;
+            *rows[0]++ = value; *rows[0]++ = value;
+
+            *rows[1]++ = value; *rows[1]++ = value;
+            *rows[1]++ = value; *rows[1]++ = value;
+            *rows[1]++ = value; *rows[1]++ = value;
+            *rows[1]++ = value; *rows[1]++ = value;
+        }
+    };
+
+    template <typename pixel_t, typename scale_t> inline
+    void blit(GdkImage *img, int src_x, int src_y, int dest_x,
+            int dest_y, int dest_w, int dest_h, bool overlay)
+    {
+        if (scale_t::value != 2) return;
+        int scale = 2;
         pixel_t *pixels = (pixel_t*)img->mem;
         int pitch = img->bpl/sizeof(pixel_t);
         
@@ -1098,14 +1147,14 @@ public:
             pixel_t* __restrict rows[scale];
 
             rows[0] = &pixels[cdy*pitch+dest_x];
-            for (int i = 1; i < scale; ++i) rows[i] = rows[i-1] + pitch;
+            rows[1] = rows[0] + pitch;
 
             if (csy < 0 || csy >= height) 
             {
                 for (int cdx = 0; cdx < dest_w; cdx += scale)
                 {
                     pixel_t p = 0;
-                    fill_pixel((pixel_t**)rows, scale, p);
+                    scale_t::fill_pixel((pixel_t**)rows, p);
                 }
             }
             else
@@ -1118,7 +1167,7 @@ public:
                 while (csx < 0 && cdx < dest_w)
                 {
                     pixel_t p = 0;
-                    fill_pixel((pixel_t**)rows, scale, p);
+                    scale_t::fill_pixel((pixel_t**)rows, p);
                     src++;
                     csx++;
                     cdx += scale;
@@ -1133,7 +1182,7 @@ public:
                         p >>= 2;
                         pixel_t rgb;
                         to_pixel(p, &rgb);
-                        fill_pixel((pixel_t**)rows, scale, rgb);
+                        scale_t::fill_pixel((pixel_t**)rows, rgb);
                         src++;
                         csx++;
                         cdx += scale;
@@ -1145,7 +1194,7 @@ public:
                     {
                         pixel_t rgb;
                         to_pixel(*src, &rgb);
-                        fill_pixel((pixel_t**)rows, scale, rgb);
+                        scale_t::fill_pixel((pixel_t**)rows, rgb);
                         src++;
                         csx++;
                         cdx += scale;
@@ -1155,7 +1204,7 @@ public:
                 while (cdx < dest_w)                
                 {
                     pixel_t p = 0;
-                    fill_pixel((pixel_t**)rows, scale, p);
+                    scale_t::fill_pixel((pixel_t**)rows, p);
                     src++;
                     csx++;
                     cdx += scale;
@@ -1166,36 +1215,44 @@ public:
         }
     }
 
-    inline
+    template <typename scale_t> inline
     void blit_x(GdkImage *img, int src_x, int src_y, int dest_x, int dest_y,
-            int dest_w, int dest_h, bool overlay, int scale)
+            int dest_w, int dest_h, bool overlay)
     {
         if (img->depth == 16)
-            blit<depth16_t>(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
-                    overlay, scale);
+            blit<depth16_t, scale_t>(img, src_x, src_y, dest_x, dest_y,
+                    dest_w, dest_h, overlay);
         else
-            blit<depth24_t>(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
-                    overlay, scale);
+            blit<depth24_t, scale_t>(img, src_x, src_y, dest_x, dest_y,
+                    dest_w, dest_h, overlay);
     }
 
-    void blit_1x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
+    void blit_1x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
+            int dest_w, int dest_h, bool overlay)
     {
-        blit_x(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h, overlay, 1);
+        blit_x<scale1_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+                overlay);
     }
 
-    void blit_2x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
+    void blit_2x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
+            int dest_w, int dest_h, bool overlay)
     {
-        blit_x(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h, overlay, 2);
+        blit<depth16_t, scale2_t>(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h, overlay);
     }
 
-    void blit_4x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
+    void blit_4x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
+            int dest_w, int dest_h, bool overlay)
     {
-        blit_x(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h, overlay, 4);
+        blit_x<scale4_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+                overlay);
     }
-    
-    void blit_8x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y, int dest_w, int dest_h, bool overlay)
+
+
+    void blit_8x(GdkImage* img, int src_x, int src_y, int dest_x, int dest_y,
+            int dest_w, int dest_h, bool overlay)
     {
-        blit_x(img, src_x, src_y, dest_x, dest_y, dest_w, dest_h, overlay, 8);
+        blit_x<scale8_t> (img, src_x, src_y, dest_x, dest_y, dest_w, dest_h,
+                overlay);
     }
 
     //---------------------------------------------------------------------------------------------

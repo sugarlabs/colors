@@ -2,7 +2,7 @@ CXXFLAGS = $(shell pkg-config --cflags gdk-x11-2.0) \
            $(shell pkg-config --cflags gstreamer-0.10) \
 		   $(shell pkg-config --cflags pygtk-2.0) \
 		   $(shell python-config --cflags) \
-           -fPIC
+           -fPIC -O2
 LDFLAGS  = $(shell pkg-config --libs gdk-x11-2.0) \
            $(shell pkg-config --libs gstreamer-0.10) \
 		   $(shell pkg-config --libs pygtk-2.0) \
