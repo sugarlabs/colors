@@ -40,9 +40,6 @@ import gobject, pygtk, gtk, pango
 # Needed to avoid thread crashes with GStreamer
 gobject.threads_init()  
 
-# Import PyGame.  Used for a few realtime aspects.
-import pygame
-
 # Import DBUS and mesh networking modules.
 import dbus, telepathy, telepathy.client
 from dbus import Interface
