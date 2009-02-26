@@ -77,14 +77,14 @@ DBUS_SERVICE = DBUS_IFACE
 # The color wheel and triangle are rendered into GdkImage objects by C++ code in palette.h / palette.cpp which
 # is compiled into the colorsc module.
 class BrushControlsPanel(gtk.HBox):
-    PALETTE_SIZE = 500
-    PREVIEW_SIZE = 250
-    BRUSHTYPE_SIZE = 100
+    PALETTE_SIZE = int(7.0 * style.GRID_CELL_SIZE) & ~1
+    PREVIEW_SIZE = int(2.5 * style.GRID_CELL_SIZE) & ~1
+    BRUSHTYPE_SIZE = int(1.0 * style.GRID_CELL_SIZE) & ~1
 
     def __init__ (self):
         gtk.HBox.__init__(self)
-        self.set_property("spacing", 10)
-        self.set_border_width(50)
+        self.set_property("spacing", 5)
+        self.set_border_width(30)
         
         # Locally managed Brush object.
         self.brush = Brush()
@@ -157,8 +157,8 @@ class BrushControlsPanel(gtk.HBox):
         
         brushbox.pack_start(brushtbl, False)
         
-        self.pack_start(sizebox, True, False)
-        self.pack_start(opacitybox, True, False)
+        self.pack_start(sizebox, False, False)
+        self.pack_start(opacitybox, False, False)
         self.pack_start(palbox, True, False)
         self.pack_start(brushbox, False)
         
