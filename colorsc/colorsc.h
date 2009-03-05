@@ -18,7 +18,7 @@
 #ifndef _COLORSC_H_
 #define _COLORSC_H_
 
-#include <python2.5/Python.h>
+#include <Python.h>
 
 #include <vector>
 #include <algorithm>
