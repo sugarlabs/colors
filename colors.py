@@ -29,8 +29,14 @@
 # Sharing    - http://wiki.laptop.org/go/Shared_Sugar_Activities
 
 # Import standard Python modules.
-import logging, os, math, time, copy, json, tempfile
+import logging, os, math, time, copy, tempfile
 from gettext import gettext as _
+
+try:
+    import json
+    json.dumps
+except (ImportError, AttributeError):
+    import simplejson as json
 
 # Import the C++ component of the activity.
 from colorsc.colorsc import *
@@ -581,7 +587,7 @@ class Colors(activity.Activity, ExportedGObject):
         samples = []
         fd = open(activity.get_bundle_path() + '/data/INDEX', 'r')
         try:
-            samples = json.read(fd.read())
+            samples = json.loads(fd.read())
         finally:
             fd.close()
         
