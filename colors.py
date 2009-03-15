@@ -393,6 +393,11 @@ class Colors(activity.Activity, ExportedGObject):
         self.update_timer = None
         self.update()
 
+        # store event.get_axis() of last event to ignore fake pressure
+        # when system doesnt support gtk.gdk.AXIS_PRESSURE but
+        # event.get_axis(gtk.gdk.AXIS_PRESSURE) returns 0.0 value
+        self._prev_AXIS_PRESSURE = None
+
     #-----------------------------------------------------------------------------------------------------------------
     # User interface construction
 
@@ -990,7 +995,8 @@ class Colors(activity.Activity, ExportedGObject):
         
             # Read pressure information if available.
             pressure = event.get_axis(gtk.gdk.AXIS_PRESSURE)
-            if pressure != None:
+            if pressure or self._prev_AXIS_PRESSURE:
+                self._prev_AXIS_PRESSURE = pressure
                 self.pressure = int(pressure * 255)
             else:
                 self.pressure = 255
