@@ -39,7 +39,13 @@ except (ImportError, AttributeError):
     import simplejson as json
 
 # Import the C++ component of the activity.
-from colorsc.colorsc import *
+try:
+    from colorsc.colorsc import *
+except:
+    try:
+        from colorsc.linux32.colorsc import *
+    except:
+        from colorsc.linux64.colorsc import *
 
 # Import PyGTK.
 import gobject, pygtk, gtk, pango

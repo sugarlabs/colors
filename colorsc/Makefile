@@ -8,7 +8,13 @@ LDFLAGS  = $(shell pkg-config --libs gdk-x11-2.0) \
 		   $(shell pkg-config --libs pygtk-2.0) \
            $(shell python-config --libs)
 
-all: _colorsc.so
+ARCH = $(shell arch | grep 64 >/dev/null && echo linux64 || echo linux32)
+
+all : _colorsc.so
+	rm -rf $(ARCH)
+	mkdir $(ARCH)
+	mv _colorsc.so colorsc.py $(ARCH)/
+	touch $(ARCH)/__init__.py
 
 clean:
 	rm -rf _colorsc.so colorsc.cpp colorsc.py colorsc.pyc *.o
