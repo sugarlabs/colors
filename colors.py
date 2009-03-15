@@ -1359,7 +1359,7 @@ class Colors(activity.Activity, ExportedGObject):
             # Load and play intro movie.  It was created on a DS at 60hz, so we need to speed it up drastically to
             # make it watchable.
             self.easel.clear()
-            self.easel.load(activity.get_bundle_path() + "/data/intro.drw")
+            self.easel.load(str(activity.get_bundle_path() + "/data/intro.drw"))
             self.easel.set_playback_speed(8)
             self.easel.start_playback()
             self.start_update_timer()
@@ -1754,7 +1754,7 @@ class Colors(activity.Activity, ExportedGObject):
     def on_sample (self, button):
         self.set_mode(Colors.MODE_PLAYBACK)
         self.easel.clear()
-        self.easel.load(button.filename)
+        self.easel.load(str(button.filename))
         self.easel.set_playback_speed(8)
         self.flush_entire_canvas()
         self.toolbox.set_current_toolbar(2) # Switch to 'watch' toolbar.
@@ -1774,7 +1774,7 @@ class Colors(activity.Activity, ExportedGObject):
         log.debug("Loading from journal %s", file_path)
         self.set_mode(Colors.MODE_CANVAS)
         self.easel.clear()
-        self.easel.load(file_path.encode())
+        self.easel.load(str(file_path.encode()))
         self.easel.start_playback()
         self.easel.finish_playback()
         self.playbackpos.set_value(100)
