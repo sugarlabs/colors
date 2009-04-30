@@ -6,79 +6,110 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
-"PO-Revision-Date: 2008-12-15 18:27-0500\n"
+"POT-Creation-Date: 2009-04-29 17:51-0400\n"
+"PO-Revision-Date: 2009-04-30 09:43-0400\n"
 "Last-Translator: Carlo Falciola <cfalciola@yahoo.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.2.1\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:338
 msgid "Colors!"
 msgstr "Colori!"
 
-#: colors.py:113
-msgid "Brush Size"
-msgstr "Dimensione Pennello"
+#: colors.py:115
+msgid "Size"
+msgstr "Dimensione"
 
-#: colors.py:121 colors.py:136
+#: colors.py:123 colors.py:137
 msgid "Sensitive"
 msgstr "Sensibilità"
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr "Opacità Pennello"
+#: colors.py:129
+msgid "Opacity"
+msgstr "Opacità"
 
-#: colors.py:286
+#: colors.py:294
 msgid "Working..."
 msgstr "Lavoro in corso..."
 
-#: colors.py:431
+#: colors.py:447
 msgid "Palette"
 msgstr "Tavolozza"
 
-#: colors.py:447
+#: colors.py:465
 msgid "Zoom Out"
 msgstr "Zoom indietro"
 
-#: colors.py:450
+#: colors.py:469
 msgid "Zoom In"
 msgstr "Zoom avanti"
 
-#: colors.py:482
-msgid "Start Over"
-msgstr "Ricomincia"
+#: colors.py:473
+msgid "Center Image"
+msgstr "Centra Immagine"
 
-#: colors.py:502
+#: colors.py:478
+msgid "Fullscreen"
+msgstr "Schermo intero"
+
+#: colors.py:487
+msgid "Copy"
+msgstr "Copia"
+
+#: colors.py:520
+msgid "Erase Image"
+msgstr "Cancella Immagine"
+
+#: colors.py:552
 msgid "Start Playback"
 msgstr "Inizia riesecuzione"
 
-#: colors.py:506
+#: colors.py:556
 msgid "Pause Playback"
 msgstr "Pausa esecuzione"
 
-#: colors.py:510
+#: colors.py:560
 msgid "Skip To Beginning"
 msgstr "Salta all'inizio"
 
-#: colors.py:515
+#: colors.py:565
 msgid "Skip To End"
 msgstr "Salta alla fine"
 
-#: colors.py:562
+#: colors.py:612
 msgid "Paint"
 msgstr "Colora"
 
-#: colors.py:563
+#: colors.py:614
 msgid "Watch"
 msgstr "Osserva"
 
-#: colors.py:564
+#: colors.py:615
 msgid "Learn"
 msgstr "Impara"
 
-#: colors.py:1477
+#: colors.py:1612
 msgid "Click anywhere to begin painting!"
 msgstr "Clicca da qualsiasi parte per iniziae a dipingere!"
+
+#: colors.py:1716
+msgid "Clear Canvas?"
+msgstr "Pulisci il foglio?"
+
+#: colors.py:1717
+msgid "This will erase the entire image, including the history."
+msgstr "Questo comando cancellerà completamente l'immagine, compresa la storia."
+
+#~ msgid "Brush Size"
+#~ msgstr "Dimensione Pennello"
+
+#~ msgid "Brush Opacity"
+#~ msgstr "Opacità Pennello"
+
+#~ msgid "Start Over"
+#~ msgstr "Ricomincia"
