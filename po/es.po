@@ -6,82 +6,113 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
-"PO-Revision-Date: 2008-12-26 17:53-0500\n"
-"Last-Translator: JUAN DIEGO LOPEZ GIRALDO <info@vita21.eu>\n"
+"POT-Creation-Date: 2009-04-29 17:51-0400\n"
+"PO-Revision-Date: 2009-05-08 17:46-0400\n"
+"Last-Translator: Gabriel Eirea <geirea@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.2.1\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:338
 msgid "Colors!"
 msgstr " ¡Colores!"
 
-# opposite to fine size when painting
-#: colors.py:113
-msgid "Brush Size"
-msgstr "Tamaño brocha (grueso) "
+#: colors.py:115
+msgid "Size"
+msgstr "Tamaño"
 
 # Can be sensible  or distingue depending on the context ( sensitive to upper case = distingue las mayúsculas)
-#: colors.py:121 colors.py:136
+#: colors.py:123 colors.py:137
 msgid "Sensitive"
 msgstr "Sensitivo"
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr "Opacidad del cepillo ( ó Brocha)"
+#: colors.py:129
+msgid "Opacity"
+msgstr "Opacidad"
 
-#: colors.py:286
+#: colors.py:294
 msgid "Working..."
 msgstr "Trabajando..."
 
-#: colors.py:431
+#: colors.py:447
 msgid "Palette"
 msgstr "Paleta de colores"
 
-#: colors.py:447
+#: colors.py:465
 msgid "Zoom Out"
 msgstr "Reducir"
 
-#: colors.py:450
+#: colors.py:469
 msgid "Zoom In"
 msgstr "Ampliar"
 
-#: colors.py:482
-msgid "Start Over"
-msgstr "Comenzar de nuevo"
+#: colors.py:473
+msgid "Center Image"
+msgstr "Centrar Imagen"
 
-#: colors.py:502
+#: colors.py:478
+msgid "Fullscreen"
+msgstr "Pantalla completa"
+
+#: colors.py:487
+msgid "Copy"
+msgstr "Copiar"
+
+#: colors.py:520
+msgid "Erase Image"
+msgstr "Borrar Imagen"
+
+#: colors.py:552
 msgid "Start Playback"
 msgstr "Inicio de la reproducción sonora"
 
-#: colors.py:506
+#: colors.py:556
 msgid "Pause Playback"
 msgstr "Pausa de la reproducción sonora"
 
-#: colors.py:510
+#: colors.py:560
 msgid "Skip To Beginning"
 msgstr "Pase hasta el Principio"
 
-#: colors.py:515
+#: colors.py:565
 msgid "Skip To End"
 msgstr "Pase hasta el Final "
 
-#: colors.py:562
+#: colors.py:612
 msgid "Paint"
 msgstr "Pintar"
 
 # Can be Mirar, as infinitive or a watch ( un reloj de pulsera) depending on the context
-#: colors.py:563
+#: colors.py:614
 msgid "Watch"
-msgstr "Mire ó reloj de pulsera"
+msgstr "Mirar"
 
-#: colors.py:564
+#: colors.py:615
 msgid "Learn"
 msgstr "Aprender"
 
-#: colors.py:1477
+#: colors.py:1612
 msgid "Click anywhere to begin painting!"
 msgstr "Haga click en cualquier parte de la pantalla para iniciar a pintar  "
+
+#: colors.py:1716
+msgid "Clear Canvas?"
+msgstr "¿Borrar el lienzo?"
+
+#: colors.py:1717
+msgid "This will erase the entire image, including the history."
+msgstr "Esto borrará toda la imagen, incluyendo la historia."
+
+# opposite to fine size when painting
+#~ msgid "Brush Size"
+#~ msgstr "Tamaño brocha (grueso) "
+
+#~ msgid "Brush Opacity"
+#~ msgstr "Opacidad del cepillo ( ó Brocha)"
+
+#~ msgid "Start Over"
+#~ msgstr "Comenzar de nuevo"
