@@ -2,84 +2,117 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-04-29 17:51-0400\n"
+"PO-Revision-Date: 2009-09-23 19:12-0400\n"
+"Last-Translator: Markus Schlager <m.slg@gmx.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.1.1rc4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.2.1\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:338
 msgid "Colors!"
+msgstr "Farben!"
+
+#: colors.py:115
+msgid "Size"
 msgstr ""
 
-#: colors.py:113
-msgid "Brush Size"
-msgstr ""
-
-#: colors.py:121 colors.py:136
+#: colors.py:123 colors.py:137
+#, fuzzy
 msgid "Sensitive"
+msgstr "Empfindlichkeit"
+
+#: colors.py:129
+msgid "Opacity"
 msgstr ""
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr ""
-
-#: colors.py:286
+#: colors.py:294
+#, fuzzy
 msgid "Working..."
-msgstr ""
-
-#: colors.py:431
-msgid "Palette"
-msgstr ""
+msgstr "Wird ausgeführt ..."
 
 #: colors.py:447
+msgid "Palette"
+msgstr "Farbauswahl"
+
+#: colors.py:465
 msgid "Zoom Out"
-msgstr ""
+msgstr "Verkleinern"
 
-#: colors.py:450
+#: colors.py:469
 msgid "Zoom In"
+msgstr "Vergößern"
+
+#: colors.py:473
+msgid "Center Image"
 msgstr ""
 
-#: colors.py:482
-msgid "Start Over"
+#: colors.py:478
+msgid "Fullscreen"
 msgstr ""
 
-#: colors.py:502
+#: colors.py:487
+msgid "Copy"
+msgstr ""
+
+#: colors.py:520
+msgid "Erase Image"
+msgstr ""
+
+#: colors.py:552
 msgid "Start Playback"
-msgstr ""
+msgstr "Widergabe starten"
 
-#: colors.py:506
+#: colors.py:556
 msgid "Pause Playback"
-msgstr ""
+msgstr "Wiedergabe anhalten"
 
-#: colors.py:510
+#: colors.py:560
 msgid "Skip To Beginning"
-msgstr ""
+msgstr "Zum Anfang"
 
-#: colors.py:515
+#: colors.py:565
 msgid "Skip To End"
-msgstr ""
+msgstr "Zum Ende"
 
-#: colors.py:562
+#: colors.py:612
 msgid "Paint"
-msgstr ""
+msgstr "Malen"
 
-#: colors.py:563
+#: colors.py:614
 msgid "Watch"
-msgstr ""
+msgstr "Anschauen"
 
-#: colors.py:564
+#: colors.py:615
 msgid "Learn"
+msgstr "Lernen"
+
+#: colors.py:1612
+msgid "Click anywhere to begin painting!"
+msgstr "Irgendwo klicken um mit dem Malen zu beginnen!"
+
+#: colors.py:1716
+msgid "Clear Canvas?"
 msgstr ""
 
-#: colors.py:1477
-msgid "Click anywhere to begin painting!"
+#: colors.py:1717
+msgid "This will erase the entire image, including the history."
 msgstr ""
+
+#~ msgid "Brush Size"
+#~ msgstr "Pinselgröße"
+
+#~ msgid "Brush Opacity"
+#~ msgstr "Deckkraft"
+
+#, fuzzy
+#~ msgid "Start Over"
+#~ msgstr "Alles von vorne"
