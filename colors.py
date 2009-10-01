@@ -990,6 +990,7 @@ class Colors(activity.Activity, ExportedGObject):
             # Read pressure information if available.
             pressure = event.get_axis(gtk.gdk.AXIS_PRESSURE)
             if pressure or self._prev_AXIS_PRESSURE:
+                pressure = min(pressure, 1.0)
                 self._prev_AXIS_PRESSURE = pressure
                 self.pressure = int(pressure * 255)
             else:
