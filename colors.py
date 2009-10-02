@@ -53,12 +53,14 @@ from dbus.service import method, signal
 from dbus.gobject_service import ExportedGObject
 from sugar.presence.tubeconn import TubeConnection
 from sugar.presence import presenceservice
+from sugar.datastore import datastore
 
 # Import Sugar UI modules.
 from sugar import graphics
 from sugar.activity import activity
 from sugar.graphics import *
 from sugar.graphics import toggletoolbutton
+from sugar.graphics.menuitem import MenuItem
 
 # Import GStreamer (for camera access).
 #import pygst, gst
@@ -615,6 +617,14 @@ class Colors(activity.Activity, ExportedGObject):
         toolbar.add_toolbar(_("Learn"),samplebox)
         toolbar.show_all()
         self.set_toolbox(toolbar)
+        
+        # Add Keep As button to activity toolbar.
+        activity_toolbar = toolbar.get_activity_toolbar()
+        keep_palette = activity_toolbar.keep.get_palette()
+        menu_item = MenuItem(_('Keep to PNG'))
+        menu_item.connect('activate', self.on_export_png)
+        keep_palette.menu.append(menu_item)
+        menu_item.show()
 
     #-----------------------------------------------------------------------------------------------------------------
     # Camera access
@@ -1816,6 +1826,42 @@ class Colors(activity.Activity, ExportedGObject):
 
     def on_paste(self, button):
         pass
+
+    #-----------------------------------------------------------------------------------------------------------------
+    # PNG Export to Journal
+
+    def on_export_png(self, event):
+        # Create pixbuf.
+        w = self.easel.width*2
+        h = self.easel.height*2
+        
+        image = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), w, h)
+        self.easel.blit_2x(image, 0, 0, 0, 0, w, h, False)
+        
+        pbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, w, h)
+        pbuf = pbuf.get_from_image(image, self.easelarea.get_colormap(), 0, 0, 0, 0, w, h)
+        
+        # Create a new journal item.
+        ds = datastore.create()
+        act_meta = self.metadata
+        ds.metadata['title'] = act_meta['title'] + ' (PNG)'
+        ds.metadata['title_set_by_user'] = act_meta['title_set_by_user']
+        ds.metadata['mime_type'] = 'image/png'
+        ds.metadata['icon-color'] = act_meta['icon-color']
+        
+        preview = self.get_preview()
+        if preview is not None:
+            ds.metadata['preview'] = dbus.ByteArray(preview)
+        
+        # Save the picture to a temporary file.
+        ds.file_path = os.path.join(self.get_activity_root(),
+                'instance', '%i' % time.time())
+        pbuf.save(ds.file_path, "png")
+        
+        # Store the journal item.
+        datastore.write(ds, transfer_ownership=True)
+        ds.destroy()
+        del ds
     
     #-----------------------------------------------------------------------------------------------------------------
     # Benchmarking
