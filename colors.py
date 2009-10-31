@@ -29,7 +29,7 @@
 # Sharing    - http://wiki.laptop.org/go/Shared_Sugar_Activities
 
 # Import standard Python modules.
-import logging, os, math, time, copy, tempfile
+import logging, os, sys, math, time, copy, json, tempfile
 from gettext import gettext as _
 
 try:
@@ -45,6 +45,9 @@ from colorsc import *
 import gobject, pygtk, gtk, pango
 # Needed to avoid thread crashes with GStreamer
 gobject.threads_init()  
+
+# Import PyGame.  Used for camera and sound.
+import pygame
 
 # Import DBUS and mesh networking modules.
 import dbus, telepathy, telepathy.client
@@ -322,7 +325,7 @@ class Colors(activity.Activity, ExportedGObject):
     # Button definitions
     BUTTON_PALETTE    = 1<<0
     #BUTTON_REFERENCE  = 1<<1
-    #BUTTON_VIDEOPAINT = 1<<2
+    BUTTON_VIDEOPAINT = 1<<2
     BUTTON_SCROLL     = 1<<3
     BUTTON_PICK       = 1<<4
     BUTTON_ZOOM_IN    = 1<<5
@@ -368,7 +371,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.build_progress()
         
         # Start camera processing.
-        #self.init_camera()
+        self.init_camera()
         
         # Set up mesh networking.
         self.init_mesh()
@@ -501,18 +504,18 @@ class Colors(activity.Activity, ExportedGObject):
         #self.showrefbtn.set_tooltip(_("Show Reference Picture"))
         #self.showrefbtn.connect('clicked', self.on_show_reference)
         #
-        #self.videopaintsep = gtk.SeparatorToolItem()
+        self.videopaintsep = gtk.SeparatorToolItem()
         #
-        #self.videopaintbtn = toggletoolbutton.ToggleToolButton('video-paint')
-        #self.videopaintbtn.set_tooltip(_("Video Paint"))
-        #self.videopaintbtn.connect('clicked', self.on_videopaint)
+        self.videopaintbtn = toggletoolbutton.ToggleToolButton('video-paint')
+        self.videopaintbtn.set_tooltip(_("Video Paint"))
+        self.videopaintbtn.connect('clicked', self.on_videopaint)
         #self.videopaintpreview = gtk.DrawingArea()
         #self.videopaintpreview.set_size_request(Canvas.VIDEO_WIDTH, Canvas.VIDEO_HEIGHT)
         #self.videopaintpreview.connect('expose-event', self.on_videopaintpreview_expose)
         #self.videopaintitem = gtk.ToolItem()
         #self.videopaintitem.add(self.videopaintpreview)
         #self.videopaintimage = gtk.gdk.Image(gtk.gdk.IMAGE_FASTEST, gtk.gdk.visual_get_system(), Canvas.VIDEO_WIDTH, Canvas.VIDEO_HEIGHT)
-        #self.videopaint_enabled = False
+        self.videopaint_enabled = False
         
         self.clearsep = gtk.SeparatorToolItem()
         self.clearsep.set_expand(True)
@@ -543,8 +546,8 @@ class Colors(activity.Activity, ExportedGObject):
         #paintbox.insert(self.refsep, -1)
         #paintbox.insert(self.takerefbtn, -1)
         #paintbox.insert(self.showrefbtn, -1)
-        #paintbox.insert(self.videopaintsep, -1)
-        #paintbox.insert(self.videopaintbtn, -1)
+        paintbox.insert(self.videopaintsep, -1)
+        paintbox.insert(self.videopaintbtn, -1)
         #paintbox.insert(self.videopaintitem, -1)
         paintbox.insert(self.clearsep, -1)
         paintbox.insert(self.clearbtn, -1)
@@ -629,32 +632,25 @@ class Colors(activity.Activity, ExportedGObject):
     #-----------------------------------------------------------------------------------------------------------------
     # Camera access
     # 
-    # todo- Consider going straight to video4linux2's C API, we aren't really using any features of GStreamer.
+    # The new camera module from Pygame, by Nirav Patel, is used for camera access.
+    # It was only recently added, so we have to handle the case where the module doesn't exist.
 
-    #def init_camera (self):
-    #    self.gstpipe = gst.parse_launch("v4l2src ! fakesink name=fakesink signal-handoffs=true")
-    #    self.gstfakesink = self.gstpipe.get_by_name('fakesink')
-    #    self.gstfakesink.connect("handoff", self.on_gst_buffer)
-    #    self.easelarea.connect("destroy", self.on_gst_destroy)  
-    #   
-    #    self.gstpipe.set_state(gst.STATE_PLAYING)
-    #
-    #def on_gst_buffer(self, element, buffer, pad):
-    #    if self.take_reference:
-    #        self.easel.set_reference_buffer(buffer, 640, 480)
-    #        # Bring up the reference screen and update.
-    #        self.showrefbtn.set_active(True)
-    #        self.easel.render_reference_overlay()
-    #        self.flush_entire_canvas()
-    #        self.take_reference = False
-    #    
-    #    if self.videopaint_enabled:
-    #        self.easel.videopaint_motion(buffer, 640, 480)
-
-    # todo- This isn't working right, for some reason the GST pipe keeps playing after the window is destroyed, leading
-    # to Python exceptions in on_gst_buffer.
-    #def on_gst_destroy (self, widget):
-    #    self.gstpipe.set_state(gst.STATE_NULL)
+    def init_camera (self):
+        self.camera_enabled = False
+        
+        try:
+            camera_list = pygame.camera.list_cameras()
+            if len(camera_list):
+                self.cam = pygame.camera.Camera(camera_list[0],(320,240),"RGB")
+                self.camcapture = pygame.surface.Surface((320,240),0,16,(63488,2016,31,0))
+                self.camsmall = pygame.surface.Surface((160,120),0,self.camcapture)
+                self.camhsv = pygame.surface.Surface((160,120),0,self.camcapture)
+                self.camera_enabled = True
+            else:
+                log.debug('No cameras found, videopaint disabled.')
+        
+        except AttributeError:
+            pass
 
     #-----------------------------------------------------------------------------------------------------------------
     # Mesh networking
@@ -926,8 +922,8 @@ class Colors(activity.Activity, ExportedGObject):
         #    button = Colors.BUTTON_REFERENCE
         
         # 'v' for Videopaint (todo- need something better!).
-        #elif event.keyval == ord('v'): 
-        #    button = Colors.BUTTON_VIDEOPAINT
+        elif event.keyval == ord('v'): 
+            button = Colors.BUTTON_VIDEOPAINT
         
         # 's' hotkey to save PNG thumbnail of the current canvas as 'thumb.png'.
         #elif event.keyval == ord('s'): 
@@ -1065,9 +1061,9 @@ class Colors(activity.Activity, ExportedGObject):
             self.zoom_out()
             return
         
-        #if button & Colors.BUTTON_VIDEOPAINT:
-        #    self.videopaintbtn.set_active(not self.videopaint_enabled)
-        #    return
+        if button & Colors.BUTTON_VIDEOPAINT:
+            self.videopaintbtn.set_active(not self.videopaint_enabled)
+            return
         
         if self.mode == Colors.MODE_CANVAS:
             if button & Colors.BUTTON_PALETTE:
@@ -1485,7 +1481,9 @@ class Colors(activity.Activity, ExportedGObject):
 
             # Update drawing.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
-                if self.mx != self.lastmx or self.my != self.lastmy:
+                if self.mx != self.lastmx or self.my != self.lastmy or self.videopaint_enabled:
+                #    if self.videopaint_enabled:
+                #        print "got here" 
                     self.draw(Pos(self.mx, self.my))
                     self.flush_dirty_canvas()
 
@@ -1680,43 +1678,51 @@ class Colors(activity.Activity, ExportedGObject):
     #    else:
     #        self.set_mode(Colors.MODE_CANVAS)
 
-    #def on_videopaint (self, button):
-    #    self.videopaint_enabled = button.get_active()
-    #    if button.get_active():
-    #        gobject.timeout_add(33, self.on_videopaint_tick)
+    def on_videopaint (self, button):
+        if self.camera_enabled:
+            self.videopaint_enabled = button.get_active()
+            if button.get_active():
+                self.cam.start()
+                # flips the image to start with
+                self.cam.set_controls(hflip = 1)
+                gobject.timeout_add(33, self.on_videopaint_tick)
+            else:
+                self.cam.stop()
 
-    #def on_videopaintpreview_expose (self, widget, event):
-    #    self.easel.blit_videopaint(self.videopaintimage)
-    #    size = self.videopaintpreview.window.get_size()
-    #    x = (size[0]-self.easel.VIDEO_WIDTH)/2
-    #    y = (size[1]-self.easel.VIDEO_HEIGHT)/2
-    #    self.videopaintpreview.window.draw_image(
-    #        self.videopaintpreview.get_style().fg_gc[gtk.STATE_NORMAL], 
-    #        self.videopaintimage, 
-    #        0, 0, x, y, -1, -1)
+    def on_videopaint_tick (self):
+        if not self.camera_enabled or not self.videopaint_enabled:
+            return False
+        
+        # by using query_image, we avoid tieing the framerate to the camera
+        if self.cam.query_image():
+            # get the new frame
+            self.camcapture = self.cam.get_image(self.camcapture)
+            # scale it to a quarter the size before colorspace conversion
+            self.camsmall = transform.scale(self.camcapture,(160,120),self.camsmall)
+            # convert colorspace to HSV, good for object tracking
+            self.camhsv = camera.colorspace(self.camsmall,"HSV",self.camhsv)
+            # currently just threshold the OLPC green color.
+            cammask = mask.from_threshold(self.camhsv,(90,128,128),(50,120,120))
+            # find the largest object in the mask
+            camcomponent = cammask.connected_component()
+            camcount = camcomponent.count()
+            # make sure its not just noise
+            if camcount > 1000:
+                campos = camcomponent.centroid()
+                size = self.window.get_size()
+                self.lastmx = self.mx
+                self.lastmy = self.my
+                self.lastr = self.pressure
+                self.pressure = int(min(255,camcount/20))
+                # scale and adjust it so the borders can still be reached
+                self.mx = int(25+max(0.0, min(1.0, (campos[0]*1.2-16)/160.0))*(size[0]-50))
+                self.my = int(25+max(0.0, min(1.0, (campos[1]*1.2-12)/120.0))*(size[1]-50))
+                gtk.gdk.display_get_default().warp_pointer(self.get_screen(), self.mx, self.my)
+                self.flush_cursor()
+                self.update()
 
-    #def on_videopaint_tick (self):
-    #    if not self.videopaint_enabled:
-    #        return False
-    #    
-    #    # Update "pressure" from image (uses blob size).
-    #    self.pressure = self.easel.videopaint_pressure
-    #    
-    #    # Move the mouse to follow the videopaint cursor.  
-    #    # Note that we do not allow it to reach the corners, to avoid bringing up the Sugar overlay.
-    #    size = self.window.get_size()
-    #    self.mx = int(25+max(0.0, min(1.0, self.easel.videopaint_pos.x))*(size[0]-50))
-    #    self.my = int(25+max(0.0, min(1.0, self.easel.videopaint_pos.y))*(size[1]-50))
-    #    #gtk.gdk.display_get_default().warp_pointer(self.get_screen(), self.mx, self.my)
-    #    self.flush_cursor()
-    #
-    #    # Update the preview window.
-    #    self.videopaintpreview.queue_draw()
-    #   
-    #    # Process drawing.
-    #    self.update()
-    #    
-    #    return True
+        return True
+
     
     def on_fullscreen(self, widget):
         self.fullscreen()
