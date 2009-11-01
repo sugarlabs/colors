@@ -2,84 +2,105 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-04-29 17:51-0400\n"
+"PO-Revision-Date: 2009-11-01 06:42-0400\n"
+"Last-Translator: korakurider <korakurider@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.1.1rc4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 1.2.1\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:338
 msgid "Colors!"
-msgstr ""
+msgstr "Colors!"
 
-#: colors.py:113
-msgid "Brush Size"
-msgstr ""
+#: colors.py:115
+msgid "Size"
+msgstr "サイズ"
 
-#: colors.py:121 colors.py:136
+#: colors.py:123 colors.py:137
 msgid "Sensitive"
-msgstr ""
+msgstr "筆圧を使う"
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr ""
+#: colors.py:129
+msgid "Opacity"
+msgstr "透明度"
 
-#: colors.py:286
+#: colors.py:294
 msgid "Working..."
-msgstr ""
-
-#: colors.py:431
-msgid "Palette"
-msgstr ""
+msgstr "処理中..."
 
 #: colors.py:447
+msgid "Palette"
+msgstr "パレット"
+
+#: colors.py:465
 msgid "Zoom Out"
-msgstr ""
+msgstr "縮小表示"
 
-#: colors.py:450
+#: colors.py:469
 msgid "Zoom In"
-msgstr ""
+msgstr "拡大表示"
 
-#: colors.py:482
-msgid "Start Over"
-msgstr ""
+#: colors.py:473
+msgid "Center Image"
+msgstr "画像を中央に表示"
 
-#: colors.py:502
+#: colors.py:478
+msgid "Fullscreen"
+msgstr "全画面"
+
+#: colors.py:487
+msgid "Copy"
+msgstr "コピー"
+
+#: colors.py:520
+msgid "Erase Image"
+msgstr "画像を消去"
+
+#: colors.py:552
 msgid "Start Playback"
-msgstr ""
+msgstr "再生開始"
 
-#: colors.py:506
+#: colors.py:556
 msgid "Pause Playback"
-msgstr ""
+msgstr "再生を一時停止"
 
-#: colors.py:510
+#: colors.py:560
 msgid "Skip To Beginning"
-msgstr ""
+msgstr "最初に戻る"
 
-#: colors.py:515
+#: colors.py:565
 msgid "Skip To End"
-msgstr ""
+msgstr "最後に飛ぶ"
 
-#: colors.py:562
+#: colors.py:612
 msgid "Paint"
-msgstr ""
+msgstr "描画"
 
-#: colors.py:563
+#: colors.py:614
 msgid "Watch"
-msgstr ""
+msgstr "履歴を見る"
 
-#: colors.py:564
+#: colors.py:615
 msgid "Learn"
-msgstr ""
+msgstr "習う"
 
-#: colors.py:1477
+#: colors.py:1612
 msgid "Click anywhere to begin painting!"
-msgstr ""
+msgstr "どこかクリックして、お絵かきを始めましょう！"
+
+#: colors.py:1716
+msgid "Clear Canvas?"
+msgstr "キャンバスを消去しますか？"
+
+#: colors.py:1717
+msgid "This will erase the entire image, including the history."
+msgstr "この操作は画像を全部消去し、履歴もなくなります。"
