@@ -32,6 +32,10 @@
 import logging, os, sys, math, time, copy, json, tempfile
 from gettext import gettext as _
 
+# Prefer local modules.
+from sugar.activity import activity
+sys.path.insert(0, activity.get_bundle_path())
+
 try:
     import json
     json.dumps
@@ -47,7 +51,7 @@ import gobject, pygtk, gtk, pango
 gobject.threads_init()  
 
 # Import PyGame.  Used for camera and sound.
-import pygame
+from pygame import camera, transform, surface, mask
 
 # Import DBUS and mesh networking modules.
 import dbus, telepathy, telepathy.client
@@ -60,7 +64,6 @@ from sugar.datastore import datastore
 
 # Import Sugar UI modules.
 from sugar import graphics
-from sugar.activity import activity
 from sugar.graphics import *
 from sugar.graphics import toggletoolbutton
 from sugar.graphics.menuitem import MenuItem
@@ -561,17 +564,23 @@ class Colors(activity.Activity, ExportedGObject):
         self.pausebtn.set_tooltip(_("Pause Playback"))
         self.pausebtn.connect('clicked', self.on_pause)
         
-        self.beginbtn = toolbutton.ToolButton('media-seek-backward')
-        self.beginbtn.set_tooltip(_("Skip To Beginning"))
-        self.beginbtn.connect('clicked', self.on_skip_begin)
+        self.backonebtn = toolbutton.ToolButton('media-seek-backward')
+        self.backonebtn.set_tooltip(_("Back One Stroke"))
+        self.backonebtn.connect('clicked', self.on_back_one)
+        self.backonebtn.props.accelerator = '<Ctrl>Left'
         
-        self.endbtn = toolbutton.ToolButton('media-seek-forward')
-        self.endbtn.connect('clicked', self.on_skip_end)
-        self.endbtn.set_tooltip(_("Skip To End"))
+        self.forwardonebtn = toolbutton.ToolButton('media-seek-forward')
+        self.forwardonebtn.set_tooltip(_("Forward One Stroke"))
+        self.forwardonebtn.connect('clicked', self.on_forward_one)
+        self.forwardonebtn.props.accelerator = '<Ctrl>Right'
         
         # Position bar
         self.playbackpossep = gtk.SeparatorToolItem()
         self.playbackpossep.set_draw(True)
+        
+        self.beginbtn = toolbutton.ToolButton('media-seek-backward')
+        self.beginbtn.set_tooltip(_("Skip To Beginning"))
+        self.beginbtn.connect('clicked', self.on_skip_begin)
         
         self.playbackpos = gtk.Adjustment(0, 0, 110, 1, 10, 10)
         self.playbackposbar = gtk.HScale(self.playbackpos)
@@ -582,13 +591,19 @@ class Colors(activity.Activity, ExportedGObject):
         self.playbackpositem.set_expand(True)
         self.playbackpositem.add(self.playbackposbar)
         
+        self.endbtn = toolbutton.ToolButton('media-seek-forward')
+        self.endbtn.set_tooltip(_("Skip To End"))
+        self.endbtn.connect('clicked', self.on_skip_end)
+        
         playbox = gtk.Toolbar()
         playbox.insert(self.startbtn, -1)
         playbox.insert(self.pausebtn, -1)
-        playbox.insert(self.beginbtn, -1)
-        playbox.insert(self.endbtn, -1)
+        playbox.insert(self.backonebtn, -1)
+        playbox.insert(self.forwardonebtn, -1)
         playbox.insert(self.playbackpossep, -1)
+        playbox.insert(self.beginbtn, -1)
         playbox.insert(self.playbackpositem, -1)
+        playbox.insert(self.endbtn, -1)
         
         # Sample files to learn from.  Reads the list from an INDEX file in the data folder.
         samplebox = gtk.Toolbar()
@@ -639,17 +654,18 @@ class Colors(activity.Activity, ExportedGObject):
         self.camera_enabled = False
         
         try:
-            camera_list = pygame.camera.list_cameras()
+            camera_list = camera.list_cameras()
             if len(camera_list):
-                self.cam = pygame.camera.Camera(camera_list[0],(320,240),"RGB")
-                self.camcapture = pygame.surface.Surface((320,240),0,16,(63488,2016,31,0))
-                self.camsmall = pygame.surface.Surface((160,120),0,self.camcapture)
-                self.camhsv = pygame.surface.Surface((160,120),0,self.camcapture)
+                self.cam = camera.Camera(camera_list[0],(320,240),"RGB")
+                self.camcapture = surface.Surface((320,240),0,16,(63488,2016,31,0))
+                self.camsmall = surface.Surface((240,180),0,self.camcapture)
+                self.camhsv = surface.Surface((240,180),0,self.camcapture)
                 self.camera_enabled = True
             else:
                 log.debug('No cameras found, videopaint disabled.')
         
         except AttributeError:
+            log.debug('Pygame camera module not found, videopaint disabled.')
             pass
 
     #-----------------------------------------------------------------------------------------------------------------
@@ -1231,13 +1247,13 @@ class Colors(activity.Activity, ExportedGObject):
         
         self.brushpreviewarea.queue_draw()
 
-    def play_to_playbackpos (self):
+    def play_to (self, to):
         """Plays drawing commands until playbackpos.get_value() is reached.  This may involve resetting the canvas if
         the given position is before the current position, since it is impossible to play commands backwards.
         Called to skip the playback position, for example when fast forwarding or rewinding or dragging the scrollbar."""
         self.playbackposbar.ignore_change += 1
 
-        #log.debug("play_to_playbackpos %d easel_pos=%d", int(self.playbackpos.get_value()/100.0*self.easel.playback_length()), self.easel.playback_pos())
+        #log.debug("play_to %d easel_pos=%d", int(self.playbackpos.get_value()/100.0*self.easel.playback_length()), self.easel.playback_pos())
 
         total_left = 0
 
@@ -1253,13 +1269,12 @@ class Colors(activity.Activity, ExportedGObject):
         for i in range(0, 5):
             if gtk.main_iteration(False):
                 self.playbackposbar.ignore_change -= 1
-                #log.debug("play_to_playbackpos: main loop quit requested.")
+                #log.debug("play_to: main loop quit requested.")
                 return
 
         # Keep looping until the position is reached.  Since we activate the GTK event loop processing from within
         # our inner loop, the user can actually move the scrollbar while this function is running!
         while True:
-            to = int(self.playbackpos.get_value()/100.0*self.easel.playback_length())
             if self.easel.playback_pos() == to:
                 break
 
@@ -1298,7 +1313,7 @@ class Colors(activity.Activity, ExportedGObject):
             for i in range(0, 5):
                 if gtk.main_iteration(False):
                     self.playbackposbar.ignore_change -= 1
-                    #log.debug("play_to_playbackpos: main loop quit requested.")
+                    #log.debug("play: main loop quit requested.")
                     return
 
         self.overlay_active = False
@@ -1331,7 +1346,7 @@ class Colors(activity.Activity, ExportedGObject):
 
     def flush_cursor (self):
         """Causes a redraw of the canvas area covered by the cursor."""
-        r = int(self.easel.brush.size*self.zoom/2*self.pressure/256)
+        r = int(self.zoom*self.easel.brush.size*self.pressure/256)
         
         #log.debug("mx=%d my=%d r=%d lastmx=%d lastmy=%d lastr=%d" % \
         #    (self.mx, self.my, r, self.lastmx, self.lastmy, self.lastr))
@@ -1482,8 +1497,6 @@ class Colors(activity.Activity, ExportedGObject):
             # Update drawing.
             if self.cur_buttons & Colors.BUTTON_TOUCH:
                 if self.mx != self.lastmx or self.my != self.lastmy or self.videopaint_enabled:
-                #    if self.videopaint_enabled:
-                #        print "got here" 
                     self.draw(Pos(self.mx, self.my))
                     self.flush_dirty_canvas()
 
@@ -1625,11 +1638,13 @@ class Colors(activity.Activity, ExportedGObject):
             y = self.height-50-size[1]/pango.SCALE
             self.easelarea.bin_window.draw_layout(gc, x, y, layout)
         
-        #self.easelarea.bin_window.draw_arc(self.easelarea.get_style().black_gc, False, self.mx-r, self.my-r, r, r, 0, 360*64)
-        self.lastr = int(self.easel.brush.size*self.pressure/256)
+        self.lastr = int(self.zoom*self.easel.brush.size*self.pressure/256)
         self.lastmx = self.mx
         self.lastmy = self.my
-        
+        #self.easelarea.bin_window.draw_arc(self.easelarea.get_style().black_gc, False, 
+        #    self.mx-self.lastr/2, self.my-self.lastr/2, 
+        #    self.lastr, self.lastr, 0, 360*64)
+      
         # Hack to keep toolbar up to date.  For some reason it fails to draw pretty often.
         #self.toolbox.queue_draw()
     
@@ -1685,20 +1700,19 @@ class Colors(activity.Activity, ExportedGObject):
                 self.cam.start()
                 # flips the image to start with
                 self.cam.set_controls(hflip = 1)
-                gobject.timeout_add(33, self.on_videopaint_tick)
+                gobject.timeout_add(33, self.on_videopaint_tick, priority=gobject.PRIORITY_HIGH_IDLE+31)
             else:
                 self.cam.stop()
 
     def on_videopaint_tick (self):
-        if not self.camera_enabled or not self.videopaint_enabled:
+        if not self.camera_enabled or not self.videopaint_enabled or not self.window:
             return False
-        
-        # by using query_image, we avoid tieing the framerate to the camera
+
         if self.cam.query_image():
             # get the new frame
             self.camcapture = self.cam.get_image(self.camcapture)
             # scale it to a quarter the size before colorspace conversion
-            self.camsmall = transform.scale(self.camcapture,(160,120),self.camsmall)
+            self.camsmall = transform.scale(self.camcapture,(240,180),self.camsmall)
             # convert colorspace to HSV, good for object tracking
             self.camhsv = camera.colorspace(self.camsmall,"HSV",self.camhsv)
             # currently just threshold the OLPC green color.
@@ -1707,22 +1721,30 @@ class Colors(activity.Activity, ExportedGObject):
             camcomponent = cammask.connected_component()
             camcount = camcomponent.count()
             # make sure its not just noise
-            if camcount > 1000:
+            if camcount > 2000:
                 campos = camcomponent.centroid()
+
+                # scale and adjust it so the borders can still be reached
                 size = self.window.get_size()
+                mx = int(max(0.0, min(1.0, (campos[0]-40)/160.0)) * size[0])
+                my = int(max(0.0, min(1.0, (campos[1]-40)/100.0)) * size[1])
+
+                # smooth a bit
+                mx = int(self.lastmx*0.5 + mx*0.5)
+                my = int(self.lastmy*0.5 + my*0.5)
+
+                self.mx, self.my = self.translate_coordinates(self.easelarea, mx, my)
+                self.pressure = int(min(255,camcount/20))
+
                 self.lastmx = self.mx
                 self.lastmy = self.my
-                self.lastr = self.pressure
-                self.pressure = int(min(255,camcount/20))
-                # scale and adjust it so the borders can still be reached
-                self.mx = int(25+max(0.0, min(1.0, (campos[0]*1.2-16)/160.0))*(size[0]-50))
-                self.my = int(25+max(0.0, min(1.0, (campos[1]*1.2-12)/120.0))*(size[1]-50))
-                gtk.gdk.display_get_default().warp_pointer(self.get_screen(), self.mx, self.my)
-                self.flush_cursor()
+
+                gtk.gdk.display_get_default().warp_pointer(self.get_screen(), mx, my)
+
+                #self.flush_cursor()
                 self.update()
 
         return True
-
     
     def on_fullscreen(self, widget):
         self.fullscreen()
@@ -1763,6 +1785,16 @@ class Colors(activity.Activity, ExportedGObject):
             self.set_mode(Colors.MODE_PLAYBACK)
         self.playbackpos.set_value(0)
 
+    def on_back_one(self, button):
+        to = self.easel.playback_pos() - 1
+        if to < self.easel.playback_length():
+            self.play_to(to)
+
+    def on_forward_one (self, button):
+        to = self.easel.playback_pos() + 1
+        if to < self.easel.playback_length():
+            self.play_to(to)
+
     def on_skip_end (self, button):
         if self.mode != Colors.MODE_PLAYBACK:
             self.set_mode(Colors.MODE_PLAYBACK)
@@ -1781,7 +1813,8 @@ class Colors(activity.Activity, ExportedGObject):
             return
         if self.mode != Colors.MODE_PLAYBACK:
             self.set_mode(Colors.MODE_PLAYBACK)
-        self.play_to_playbackpos()
+        to = int(self.playbackpos.get_value()/100.0*self.easel.playback_length())
+        self.play_to(to)
         self.easel.pause_playback()
 
     #-----------------------------------------------------------------------------------------------------------------
@@ -1795,7 +1828,6 @@ class Colors(activity.Activity, ExportedGObject):
         self.easel.start_playback()
         self.easel.finish_playback()
         self.playbackpos.set_value(100)
-        #self.play_to_playbackpos()
         self.set_mode(Colors.MODE_CANVAS)
         log.debug("Played back %d commands", self.easel.playback_length())
 
@@ -1855,9 +1887,9 @@ class Colors(activity.Activity, ExportedGObject):
         ds.metadata['mime_type'] = 'image/png'
         ds.metadata['icon-color'] = act_meta['icon-color']
         
-        preview = self.get_preview()
-        if preview is not None:
-            ds.metadata['preview'] = dbus.ByteArray(preview)
+        #preview = self.get_preview()
+        #if preview is not None:
+        #    ds.metadata['preview'] = dbus.ByteArray(preview)
         
         # Save the picture to a temporary file.
         ds.file_path = os.path.join(self.get_activity_root(),
