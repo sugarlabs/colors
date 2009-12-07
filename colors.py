@@ -336,6 +336,7 @@ class Colors(activity.Activity, ExportedGObject):
     BUTTON_CENTER     = 1<<7
     BUTTON_TOUCH      = 1<<8
     BUTTON_CONTROL    = 1<<9
+    BUTTON_UNDO       = 1<<10
 
     # Number of drawing steps to execute between progress bar updates.  More updates means faster overall drawing
     # but a less responsive UI.
@@ -926,10 +927,8 @@ class Colors(activity.Activity, ExportedGObject):
         key_name = gtk.gdk.keyval_name(event.keyval)
         
         # Useful for manually working out keyvals for OLPC keys.
-        #log.debug("on_key_event: hardware_keycode=%d name=%s", event.hardware_keycode, key_name) 
+        log.debug("on_key_event: hardware_keycode=%d name=%s", event.hardware_keycode, key_name) 
         
-        # OLPC keymap is designed to allow left or right handed stylus use, with lots of redundancy.
-        # So each major key should appear at least once on each side of the keyboard.
         button = 0
         
         if key_name == 'Shift_L' or key_name == 'Shift_R':
@@ -961,17 +960,51 @@ class Colors(activity.Activity, ExportedGObject):
         #elif event.keyval == 288: button = Colors.BUTTON_SIZE_2
         #elif event.keyval == 289: button = Colors.BUTTON_SIZE_3
         
-        # Arrow keys, gamepad 'face' buttons for zooming and centering.
+        # Arrow keys for scrolling.
         elif key_name == 'Up':
-            button = Colors.BUTTON_ZOOM_IN
+            if event.type == gtk.gdk.KEY_PRESS:
+                self.scroll_to(self.scroll + Pos(0, 50))
+                self.flush_entire_canvas()
+            button = Colors.BUTTON_SCROLL
         elif key_name == 'Down':
-            button = Colors.BUTTON_ZOOM_OUT
-        elif key_name == 'Right' or key_name == 'Left':
-            button = Colors.BUTTON_CENTER
+            if event.type == gtk.gdk.KEY_PRESS:
+                self.scroll_to(self.scroll + Pos(0, -50))
+                self.flush_entire_canvas()
+            button = Colors.BUTTON_SCROLL
+        elif key_name == 'Left':
+            if event.type == gtk.gdk.KEY_PRESS:
+                self.scroll_to(self.scroll + Pos(50, 0))
+                self.flush_entire_canvas()
+            button = Colors.BUTTON_SCROLL
+        elif key_name == 'Right':
+            if event.type == gtk.gdk.KEY_PRESS:
+                self.scroll_to(self.scroll + Pos(-50, 0))
+                self.flush_entire_canvas()
+            button = Colors.BUTTON_SCROLL
         
         # Either Alt key for pick.
         elif key_name == 'Alt_L' or key_name == 'ISO_Level3_Shift':
             button = Colors.BUTTON_PICK
+
+        # Gamepad directions.
+        elif key_name == 'KP_Up':
+            button = Colors.BUTTON_ZOOM_IN
+        elif key_name == 'KP_Down':
+            button = Colors.BUTTON_ZOOM_OUT
+        elif key_name == 'KP_Left':
+            button = Colors.BUTTON_CENTER
+        elif key_name == 'KP_Right':
+            button = Colors.BUTTON_SCROLL
+
+        # Gamepad keys.
+        elif key_name == 'KP_Page_Down':
+            button = Colors.BUTTON_TOUCH
+        elif key_name == 'KP_Page_Up':
+            button = Colors.BUTTON_PALETTE
+        elif key_name == 'KP_Home':
+            button = Colors.BUTTON_PICK
+        elif key_name == 'KP_End':
+            button =  Colors.BUTTON_UNDO
         
         if button != 0:
             if event.type == gtk.gdk.KEY_PRESS:
@@ -987,7 +1020,7 @@ class Colors(activity.Activity, ExportedGObject):
         else:
             # Not a known key.  Try to store / retrieve a brush.
             key = unichr(event.keyval).lower()
-            if self.cur_buttons & Colors.BUTTON_CONTROL:
+            if self.cur_buttons & Colors.BUTTON_PICK:
                 self.brush_map[key] = Brush(self.easel.brush)
                 
             else:
@@ -1083,11 +1116,18 @@ class Colors(activity.Activity, ExportedGObject):
             self.zoom_out()
             return
         
+        if button & Colors.BUTTON_CENTER:
+            self.center_image()
+            return
+        
         if button & Colors.BUTTON_VIDEOPAINT:
             self.videopaintbtn.set_active(not self.videopaint_enabled)
             return
         
         if self.mode == Colors.MODE_CANVAS:
+            if button & Colors.BUTTON_UNDO:
+                self.undo()
+                return
             if button & Colors.BUTTON_PALETTE:
                 self.set_mode(Colors.MODE_PALETTE)
                 return
@@ -1455,6 +1495,7 @@ class Colors(activity.Activity, ExportedGObject):
             self.easelarea.window.set_cursor(None)
         
         if self.mode == Colors.MODE_SCROLL:
+            self.scrollref = None
             self.easelarea.window.set_cursor(None)
         
         if self.mode == Colors.MODE_PALETTE:
@@ -1529,18 +1570,18 @@ class Colors(activity.Activity, ExportedGObject):
                 self.pickup_color(Pos(self.mx, self.my))
         
         if self.mode == Colors.MODE_SCROLL:
-            if self.cur_buttons & Colors.BUTTON_TOUCH:
-                mpos = Pos(self.mx, self.my)
-                if self.scrollref == None:
-                    self.scrollref = mpos
-                else:
-                    move = self.scrollref - mpos
-                    if move.x != 0 or move.y != 0:
-                        self.scroll_to(self.scroll - move)
-                        self.scrollref = mpos
-                        self.flush_entire_canvas()
+            mpos = Pos(self.mx, self.my)
+            if self.scrollref == None:
+                self.scrollref = mpos
             else:
-                self.scrollref = None
+                move = self.scrollref - mpos
+                if move.x != 0 or move.y != 0:
+                    self.scroll_to(self.scroll - move)
+                    self.scrollref = mpos
+                    self.flush_entire_canvas()
+            #if self.cur_buttons & Colors.BUTTON_TOUCH:
+            #else:
+            #    self.scrollref = None
 
         if self.mode == Colors.MODE_PALETTE:
             pass
@@ -1877,6 +1918,9 @@ class Colors(activity.Activity, ExportedGObject):
     # Redo not implement yet but shouldn't be hard to do.
 
     def on_undo(self, button):
+        self.undo()
+
+    def undo(self):
         # Cannot undo when progress window is up.
         if self.playbackposbar.ignore_change > 0:
             return

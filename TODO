@@ -1,5 +1,6 @@
 Colors!
 
++ Add the current brush above the new brush in the palette window.
 + Add MIME type, link to gallery site.
 + Help dropdown - text based is fine.
 + Publish tutorials on DailyMotion
@@ -9,7 +10,6 @@ Colors!
 + Get tutorial paintings from Scott Nash.
 + Improve opacity and size scrollbar behavior: click to set.  Maybe a custom widget?
 + Add icons above and below opacity and size scrollbars.
-+ Make the color picker come up instantly.
-+ Implement joypad key bindings.
++ Make the palette come up instantly.  Dispense with dialog and write custom scroll and check?
++ Make X button control the palette window.
 + Combo to adjust playback speed.
-+ Confirm image clear.
