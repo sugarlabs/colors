@@ -632,6 +632,17 @@ class Colors(activity.Activity, ExportedGObject):
             btn.connect('clicked', self.on_sample)
             samplebox.insert(btn, -1)
             self.samplebtns.append(btn)
+
+        self.webbtn = toolbutton.ToolButton('web')
+        self.webbtn.set_tooltip(_("Colors! Gallery"))
+        self.webbtn.connect('clicked', self.on_web)
+
+        self.samplesep = gtk.SeparatorToolItem()
+        self.samplesep.set_draw(False)
+        self.samplesep.set_expand(True)
+
+        samplebox.insert(self.samplesep, -1)
+        samplebox.insert(self.webbtn, -1)
         
         toolbar = activity.ActivityToolbox(self)
         toolbar.add_toolbar(_("Paint"),paintbox)
@@ -1975,6 +1986,25 @@ class Colors(activity.Activity, ExportedGObject):
 
     def on_paste(self, button):
         pass
+
+    #-----------------------------------------------------------------------------------------------------------------
+    # Open Web page to find more paintings.
+    
+    def on_web(self, event):
+        # Create the new journal entry
+        fileObject = datastore.create()
+        fileObject.metadata['title'] = _('Colors! Gallery')
+        fileObject.metadata['mime_type'] = 'text/uri-list'
+        fileObject.metadata['icon-color'] = self.metadata['icon-color']
+        fileObject.file_path = os.path.join(self.get_activity_root(), 'instance', '%i' % time.time())
+        fd = open(fileObject.file_path, 'w')
+        try:
+            fd.write("http://colors.collectingsmiles.com/")
+        finally:
+            fd.close()
+        datastore.write(fileObject, transfer_ownership=True)
+        fileObject.destroy()
+        del fileObject
 
     #-----------------------------------------------------------------------------------------------------------------
     # PNG Export to Journal
