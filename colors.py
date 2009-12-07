@@ -51,7 +51,10 @@ import gobject, pygtk, gtk, pango
 gobject.threads_init()  
 
 # Import PyGame.  Used for camera and sound.
-from pygame import camera, transform, surface, mask
+try:
+    from pygame import camera, transform, surface, mask
+except ImportError:
+    print "No pygame available."
 
 # Import DBUS and mesh networking modules.
 import dbus, telepathy, telepathy.client
@@ -680,7 +683,7 @@ class Colors(activity.Activity, ExportedGObject):
             else:
                 log.debug('No cameras found, videopaint disabled.')
         
-        except AttributeError:
+        except NameError:
             log.debug('Pygame camera module not found, videopaint disabled.')
             pass
 
@@ -1991,7 +1994,7 @@ class Colors(activity.Activity, ExportedGObject):
     # Open Web page to find more paintings.
     
     def on_web(self, event):
-        # Create the new journal entry
+        # Create a Journal entry with a link to the gallery page.
         fileObject = datastore.create()
         fileObject.metadata['title'] = _('Colors! Gallery')
         fileObject.metadata['mime_type'] = 'text/uri-list'
@@ -2003,8 +2006,12 @@ class Colors(activity.Activity, ExportedGObject):
         finally:
             fd.close()
         datastore.write(fileObject, transfer_ownership=True)
+        id = fileObject.object_id
         fileObject.destroy()
         del fileObject
+        
+        # Show the link in the Journal.
+        activity.show_object_in_journal(id)
 
     #-----------------------------------------------------------------------------------------------------------------
     # PNG Export to Journal
