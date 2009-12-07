@@ -1,28 +1,15 @@
 Colors!
 
-- Save colors to letter keys using Ctrl+Letter.
-- Finish zooming and panning.
-- Speed up intro animation.
-- Sort out idle vs paint priority issue.
++ Add MIME type, link to gallery site.
++ Help dropdown - text based is fine.
++ Publish tutorials on DailyMotion
++ New toolbars.
++ Reimplement reference image as a way to set the initial canvas.
 + Toolbar repaint issue.
 + Get tutorial paintings from Scott Nash.
 + Improve opacity and size scrollbar behavior: click to set.  Maybe a custom widget?
-+ Implement pickup color tool.
-+ Add FPS counter.
-+ Optimize framerate.
-+ Improve videopaint
- + Use Nirav's pygame extension.
- + Calibration button.
-+ Test Journal save & resume.
-+ Fix cursor drawing.
-+ Implement Copy & Paste.
++ Add icons above and below opacity and size scrollbars.
++ Make the color picker come up instantly.
 + Implement joypad key bindings.
-+ Implement stylus support using evtest.
-+ Speed up painting performance of large brushes.
-+ Single stroke quick undo.
-+ Button to adjust playback speed.
-- Implement Wacom support.
-- Fullscreen button.
++ Combo to adjust playback speed.
 + Confirm image clear.
-- Ignore painting while playing back.  Make them pause first!
-+ Copy should create a new 1x gdk.Image.
