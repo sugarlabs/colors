@@ -315,6 +315,48 @@ class ProgressPanel(gtk.VBox):
 
         self.pack_start(vbox, True, False)
 
+# This is the overlay that appears when the Help button is pressed. 
+class HelpPanel(gtk.VBox):
+    def __init__ (self):
+        gtk.VBox.__init__(self)
+
+        # Add the context sensitive help.
+        self.helplabel = gtk.Label()
+        self.helplabel.set_padding(10, 10)
+        self.helplabel.set_markup( 
+            '''
+<span font_family="monospace" size="large" color="#ffffff">
+Keyboard controls:                    Gamepad controls:
+
+Space     - Open palette              Up     - Zoom in  
+v         - Video paint               Down   - Zoom in
+Hand drag - Scroll drag               Left   - Center canvas
+Arrows    - Scroll                    Right  - Scroll drag
+Alt click - Pick up color             Square - Open palette
+Ctrl Up   - Zoom in                   Check  - Undo
+Ctrl Down - Zoom in                   Circle - Pick
+Ctrl A    - Center canvas             X      - Paint
+Ctrl Z    - Undo
+Ctrl C    - Copy to clipboard
+Ctrl E    - Erase image
+Alt Enter - Full screen
+
+
+                    Alt + letter - Save brush
+                          letter - Restore brush
+</span>
+'''
+        )
+        self.helpbox = gtk.EventBox()
+        self.helpbox.modify_bg(gtk.STATE_NORMAL, self.helpbox.get_colormap().alloc_color('#000000'))
+        self.helpbox.add(self.helplabel)
+
+        vbox = gtk.VBox()
+        vbox.set_property("spacing", 20)
+        vbox.pack_start(self.helpbox, True, True)
+        
+        self.pack_start(vbox, True, True)
+
 # This is the main Colors! activity class.
 # 
 # It owns the main application window, the painting canvas, and all the various toolbars and options.
@@ -377,6 +419,9 @@ class Colors(activity.Activity, ExportedGObject):
         # Build the progress display popup window.
         self.build_progress()
         
+        # Build the help popup window.
+        self.build_help()
+        
         # Start camera processing.
         self.init_camera()
         
@@ -393,6 +438,7 @@ class Colors(activity.Activity, ExportedGObject):
         self.show_all()
         self.brush_controls.hide()
         self.progress.hide()
+        self.help.hide()
         self.overlay_active = False
         
         # Start it running.
@@ -450,6 +496,11 @@ class Colors(activity.Activity, ExportedGObject):
         self.progress = ProgressPanel()
         self.progress.set_size_request(gtk.gdk.screen_width(), gtk.gdk.screen_height())
         self.easelarea.put(self.progress, 0, 0)
+
+    def build_help (self):
+        self.help = HelpPanel()
+        self.help.set_size_request(gtk.gdk.screen_width(), gtk.gdk.screen_height())
+        self.easelarea.put(self.help, 0, 0)
 
     def build_toolbar (self):
         self.add_accel_group(gtk.AccelGroup())
@@ -538,6 +589,12 @@ class Colors(activity.Activity, ExportedGObject):
         self.clearbtn.connect('clicked', self.on_clear)
         self.clearbtn.props.accelerator = '<Ctrl>E'
         
+        self.helpbtn = toggletoolbutton.ToggleToolButton('help')
+        self.helpbtn.set_active(False)
+        self.helpbtn.set_tooltip(_("Show Help"))
+        #self.helpbtn.props.accelerator = '<Ctrl>H'
+        self.helpbtn.connect('clicked', self.on_help)
+        
         #editbox = activity.EditToolbar()
         #editbox.undo.props.visible = False
         #editbox.redo.props.visible = False
@@ -561,10 +618,11 @@ class Colors(activity.Activity, ExportedGObject):
         #paintbox.insert(self.showrefbtn, -1)
         paintbox.insert(self.videopaintsep, -1)
         paintbox.insert(self.videopaintbtn, -1)
+        paintbox.insert(self.helpbtn, -1)
         #paintbox.insert(self.videopaintitem, -1)
         paintbox.insert(self.clearsep, -1)
         paintbox.insert(self.clearbtn, -1)
-        
+
         # Playback controls
         self.startbtn = toolbutton.ToolButton('media-playback-start')
         self.startbtn.set_tooltip(_("Start Playback"))
@@ -2048,6 +2106,21 @@ class Colors(activity.Activity, ExportedGObject):
         datastore.write(ds, transfer_ownership=True)
         ds.destroy()
         del ds
+    
+    #-----------------------------------------------------------------------------------------------------------------
+    # Help dialog
+    
+    def on_help(self, widget):
+        if widget.get_active():
+            self.help.set_size_request(self.width, self.height)
+            self.help.show_all()
+            self.easelarea.set_double_buffered(True)
+            self.overlay_active = True
+            self.flush_entire_canvas()
+        else:
+            self.help.hide_all()
+            self.overlay_active = False
+            self.flush_entire_canvas()
     
     #-----------------------------------------------------------------------------------------------------------------
     # Benchmarking
