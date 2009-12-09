@@ -729,6 +729,7 @@ class Colors(activity.Activity, ExportedGObject):
 
     def init_camera (self):
         self.camera_enabled = False
+        self.videopaintbtn.set_sensitive(False)
         
         try:
             camera_list = camera.list_cameras()
@@ -738,6 +739,7 @@ class Colors(activity.Activity, ExportedGObject):
                 self.camsmall = surface.Surface((240,180),0,self.camcapture)
                 self.camhsv = surface.Surface((240,180),0,self.camcapture)
                 self.camera_enabled = True
+                self.videopaintbtn.set_sensitive(True)
             else:
                 log.debug('No cameras found, videopaint disabled.')
         
