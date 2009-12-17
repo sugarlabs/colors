@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-01 00:32-0400\n"
-"PO-Revision-Date: 2009-11-09 11:29-0400\n"
+"POT-Creation-Date: 2009-12-09 00:32-0500\n"
+"PO-Revision-Date: 2009-12-17 05:05-0400\n"
 "Last-Translator: Carlo Falciola <cfalciola@yahoo.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: it\n"
@@ -17,91 +17,111 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 1.2.1\n"
 
-#: activity/activity.info:2 colors.py:343
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr "Colori!"
 
-#: colors.py:120
+#: colors.py:126
 msgid "Size"
 msgstr "Dimensione"
 
-#: colors.py:128 colors.py:142
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr "Sensibilità"
 
-#: colors.py:134
+#: colors.py:140
 msgid "Opacity"
 msgstr "Opacità"
 
-#: colors.py:299
+#: colors.py:305
 msgid "Working..."
 msgstr "Lavoro in corso..."
 
-#: colors.py:452
+#: colors.py:510
 msgid "Palette"
 msgstr "Tavolozza"
 
-#: colors.py:470
+#: colors.py:528
 msgid "Zoom Out"
 msgstr "Zoom indietro"
 
-#: colors.py:474
+#: colors.py:532
 msgid "Zoom In"
 msgstr "Zoom avanti"
 
-#: colors.py:478
+#: colors.py:536
 msgid "Center Image"
 msgstr "Centra Immagine"
 
-#: colors.py:483
+#: colors.py:541
 msgid "Fullscreen"
 msgstr "Schermo intero"
 
-#: colors.py:492
+#: colors.py:550
+msgid "Undo"
+msgstr "Annulla"
+
+#: colors.py:555
 msgid "Copy"
 msgstr "Copia"
 
-#: colors.py:525
+#: colors.py:573
+msgid "Video Paint"
+msgstr "Colora Video"
+
+#: colors.py:588
 msgid "Erase Image"
 msgstr "Cancella Immagine"
 
-#: colors.py:557
+#: colors.py:594
+msgid "Show Help"
+msgstr "Mostra aiuto"
+
+#: colors.py:628
 msgid "Start Playback"
 msgstr "Inizia riesecuzione"
 
-#: colors.py:561
+#: colors.py:632
 msgid "Pause Playback"
 msgstr "Pausa esecuzione"
 
-#: colors.py:565
+#: colors.py:650
 msgid "Skip To Beginning"
 msgstr "Salta all'inizio"
 
-#: colors.py:570
+#: colors.py:663
 msgid "Skip To End"
 msgstr "Salta alla fine"
 
-#: colors.py:617
+#: colors.py:698 colors.py:2057
+msgid "Colors! Gallery"
+msgstr "Galleria di Colori!"
+
+#: colors.py:709
 msgid "Paint"
 msgstr "Colora"
 
-#: colors.py:619
+#: colors.py:711
 msgid "Watch"
 msgstr "Osserva"
 
-#: colors.py:620
+#: colors.py:712
 msgid "Learn"
 msgstr "Impara"
 
-#: colors.py:1621
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr "Memorizza in PNG"
+
+#: colors.py:1766
 msgid "Click anywhere to begin painting!"
 msgstr "Clicca da qualsiasi parte per iniziare a dipingere!"
 
-#: colors.py:1733
+#: colors.py:1887
 msgid "Clear Canvas?"
 msgstr "Pulisci il foglio?"
 
-#: colors.py:1734
+#: colors.py:1888
 msgid "This will erase the entire image, including the history."
 msgstr "Questo comando cancellerà completamente l'immagine, compresa la storia."
 
@@ -113,11 +133,3 @@ msgstr "Questo comando cancellerà completamente l'immagine, compresa la storia.
 
 #~ msgid "Start Over"
 #~ msgstr "Ricomincia"
-
-#: colors.py:510
-msgid "Video Paint"
-msgstr "Colora Video"
-
-#: colors.py:627
-msgid "Keep to PNG"
-msgstr "Memorizza in PNG"
