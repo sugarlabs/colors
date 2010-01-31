@@ -1,6 +1,8 @@
 To build C library:
 $ make
 you need:
+- make
+- gcc-c++
 - swig
 - gtk2-devel
 - python-devel
