@@ -5,3 +5,4 @@ host_version = 1
 service_name = org.laptop.community.Colors
 icon = Activity-colors
 exec = sugar-activity colors.Colors
+mime_types = application/x-colors-draw
