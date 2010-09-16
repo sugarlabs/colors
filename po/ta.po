@@ -2,84 +2,145 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-12-09 00:32-0500\n"
+"PO-Revision-Date: 2010-08-01 20:15+0200\n"
+"Last-Translator: தங்கமணி <thangam.arunx@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.1.1rc4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.3\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
-msgstr ""
+msgstr "நிறங்கள்!"
 
-#: colors.py:113
-msgid "Brush Size"
-msgstr ""
+#: colors.py:126
+msgid "Size"
+msgstr "அளவு"
 
-#: colors.py:121 colors.py:136
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
-msgstr ""
+msgstr "உணர்திறன்"
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr ""
+#: colors.py:140
+msgid "Opacity"
+msgstr "ஒளிபுகா இயல்பு"
 
-#: colors.py:286
+#: colors.py:305
 msgid "Working..."
-msgstr ""
-
-#: colors.py:431
-msgid "Palette"
-msgstr ""
-
-#: colors.py:447
-msgid "Zoom Out"
-msgstr ""
-
-#: colors.py:450
-msgid "Zoom In"
-msgstr ""
-
-#: colors.py:482
-msgid "Start Over"
-msgstr ""
-
-#: colors.py:502
-msgid "Start Playback"
-msgstr ""
-
-#: colors.py:506
-msgid "Pause Playback"
-msgstr ""
+msgstr "இயங்குகிறது...."
 
 #: colors.py:510
+msgid "Palette"
+msgstr "தட்டு"
+
+#: colors.py:528
+msgid "Zoom Out"
+msgstr "பெரிதாக்கிக் காட்டு"
+
+#: colors.py:532
+msgid "Zoom In"
+msgstr "சிறிதாக்கிக் காட்டு"
+
+#: colors.py:536
+msgid "Center Image"
+msgstr "படத்தை நடுவில் நிறுத்து"
+
+#: colors.py:541
+msgid "Fullscreen"
+msgstr "முழுத்திரையில் காட்டு"
+
+#: colors.py:550
+msgid "Undo"
+msgstr "செயலை ரத்து செய்"
+
+#: colors.py:555
+msgid "Copy"
+msgstr "பிரதி பண்ணு"
+
+#: colors.py:573
+msgid "Video Paint"
+msgstr "காணொளி அச்சுப்பதி"
+
+#: colors.py:588
+msgid "Erase Image"
+msgstr "படத்தை அழி"
+
+#: colors.py:594
+msgid "Show Help"
+msgstr "உதவியை காண்பி"
+
+#: colors.py:628
+msgid "Start Playback"
+msgstr "மீள்இயக்கத்தை(Playback) ஆரம்பி"
+
+#: colors.py:632
+msgid "Pause Playback"
+msgstr "மீள்இயக்கத்தை(Playback) இடைநிறுத்து"
+
+#: colors.py:650
 msgid "Skip To Beginning"
-msgstr ""
+msgstr "தவிர்த்து ஆரம்பத்திற்கு செல்"
 
-#: colors.py:515
+#: colors.py:663
 msgid "Skip To End"
-msgstr ""
+msgstr "தவிர்த்து இறுதிக்குச் செல்"
 
-#: colors.py:562
+#: colors.py:698 colors.py:2057
+msgid "Colors! Gallery"
+msgstr "நிறங்களின்! தொகுப்பு"
+
+#: colors.py:709
 msgid "Paint"
-msgstr ""
+msgstr "நிறம் தீட்டு"
 
-#: colors.py:563
+#: colors.py:711
 msgid "Watch"
-msgstr ""
+msgstr "அவதானி"
 
-#: colors.py:564
+#: colors.py:712
 msgid "Learn"
-msgstr ""
+msgstr "கற்றுக் கொள்"
 
-#: colors.py:1477
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr "PNG க்கு வைத்திரு"
+
+#: colors.py:1766
 msgid "Click anywhere to begin painting!"
-msgstr ""
+msgstr "நிறம் தீட்ட ஆரம்பிக்க எங்காவது சொடுக்கவும்"
+
+#: colors.py:1887
+msgid "Clear Canvas?"
+msgstr "நிறம் தீட்டும் பரப்பை இல்லாமல் செய்"
+
+#: colors.py:1888
+msgid "This will erase the entire image, including the history."
+msgstr "இது படம் முழுவதையும், செயல் பட்டியலையும் சேர்த்து அழித்து விடும்"
