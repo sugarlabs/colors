@@ -2,83 +2,162 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Ahmad Jawed Samsor <jawedsamsor@gmail.com>\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
+"PO-Revision-Date: 2009-07-07 04:32-0400\n"
+"Last-Translator: Abdulhadi Hairan <abdulhadi@paiwastoon.com.af>\n"
 "Language-Team: PASHTO <LL@li.org>\n"
+"Language: ps\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.1.1rc4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.2.1\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr "رنګونه!"
 
-#: colors.py:113
-msgid "Brush Size"
-msgstr "د برس کچه"
+#: colors.py:126
+msgid "Size"
+msgstr "کچه"
 
-#: colors.py:121 colors.py:136
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr "حساس"
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr "د برس تتوالی"
+#: colors.py:140
+msgid "Opacity"
+msgstr "خړوالی"
 
-#: colors.py:286
+#: colors.py:305
 msgid "Working..."
-msgstr "کار کوی..."
+msgstr "کار کوي..."
 
-#: colors.py:431
+#: colors.py:510
 msgid "Palette"
 msgstr "د رنګونو تخته"
 
-#: colors.py:447
+#: colors.py:528
 msgid "Zoom Out"
-msgstr "لوكمول"
+msgstr "لويوالی کمول"
 
-#: colors.py:450
+#: colors.py:532
 msgid "Zoom In"
-msgstr "لوډېرول"
+msgstr "لويوالی ډېرول"
 
-#: colors.py:482
-msgid "Start Over"
-msgstr "بيا پيل کړئ"
+#: colors.py:536
+msgid "Center Image"
+msgstr "منځ انځور"
 
-#: colors.py:502
+#: colors.py:541
+msgid "Fullscreen"
+msgstr "بشپړه پرده"
+
+#: colors.py:550
+msgid "Undo"
+msgstr ""
+
+#: colors.py:555
+msgid "Copy"
+msgstr "نقل"
+
+#: colors.py:573
+msgid "Video Paint"
+msgstr ""
+
+#: colors.py:588
+msgid "Erase Image"
+msgstr "انځور لیرې کول"
+
+#: colors.py:594
+msgid "Show Help"
+msgstr ""
+
+#: colors.py:628
 msgid "Start Playback"
 msgstr "بياغږول پيل کړئ"
 
-#: colors.py:506
+#: colors.py:632
 msgid "Pause Playback"
-msgstr "بياغږول ځنډ کړئ"
+msgstr "بياغږول وځنډوئ"
 
-#: colors.py:510
+#: colors.py:650
 msgid "Skip To Beginning"
-msgstr "پيل ته ولاړ شئ"
+msgstr "پيل ته تېر شئ"
 
-#: colors.py:515
+#: colors.py:663
 msgid "Skip To End"
-msgstr "پای ته ولاړ شئ"
+msgstr "پای ته تېر شئ"
 
-#: colors.py:562
+#: colors.py:698 colors.py:2059
+msgid "Colors! Gallery"
+msgstr ""
+
+#: colors.py:709
 msgid "Paint"
-msgstr "رنګ"
+msgstr "رسامي"
 
-#: colors.py:563
+#: colors.py:711
 msgid "Watch"
 msgstr "ليدل"
 
-#: colors.py:564
+#: colors.py:712
 msgid "Learn"
-msgstr "زده يې کړئ"
+msgstr "زده کول"
 
-#: colors.py:1477
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr ""
+
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
-msgstr "د رنګولو د پيل لپاره هر چيرې ټک وکړئ!"
+msgstr "د رسامۍ د پيلولو لپاره يو ځای کلېک کړئ!"
+
+#: colors.py:1889
+msgid "Clear Canvas?"
+msgstr "ټوکر پاک شي؟"
+
+#: colors.py:1890
+msgid "This will erase the entire image, including the history."
+msgstr "دا به ټول انځور٬ په ګډون د تاریخ پاک کړي."
+
+#~ msgid "Brush Size"
+#~ msgstr "د برس کچه"
+
+#~ msgid "Brush Opacity"
+#~ msgstr "د برس تتوالی"
+
+#~ msgid "Start Over"
+#~ msgstr "بيا پيل کړئ"

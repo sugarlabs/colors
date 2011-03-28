@@ -2,83 +2,162 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
-"PO-Revision-Date: 2008-12-16 14:09-0500\n"
-"Last-Translator: Guy Sheffer <guysoft@ort.org.il>\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
+"PO-Revision-Date: 2010-04-30 01:38+0200\n"
+"Last-Translator: danielbs <daniel.bensasson@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.3\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr "צבעים!"
 
-#: colors.py:113
-msgid "Brush Size"
-msgstr "גודל מכחול"
+#: colors.py:126
+msgid "Size"
+msgstr "גודל"
 
-#: colors.py:121 colors.py:136
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr "רגישות"
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr "שקיפות מכחול"
+#: colors.py:140
+msgid "Opacity"
+msgstr "שקיפות"
 
-#: colors.py:286
+#: colors.py:305
 msgid "Working..."
 msgstr "עובד..."
 
-#: colors.py:431
+#: colors.py:510
 msgid "Palette"
 msgstr "לוח צבעים"
 
-#: colors.py:447
+#: colors.py:528
 msgid "Zoom Out"
 msgstr "התרחק"
 
-#: colors.py:450
+#: colors.py:532
 msgid "Zoom In"
 msgstr "התקרב"
 
-#: colors.py:482
-msgid "Start Over"
-msgstr "התחלה מחדש"
+#: colors.py:536
+msgid "Center Image"
+msgstr "מרכז תמונה"
 
-#: colors.py:502
+#: colors.py:541
+msgid "Fullscreen"
+msgstr "מסך מלא"
+
+#: colors.py:550
+msgid "Undo"
+msgstr "בטל"
+
+#: colors.py:555
+msgid "Copy"
+msgstr "העתק"
+
+#: colors.py:573
+msgid "Video Paint"
+msgstr ""
+
+#: colors.py:588
+msgid "Erase Image"
+msgstr "מחק תמונה"
+
+#: colors.py:594
+msgid "Show Help"
+msgstr "הצג עזרה"
+
+#: colors.py:628
 msgid "Start Playback"
 msgstr "התחל הקרנה"
 
-#: colors.py:506
+#: colors.py:632
 msgid "Pause Playback"
 msgstr "הקפא הקרנה"
 
-#: colors.py:510
+#: colors.py:650
 msgid "Skip To Beginning"
 msgstr "דילוג להתחלה"
 
-#: colors.py:515
+#: colors.py:663
 msgid "Skip To End"
 msgstr "דילוג לסוף"
 
-#: colors.py:562
+#: colors.py:698 colors.py:2059
+msgid "Colors! Gallery"
+msgstr "גלריית צבעים!"
+
+#: colors.py:709
 msgid "Paint"
 msgstr "ציור"
 
-#: colors.py:563
+#: colors.py:711
 msgid "Watch"
 msgstr "צפייה"
 
-#: colors.py:564
+#: colors.py:712
 msgid "Learn"
 msgstr "למידה"
 
-#: colors.py:1477
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr "שמור כ-PNG"
+
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr "ניתן ללחוץ בכל מקום על מנת להתחיל לצייר!"
+
+#: colors.py:1889
+msgid "Clear Canvas?"
+msgstr ""
+
+#: colors.py:1890
+msgid "This will erase the entire image, including the history."
+msgstr ""
+
+#~ msgid "Brush Size"
+#~ msgstr "גודל מכחול"
+
+#~ msgid "Brush Opacity"
+#~ msgstr "שקיפות מכחול"
+
+#~ msgid "Start Over"
+#~ msgstr "התחלה מחדש"

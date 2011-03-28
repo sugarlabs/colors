@@ -2,11 +2,39 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
 "PO-Revision-Date: 2008-12-24 02:10-0500\n"
 "Last-Translator: Noy Shoung <noy_shoung@nida.gov.kh>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,70 +43,119 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Pootle 1.1.0rc2\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr "ច្រើនពណ៌"
 
-#: colors.py:113
-msgid "Brush Size"
-msgstr "ទំហំជក់"
+#: colors.py:126
+msgid "Size"
+msgstr ""
 
-#: colors.py:121 colors.py:136
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr ""
 
-#: colors.py:128
-msgid "Brush Opacity"
-msgstr "ជក់ធំ"
+#: colors.py:140
+msgid "Opacity"
+msgstr ""
 
-#: colors.py:286
+#: colors.py:305
 msgid "Working..."
 msgstr "កំពុង​ដំណើរការ"
 
-#: colors.py:431
+#: colors.py:510
 msgid "Palette"
 msgstr "បន្ទះ​ក្តារ"
 
-#: colors.py:447
+#: colors.py:528
 msgid "Zoom Out"
 msgstr "ពង្រីក"
 
-#: colors.py:450
+#: colors.py:532
 msgid "Zoom In"
 msgstr "បង្រួម"
 
-#: colors.py:482
-msgid "Start Over"
-msgstr "ចាប់​ផ្ដើម"
+#: colors.py:536
+msgid "Center Image"
+msgstr ""
 
-#: colors.py:502
+#: colors.py:541
+msgid "Fullscreen"
+msgstr ""
+
+#: colors.py:550
+msgid "Undo"
+msgstr ""
+
+#: colors.py:555
+msgid "Copy"
+msgstr ""
+
+#: colors.py:573
+msgid "Video Paint"
+msgstr ""
+
+#: colors.py:588
+msgid "Erase Image"
+msgstr ""
+
+#: colors.py:594
+msgid "Show Help"
+msgstr ""
+
+#: colors.py:628
 msgid "Start Playback"
 msgstr "លេញត្រឡប់ក្រោយ"
 
-#: colors.py:506
+#: colors.py:632
 msgid "Pause Playback"
 msgstr "ផ្អាកលេញត្រឡប់ក្រោយ"
 
-#: colors.py:510
+#: colors.py:650
 msgid "Skip To Beginning"
 msgstr "រំលង​លើ​ការ​ចាប់​ផ្តើម"
 
-#: colors.py:515
+#: colors.py:663
 msgid "Skip To End"
 msgstr "រំលង​ដល់​ចុង"
 
-#: colors.py:562
+#: colors.py:698 colors.py:2059
+msgid "Colors! Gallery"
+msgstr ""
+
+#: colors.py:709
 msgid "Paint"
 msgstr "គំនូរ"
 
-#: colors.py:563
+#: colors.py:711
 msgid "Watch"
 msgstr "មើល"
 
-#: colors.py:564
+#: colors.py:712
 msgid "Learn"
 msgstr "រៀន"
 
-#: colors.py:1477
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr ""
+
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr "ចុច​កន្លែង​ណា​ក៏បាន​​ដើម្បី​ចាប់​ផ្តើម​គូរ"
+
+#: colors.py:1889
+msgid "Clear Canvas?"
+msgstr ""
+
+#: colors.py:1890
+msgid "This will erase the entire image, including the history."
+msgstr ""
+
+#~ msgid "Brush Size"
+#~ msgstr "ទំហំជក់"
+
+#~ msgid "Brush Opacity"
+#~ msgstr "ជក់ធំ"
+
+#~ msgid "Start Over"
+#~ msgstr "ចាប់​ផ្ដើម"

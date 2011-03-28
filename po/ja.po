@@ -2,12 +2,40 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-29 17:51-0400\n"
-"PO-Revision-Date: 2009-11-01 06:42-0400\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
+"PO-Revision-Date: 2010-01-28 10:04+0200\n"
 "Last-Translator: korakurider <korakurider@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ja\n"
@@ -15,92 +43,112 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 1.2.1\n"
+"X-Generator: Pootle 2.0.1\n"
 
-#: activity/activity.info:2 colors.py:338
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr "Colors!"
 
-#: colors.py:115
+#: colors.py:126
 msgid "Size"
 msgstr "サイズ"
 
-#: colors.py:123 colors.py:137
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr "筆圧を使う"
 
-#: colors.py:129
+#: colors.py:140
 msgid "Opacity"
 msgstr "透明度"
 
-#: colors.py:294
+#: colors.py:305
 msgid "Working..."
 msgstr "処理中..."
 
-#: colors.py:447
+#: colors.py:510
 msgid "Palette"
 msgstr "パレット"
 
-#: colors.py:465
+#: colors.py:528
 msgid "Zoom Out"
 msgstr "縮小表示"
 
-#: colors.py:469
+#: colors.py:532
 msgid "Zoom In"
 msgstr "拡大表示"
 
-#: colors.py:473
+#: colors.py:536
 msgid "Center Image"
 msgstr "画像を中央に表示"
 
-#: colors.py:478
+#: colors.py:541
 msgid "Fullscreen"
 msgstr "全画面"
 
-#: colors.py:487
+#: colors.py:550
+msgid "Undo"
+msgstr "元に戻す"
+
+#: colors.py:555
 msgid "Copy"
 msgstr "コピー"
 
-#: colors.py:520
+#: colors.py:573
+msgid "Video Paint"
+msgstr "ビデオにお絵描き"
+
+#: colors.py:588
 msgid "Erase Image"
 msgstr "画像を消去"
 
-#: colors.py:552
+#: colors.py:594
+msgid "Show Help"
+msgstr "ヘルプを表示"
+
+#: colors.py:628
 msgid "Start Playback"
 msgstr "再生開始"
 
-#: colors.py:556
+#: colors.py:632
 msgid "Pause Playback"
 msgstr "再生を一時停止"
 
-#: colors.py:560
+#: colors.py:650
 msgid "Skip To Beginning"
 msgstr "最初に戻る"
 
-#: colors.py:565
+#: colors.py:663
 msgid "Skip To End"
 msgstr "最後に飛ぶ"
 
-#: colors.py:612
+#: colors.py:698 colors.py:2059
+msgid "Colors! Gallery"
+msgstr "ギャラリー"
+
+#: colors.py:709
 msgid "Paint"
 msgstr "描画"
 
-#: colors.py:614
+#: colors.py:711
 msgid "Watch"
 msgstr "履歴を見る"
 
-#: colors.py:615
+#: colors.py:712
 msgid "Learn"
 msgstr "習う"
 
-#: colors.py:1612
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr "PNG形式で保存"
+
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr "どこかクリックして、お絵かきを始めましょう！"
 
-#: colors.py:1716
+#: colors.py:1889
 msgid "Clear Canvas?"
 msgstr "キャンバスを消去しますか？"
 
-#: colors.py:1717
+#: colors.py:1890
 msgid "This will erase the entire image, including the history."
 msgstr "この操作は画像を全部消去し、履歴もなくなります。"

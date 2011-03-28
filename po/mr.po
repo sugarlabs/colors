@@ -2,12 +2,48 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-30 19:10+0000\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,70 +52,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.1.1rc4\n"
 
-#: activity/activity.info:2 colors.py:332
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr ""
 
-#: colors.py:113
-msgid "Brush Size"
+#: colors.py:126
+msgid "Size"
 msgstr ""
 
-#: colors.py:121 colors.py:136
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr ""
 
-#: colors.py:128
-msgid "Brush Opacity"
+#: colors.py:140
+msgid "Opacity"
 msgstr ""
 
-#: colors.py:286
+#: colors.py:305
 msgid "Working..."
 msgstr ""
 
-#: colors.py:431
+#: colors.py:510
 msgid "Palette"
 msgstr ""
 
-#: colors.py:447
+#: colors.py:528
 msgid "Zoom Out"
 msgstr ""
 
-#: colors.py:450
+#: colors.py:532
 msgid "Zoom In"
 msgstr ""
 
-#: colors.py:482
-msgid "Start Over"
+#: colors.py:536
+msgid "Center Image"
 msgstr ""
 
-#: colors.py:502
+#: colors.py:541
+msgid "Fullscreen"
+msgstr ""
+
+#: colors.py:550
+msgid "Undo"
+msgstr ""
+
+#: colors.py:555
+msgid "Copy"
+msgstr ""
+
+#: colors.py:573
+msgid "Video Paint"
+msgstr ""
+
+#: colors.py:588
+msgid "Erase Image"
+msgstr ""
+
+#: colors.py:594
+msgid "Show Help"
+msgstr ""
+
+#: colors.py:628
 msgid "Start Playback"
 msgstr ""
 
-#: colors.py:506
+#: colors.py:632
 msgid "Pause Playback"
 msgstr ""
 
-#: colors.py:510
+#: colors.py:650
 msgid "Skip To Beginning"
 msgstr ""
 
-#: colors.py:515
+#: colors.py:663
 msgid "Skip To End"
 msgstr ""
 
-#: colors.py:562
+#: colors.py:698 colors.py:2059
+msgid "Colors! Gallery"
+msgstr ""
+
+#: colors.py:709
 msgid "Paint"
 msgstr ""
 
-#: colors.py:563
+#: colors.py:711
 msgid "Watch"
 msgstr ""
 
-#: colors.py:564
+#: colors.py:712
 msgid "Learn"
 msgstr ""
 
-#: colors.py:1477
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr ""
+
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
+msgstr ""
+
+#: colors.py:1889
+msgid "Clear Canvas?"
+msgstr ""
+
+#: colors.py:1890
+msgid "This will erase the entire image, including the history."
 msgstr ""

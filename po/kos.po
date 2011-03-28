@@ -2,12 +2,40 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-29 17:51-0400\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,90 +44,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.3.0\n"
 
-#: activity/activity.info:2 colors.py:338
+#: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr ""
 
-#: colors.py:115
+#: colors.py:126
 msgid "Size"
 msgstr ""
 
-#: colors.py:123 colors.py:137
+#: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr ""
 
-#: colors.py:129
+#: colors.py:140
 msgid "Opacity"
 msgstr ""
 
-#: colors.py:294
+#: colors.py:305
 msgid "Working..."
 msgstr ""
 
-#: colors.py:447
+#: colors.py:510
 msgid "Palette"
 msgstr ""
 
-#: colors.py:465
+#: colors.py:528
 msgid "Zoom Out"
 msgstr ""
 
-#: colors.py:469
+#: colors.py:532
 msgid "Zoom In"
 msgstr ""
 
-#: colors.py:473
+#: colors.py:536
 msgid "Center Image"
 msgstr ""
 
-#: colors.py:478
+#: colors.py:541
 msgid "Fullscreen"
 msgstr ""
 
-#: colors.py:487
+#: colors.py:550
+msgid "Undo"
+msgstr ""
+
+#: colors.py:555
 msgid "Copy"
 msgstr ""
 
-#: colors.py:520
+#: colors.py:573
+msgid "Video Paint"
+msgstr ""
+
+#: colors.py:588
 msgid "Erase Image"
 msgstr ""
 
-#: colors.py:552
+#: colors.py:594
+msgid "Show Help"
+msgstr ""
+
+#: colors.py:628
 msgid "Start Playback"
 msgstr ""
 
-#: colors.py:556
+#: colors.py:632
 msgid "Pause Playback"
 msgstr ""
 
-#: colors.py:560
+#: colors.py:650
 msgid "Skip To Beginning"
 msgstr ""
 
-#: colors.py:565
+#: colors.py:663
 msgid "Skip To End"
 msgstr ""
 
-#: colors.py:612
+#: colors.py:698 colors.py:2059
+msgid "Colors! Gallery"
+msgstr ""
+
+#: colors.py:709
 msgid "Paint"
 msgstr ""
 
-#: colors.py:614
+#: colors.py:711
 msgid "Watch"
 msgstr ""
 
-#: colors.py:615
+#: colors.py:712
 msgid "Learn"
 msgstr ""
 
-#: colors.py:1612
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr ""
+
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr ""
 
-#: colors.py:1716
+#: colors.py:1889
 msgid "Clear Canvas?"
 msgstr ""
 
-#: colors.py:1717
+#: colors.py:1890
 msgid "This will erase the entire image, including the history."
 msgstr ""

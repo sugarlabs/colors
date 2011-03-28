@@ -26,11 +26,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-09 00:32-0500\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
 "PO-Revision-Date: 2010-06-23 08:04+0200\n"
 "Last-Translator: whe <heppew@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,7 +125,7 @@ msgstr "Overslaan naar begin"
 msgid "Skip To End"
 msgstr "Overslaan naar einde"
 
-#: colors.py:698 colors.py:2057
+#: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
 msgstr "Kleuren! Galerij"
 
@@ -137,15 +145,15 @@ msgstr "Leren"
 msgid "Keep to PNG"
 msgstr "Behoud naar PNG"
 
-#: colors.py:1766
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr "Klik ergens om te beginnen met tekenen!"
 
-#: colors.py:1887
+#: colors.py:1889
 msgid "Clear Canvas?"
 msgstr "Canvas wissen?"
 
-#: colors.py:1888
+#: colors.py:1890
 msgid "This will erase the entire image, including the history."
 msgstr "Dit zal de gehele afbeelding wissen, inclusief de geschiedenis."
 

@@ -22,11 +22,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-09 00:32-0500\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
 "PO-Revision-Date: 2010-08-01 20:15+0200\n"
 "Last-Translator: தங்கமணி <thangam.arunx@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,7 +121,7 @@ msgstr "தவிர்த்து ஆரம்பத்திற்கு ச�
 msgid "Skip To End"
 msgstr "தவிர்த்து இறுதிக்குச் செல்"
 
-#: colors.py:698 colors.py:2057
+#: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
 msgstr "நிறங்களின்! தொகுப்பு"
 
@@ -133,14 +141,14 @@ msgstr "கற்றுக் கொள்"
 msgid "Keep to PNG"
 msgstr "PNG க்கு வைத்திரு"
 
-#: colors.py:1766
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr "நிறம் தீட்ட ஆரம்பிக்க எங்காவது சொடுக்கவும்"
 
-#: colors.py:1887
+#: colors.py:1889
 msgid "Clear Canvas?"
 msgstr "நிறம் தீட்டும் பரப்பை இல்லாமல் செய்"
 
-#: colors.py:1888
+#: colors.py:1890
 msgid "This will erase the entire image, including the history."
 msgstr "இது படம் முழுவதையும், செயல் பட்டியலையும் சேர்த்து அழித்து விடும்"

@@ -22,11 +22,15 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-09 00:32-0500\n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
 "PO-Revision-Date: 2010-12-20 05:20+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,7 +117,7 @@ msgstr "Skip To Beginning"
 msgid "Skip To End"
 msgstr "Skip To End"
 
-#: colors.py:698 colors.py:2057
+#: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
 msgstr "Colors! Gallery"
 
@@ -133,14 +137,14 @@ msgstr "Learn"
 msgid "Keep to PNG"
 msgstr "Keep to PNG"
 
-#: colors.py:1766
+#: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr "Click anywhere to begin painting!"
 
-#: colors.py:1887
+#: colors.py:1889
 msgid "Clear Canvas?"
 msgstr "Clear Canvas?"
 
-#: colors.py:1888
+#: colors.py:1890
 msgid "This will erase the entire image, including the history."
 msgstr "This will erase the entire image, including the history."
