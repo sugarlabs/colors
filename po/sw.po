@@ -43,8 +43,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2011-02-24 13:51+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2011-04-25 23:01+0200\n"
+"Last-Translator: Christian <kryskaka@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sw\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr ""
 
 #: activity/activity.info:2 colors.py:392
 msgid "Colors!"
-msgstr ""
+msgstr "michezo"
 
 #: colors.py:126
 msgid "Size"
@@ -63,19 +63,19 @@ msgstr ""
 
 #: colors.py:134 colors.py:148
 msgid "Sensitive"
-msgstr ""
+msgstr "nyeti"
 
 #: colors.py:140
 msgid "Opacity"
-msgstr ""
+msgstr "opacity"
 
 #: colors.py:305
 msgid "Working..."
-msgstr ""
+msgstr "kazi"
 
 #: colors.py:510
 msgid "Palette"
-msgstr ""
+msgstr "palette"
 
 #: colors.py:528
 msgid "Zoom Out"

@@ -35,14 +35,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2011-02-14 16:49+0200\n"
-"Last-Translator: <jimmy@laptop.org>\n"
+"PO-Revision-Date: 2011-04-05 22:27+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: rw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1) ;\n"
 "X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2 colors.py:392
@@ -71,11 +71,11 @@ msgstr ""
 
 #: colors.py:528
 msgid "Zoom Out"
-msgstr ""
+msgstr "Kugabanya ubunini"
 
 #: colors.py:532
 msgid "Zoom In"
-msgstr ""
+msgstr "Kongera ubunini"
 
 #: colors.py:536
 msgid "Center Image"
@@ -83,15 +83,15 @@ msgstr ""
 
 #: colors.py:541
 msgid "Fullscreen"
-msgstr ""
+msgstr "Ekara nini"
 
 #: colors.py:550
 msgid "Undo"
-msgstr ""
+msgstr "Subiramo ibimaze gukorwa"
 
 #: colors.py:555
 msgid "Copy"
-msgstr ""
+msgstr "Koporora"
 
 #: colors.py:573
 msgid "Video Paint"
@@ -127,7 +127,7 @@ msgstr ""
 
 #: colors.py:709
 msgid "Paint"
-msgstr ""
+msgstr "Siga irangi"
 
 #: colors.py:711
 msgid "Watch"
