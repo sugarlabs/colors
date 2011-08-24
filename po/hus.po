@@ -1,0 +1,126 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-30 01:50-0500\n"
+"PO-Revision-Date: 2011-08-19 08:09+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hus\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.1\n"
+
+#: activity/activity.info:2 colors.py:392
+msgid "Colors!"
+msgstr "¡Mukuxtalábchik!"
+
+#: colors.py:126
+msgid "Size"
+msgstr "Puwél"
+
+#: colors.py:134 colors.py:148
+msgid "Sensitive"
+msgstr "Ats'bidh"
+
+#: colors.py:140
+msgid "Opacity"
+msgstr "Mapupúl"
+
+#: colors.py:305
+msgid "Working..."
+msgstr "T'ojnal..."
+
+#: colors.py:510
+msgid "Palette"
+msgstr "Dhaykom mukuxtaláb"
+
+#: colors.py:528
+msgid "Zoom Out"
+msgstr "Tsipti'médha'"
+
+#: colors.py:532
+msgid "Zoom In"
+msgstr "Puwedha'"
+
+#: colors.py:536
+msgid "Center Image"
+msgstr "Ts'ejliy K'otbixtaláb"
+
+#: colors.py:541
+msgid "Fullscreen"
+msgstr "Putat walek"
+
+#: colors.py:550
+msgid "Undo"
+msgstr "Tixk'a'"
+
+#: colors.py:555
+msgid "Copy"
+msgstr "K'ot'biy"
+
+#: colors.py:573
+msgid "Video Paint"
+msgstr "Mukúb an T'iplab tejwa'medhomtaláb"
+
+#: colors.py:588
+msgid "Erase Image"
+msgstr "Pakuw' an T'iplab"
+
+#: colors.py:594
+msgid "Show Help"
+msgstr "Tejwa'medha' Tólmix"
+
+#: colors.py:628
+msgid "Start Playback"
+msgstr "Ts'i'kiy ka T'ojondha'"
+
+#: colors.py:632
+msgid "Pause Playback"
+msgstr "Koydhál"
+
+#: colors.py:650
+msgid "Skip To Beginning"
+msgstr "Kit k'alej K'a'ál"
+
+#: colors.py:663
+msgid "Skip To End"
+msgstr "Kit k'alej tin Táltal"
+
+#: colors.py:698 colors.py:2059
+msgid "Colors! Gallery"
+msgstr "K'elab ¡Mukuxtaláb!"
+
+#: colors.py:709
+msgid "Paint"
+msgstr "Múkul"
+
+#: colors.py:711
+msgid "Watch"
+msgstr "Met'a'"
+
+#: colors.py:712
+msgid "Learn"
+msgstr "Wit'a'"
+
+#: colors.py:719
+msgid "Keep to PNG"
+msgstr "Ka dhaya' ti PNG"
+
+#: colors.py:1768
+msgid "Click anywhere to begin painting!"
+msgstr "¡Ka ni'chij ju't'ak'ej abal kit ts'i'kin tit múkul!"
+
+#: colors.py:1889
+msgid "Clear Canvas?"
+msgstr "¿Ka pakuw an t'ojláb?"
+
+#: colors.py:1890
+msgid "This will erase the entire image, including the history."
+msgstr "Axé' ne'ets kin pakuw tala' an t'iplab, juntal kan biyál t'ilab."
