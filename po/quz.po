@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2011-11-20 01:50+0200\n"
+"PO-Revision-Date: 2011-11-21 05:34+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: Voluntarios quechuas Sugar Camp Lima\n"
 "Language: quz\n"
@@ -58,7 +58,7 @@ msgstr "Hatunyachiy"
 #  "Centrar Imagen"
 #: colors.py:536
 msgid "Center Image"
-msgstr "Wankita chawpipi churay  "
+msgstr "Wankita chawpipi churay"
 
 #  "Pantalla completa"
 #: colors.py:541
@@ -133,7 +133,7 @@ msgstr "Yachaqay"
 #  "Guardar a PNG"
 #: colors.py:719
 msgid "Keep to PNG"
-msgstr "PNG hinata waqaychay "
+msgstr "PNG hinata waqaychay"
 
 #  "¡Haga clic en cualquier parte para comenzar a pintar!"
 #: colors.py:1768
