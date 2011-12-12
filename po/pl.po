@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2009-12-22 11:06-0400\n"
-"Last-Translator: Chris Leonard <cjl@laptop.org>\n"
+"PO-Revision-Date: 2011-06-13 17:07+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
@@ -44,31 +44,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Pootle 1.2.1\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2 colors.py:392
 msgid "Colors!"
-msgstr ""
+msgstr "Kolory!"
 
 #: colors.py:126
 msgid "Size"
-msgstr ""
+msgstr "Rozmiar"
 
 #: colors.py:134 colors.py:148
 msgid "Sensitive"
-msgstr ""
+msgstr "Czułość"
 
 #: colors.py:140
 msgid "Opacity"
-msgstr ""
+msgstr "Przezroczystość"
 
 #: colors.py:305
 msgid "Working..."
-msgstr ""
+msgstr "Pracuję..."
 
 #: colors.py:510
 msgid "Palette"
-msgstr ""
+msgstr "Paleta"
 
 #: colors.py:528
 msgid "Zoom Out"
@@ -80,76 +80,76 @@ msgstr "Powiększ"
 
 #: colors.py:536
 msgid "Center Image"
-msgstr ""
+msgstr "Wyśrodkuj obraz"
 
 #: colors.py:541
 msgid "Fullscreen"
-msgstr ""
+msgstr "Pełny ekran"
 
 #: colors.py:550
 msgid "Undo"
-msgstr ""
+msgstr "Cofnij"
 
 #: colors.py:555
 msgid "Copy"
-msgstr ""
+msgstr "Kopiuj"
 
 #: colors.py:573
 msgid "Video Paint"
-msgstr ""
+msgstr "Maluj wideo"
 
 #: colors.py:588
 msgid "Erase Image"
-msgstr ""
+msgstr "Wyczyść obraz"
 
 #: colors.py:594
 msgid "Show Help"
-msgstr ""
+msgstr "Pokaż pomoc"
 
 #: colors.py:628
 msgid "Start Playback"
-msgstr ""
+msgstr "Odtwarzaj"
 
 #: colors.py:632
 msgid "Pause Playback"
-msgstr ""
+msgstr "Wstrzymaj odtwarzanie"
 
 #: colors.py:650
 msgid "Skip To Beginning"
-msgstr ""
+msgstr "Przeskocz na początek"
 
 #: colors.py:663
 msgid "Skip To End"
-msgstr ""
+msgstr "Przeskocz na koniec"
 
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
-msgstr ""
+msgstr "Kolory! - Galeria"
 
 #: colors.py:709
 msgid "Paint"
-msgstr ""
+msgstr "Maluj"
 
 #: colors.py:711
 msgid "Watch"
-msgstr ""
+msgstr "Oglądaj"
 
 #: colors.py:712
 msgid "Learn"
-msgstr ""
+msgstr "Ucz się"
 
 #: colors.py:719
 msgid "Keep to PNG"
-msgstr ""
+msgstr "Zachowaj jako PNG"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
-msgstr ""
+msgstr "Kliknij gdziekolwiek, żeby zacząć malować!"
 
 #: colors.py:1889
 msgid "Clear Canvas?"
-msgstr ""
+msgstr "Wyczyścić obszar malowania?"
 
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
-msgstr ""
+msgstr "To wyczyści cały obraz włącznie z historią."
