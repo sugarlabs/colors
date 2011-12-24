@@ -27,7 +27,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2011-12-21 21:01+0200\n"
+"PO-Revision-Date: 2011-12-21 21:20+0200\n"
 "Last-Translator: Jasmine <udea_jasmine@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
@@ -55,7 +55,7 @@ msgstr "Անթափանցիկություն"
 
 #: colors.py:305
 msgid "Working..."
-msgstr "Կատարվում է..."
+msgstr "Աշխատում է..."
 
 #: colors.py:510
 msgid "Palette"
@@ -63,7 +63,7 @@ msgstr "Պնակ"
 
 #: colors.py:528
 msgid "Zoom Out"
-msgstr "Հեռվացնել"
+msgstr "Հեռացնել"
 
 #: colors.py:532
 msgid "Zoom In"
@@ -71,7 +71,7 @@ msgstr "Մոտեցնել"
 
 #: colors.py:536
 msgid "Center Image"
-msgstr "Կենտրոնի Պատկեր"
+msgstr "Պատկեր տեղադրել կենտրոնում:"
 
 #: colors.py:541
 msgid "Fullscreen"
@@ -79,15 +79,15 @@ msgstr "Էկրանի չափով"
 
 #: colors.py:550
 msgid "Undo"
-msgstr "Չեղյալ համարել"
+msgstr "Ետարկել"
 
 #: colors.py:555
 msgid "Copy"
-msgstr "կրկնօրինակել"
+msgstr "Պատճենել"
 
 #: colors.py:573
 msgid "Video Paint"
-msgstr "Վիդեո Նկար"
+msgstr "Վիդեո գունավորում"
 
 #: colors.py:588
 msgid "Erase Image"
@@ -99,11 +99,11 @@ msgstr "Ցուցադրել Օգնությունը"
 
 #: colors.py:628
 msgid "Start Playback"
-msgstr "Մեկնարկել Կրկնանվագարկումը"
+msgstr "Մեկնարկել վերարտադրումը դեպի ետ"
 
 #: colors.py:632
 msgid "Pause Playback"
-msgstr "Դադարել Կրկնանվագարկումը"
+msgstr "Դադարել վերարտադրումը դեպի ետ"
 
 #: colors.py:650
 msgid "Skip To Beginning"
@@ -115,7 +115,7 @@ msgstr "Զանցել դեպի Ավարտ"
 
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
-msgstr "Գույներ. Սրահ"
+msgstr "Գույների Սրահ"
 
 #: colors.py:709
 msgid "Paint"
@@ -143,4 +143,4 @@ msgstr "Մաքրե՞﻿լ Կտավը"
 
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
-msgstr "Այս ջնջելու է ամբողջ նկարը՝ պատմությունը ներառյալ:"
+msgstr "Այս ջնջելու է ամբողջ պատկերը՝ ներառյալ պատմությունը :"
