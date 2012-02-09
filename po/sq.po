@@ -43,7 +43,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2010-02-17 07:18+0200\n"
+"PO-Revision-Date: 2011-11-28 07:30+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sq\n"
@@ -51,7 +51,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2 colors.py:392
 msgid "Colors!"
@@ -94,8 +94,9 @@ msgid "Fullscreen"
 msgstr "Ekran të plotë"
 
 #: colors.py:550
+#, fuzzy
 msgid "Undo"
-msgstr "# asgjësoj"
+msgstr "Kthe prapa"
 
 #: colors.py:555
 msgid "Copy"
