@@ -35,7 +35,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2012-03-16 04:14+0200\n"
+"PO-Revision-Date: 2012-03-16 04:15+0200\n"
 "Last-Translator: Meechai <malaku38@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: th\n"
@@ -143,11 +143,11 @@ msgstr "เก็บเป็น PNG"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
-msgstr "คลิ๊กที่ไหนก็ได้เพื่อเริ่มการวาดภาพ"
+msgstr "คลิ๊กที่ไหนก็ได้เพื่อเริ่มการวาดภาพ!"
 
 #: colors.py:1889
 msgid "Clear Canvas?"
-msgstr "ล้างพื้นที่วาดภาพทั้งหมด"
+msgstr "ล้างพื้นที่วาดภาพทั้งหมด?"
 
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
