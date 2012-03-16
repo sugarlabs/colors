@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2012-02-29 07:22+0200\n"
-"Last-Translator: Tamom <jamaro.sachiz@gmail.com>\n"
+"PO-Revision-Date: 2012-03-16 04:14+0200\n"
+"Last-Translator: Meechai <malaku38@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr ""
 
 #: activity/activity.info:2 colors.py:392
 msgid "Colors!"
-msgstr "สี"
+msgstr "สี!"
 
 #: colors.py:126
 msgid "Size"
@@ -55,7 +55,7 @@ msgstr "ขนาด"
 
 #: colors.py:134 colors.py:148
 msgid "Sensitive"
-msgstr "ที่มีความสำคัญ"
+msgstr "ละเอียดอ่อน"
 
 #: colors.py:140
 msgid "Opacity"
@@ -95,7 +95,7 @@ msgstr "คัดลอก"
 
 #: colors.py:573
 msgid "Video Paint"
-msgstr ""
+msgstr "ปรับแต่งสีของวีดีโอ"
 
 #: colors.py:588
 msgid "Erase Image"
@@ -111,7 +111,7 @@ msgstr "เริ่มเล่น"
 
 #: colors.py:632
 msgid "Pause Playback"
-msgstr "หยุดการเล่นกลับชั่วคราว"
+msgstr "หยุดการเล่นชั่วคราว"
 
 #: colors.py:650
 msgid "Skip To Beginning"
@@ -123,11 +123,11 @@ msgstr "ข้ามไปที่จุดจบ"
 
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
-msgstr ""
+msgstr "ชุดสี!"
 
 #: colors.py:709
 msgid "Paint"
-msgstr "วาดภาพ"
+msgstr "วาดรูป"
 
 #: colors.py:711
 msgid "Watch"
@@ -143,12 +143,12 @@ msgstr "เก็บเป็น PNG"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
-msgstr "คลิ๊กที่ไหนก็ได้เผื่อเริ่มการวาดภาพ"
+msgstr "คลิ๊กที่ไหนก็ได้เพื่อเริ่มการวาดภาพ"
 
 #: colors.py:1889
 msgid "Clear Canvas?"
-msgstr ""
+msgstr "ล้างพื้นที่วาดภาพทั้งหมด"
 
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
-msgstr ""
+msgstr "จะลบภาพทั้งหมด รวมทั้งประวัติการทำงานทั้งหมดที่ผ่านมา"
