@@ -39,13 +39,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2008-12-15 21:00-0500\n"
-"Last-Translator: Alice Zhang <zhl924505@gmail.com>\n"
+"PO-Revision-Date: 2011-12-12 16:08+0200\n"
+"Last-Translator: lite <litekok@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2 colors.py:392
 msgid "Colors!"
@@ -53,7 +55,7 @@ msgstr "涂色！"
 
 #: colors.py:126
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
 #: colors.py:134 colors.py:148
 msgid "Sensitive"
@@ -61,7 +63,7 @@ msgstr "敏感"
 
 #: colors.py:140
 msgid "Opacity"
-msgstr ""
+msgstr "透明度"
 
 #: colors.py:305
 msgid "Working..."
@@ -81,31 +83,31 @@ msgstr "放大"
 
 #: colors.py:536
 msgid "Center Image"
-msgstr ""
+msgstr "图像正中"
 
 #: colors.py:541
 msgid "Fullscreen"
-msgstr ""
+msgstr "全屏显示"
 
 #: colors.py:550
 msgid "Undo"
-msgstr ""
+msgstr "撤消"
 
 #: colors.py:555
 msgid "Copy"
-msgstr ""
+msgstr "复制"
 
 #: colors.py:573
 msgid "Video Paint"
-msgstr ""
+msgstr "视频画笔"
 
 #: colors.py:588
 msgid "Erase Image"
-msgstr ""
+msgstr "删除图像"
 
 #: colors.py:594
 msgid "Show Help"
-msgstr ""
+msgstr "显示帮助"
 
 #: colors.py:628
 msgid "Start Playback"
@@ -125,7 +127,7 @@ msgstr "跳到结尾"
 
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
-msgstr ""
+msgstr "涂色！画廊"
 
 #: colors.py:709
 msgid "Paint"
@@ -141,7 +143,7 @@ msgstr "学"
 
 #: colors.py:719
 msgid "Keep to PNG"
-msgstr ""
+msgstr "保持为PNG"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
@@ -149,11 +151,11 @@ msgstr "点击任意处开始绘画！"
 
 #: colors.py:1889
 msgid "Clear Canvas?"
-msgstr ""
+msgstr "清除画布？"
 
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
-msgstr ""
+msgstr "将擦除整个图像，包括历史。"
 
 #~ msgid "Brush Size"
 #~ msgstr "画笔尺寸"
