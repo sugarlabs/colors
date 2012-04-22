@@ -43,7 +43,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2011-04-25 23:01+0200\n"
+"PO-Revision-Date: 2011-07-16 11:31+0200\n"
 "Last-Translator: Christian <kryskaka@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sw\n"
@@ -59,7 +59,7 @@ msgstr "michezo"
 
 #: colors.py:126
 msgid "Size"
-msgstr ""
+msgstr "Michezo"
 
 #: colors.py:134 colors.py:148
 msgid "Sensitive"
@@ -79,23 +79,23 @@ msgstr "palette"
 
 #: colors.py:528
 msgid "Zoom Out"
-msgstr ""
+msgstr "zoom nje"
 
 #: colors.py:532
 msgid "Zoom In"
-msgstr ""
+msgstr "zoom ndani"
 
 #: colors.py:536
 msgid "Center Image"
-msgstr ""
+msgstr "kituo cha image"
 
 #: colors.py:541
 msgid "Fullscreen"
-msgstr ""
+msgstr "Wallpapers kamili"
 
 #: colors.py:550
 msgid "Undo"
-msgstr ""
+msgstr "tengua"
 
 #: colors.py:555
 msgid "Copy"
@@ -103,60 +103,60 @@ msgstr "Nakili"
 
 #: colors.py:573
 msgid "Video Paint"
-msgstr ""
+msgstr "video Ukuta"
 
 #: colors.py:588
 msgid "Erase Image"
-msgstr ""
+msgstr "Kufuta Image"
 
 #: colors.py:594
 msgid "Show Help"
-msgstr ""
+msgstr "Onyesha Msaada"
 
 #: colors.py:628
 msgid "Start Playback"
-msgstr ""
+msgstr "Kuanza avspelning"
 
 #: colors.py:632
 msgid "Pause Playback"
-msgstr ""
+msgstr "Pause avspelning"
 
 #: colors.py:650
 msgid "Skip To Beginning"
-msgstr ""
+msgstr "kuruka kwa kuanza"
 
 #: colors.py:663
 msgid "Skip To End"
-msgstr ""
+msgstr "kuruka kwa mwisho"
 
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
-msgstr ""
+msgstr "Rangi! Nyumba ya sanaa"
 
 #: colors.py:709
 msgid "Paint"
-msgstr ""
+msgstr "rangi"
 
 #: colors.py:711
 msgid "Watch"
-msgstr ""
+msgstr "kuangalia"
 
 #: colors.py:712
 msgid "Learn"
-msgstr ""
+msgstr "Kujifunza"
 
 #: colors.py:719
 msgid "Keep to PNG"
-msgstr ""
+msgstr "Shikamana na PNG"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
-msgstr ""
+msgstr "Click popote kuanza uchoraji!"
 
 #: colors.py:1889
 msgid "Clear Canvas?"
-msgstr ""
+msgstr "Canvas wazi?"
 
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
-msgstr ""
+msgstr "hii itafuta picha nzima, ikiwa pamoja na historia."

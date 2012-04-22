@@ -35,7 +35,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2011-04-12 05:18+0200\n"
+"PO-Revision-Date: 2011-07-14 23:08+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ne\n"
@@ -59,7 +59,7 @@ msgstr "संवेदनशिल"
 
 #: colors.py:140
 msgid "Opacity"
-msgstr ""
+msgstr "अस्पष्टता"
 
 #: colors.py:305
 msgid "Working..."
@@ -95,7 +95,7 @@ msgstr "प्रतिलिपी बनाउ"
 
 #: colors.py:573
 msgid "Video Paint"
-msgstr ""
+msgstr "भिडियो रङ्ग"
 
 #: colors.py:588
 msgid "Erase Image"
@@ -103,7 +103,7 @@ msgstr "चित्र मेट"
 
 #: colors.py:594
 msgid "Show Help"
-msgstr ""
+msgstr "मदत देखाउनुहोस्"
 
 #: colors.py:628
 msgid "Start Playback"
@@ -123,7 +123,7 @@ msgstr "एकैचोटी अन्तमा जाऊ"
 
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
-msgstr ""
+msgstr "रङ्ग! सङ्ग्रहालय"
 
 #: colors.py:709
 msgid "Paint"
@@ -139,7 +139,7 @@ msgstr "सिक्नु"
 
 #: colors.py:719
 msgid "Keep to PNG"
-msgstr ""
+msgstr "PNG मा राख्नुहोस्"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
@@ -147,11 +147,11 @@ msgstr "रोगन सुरु गर्न कतै थिच्नुह�
 
 #: colors.py:1889
 msgid "Clear Canvas?"
-msgstr ""
+msgstr "क्यानभास खाली गर्नुहोस्?"
 
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
-msgstr ""
+msgstr "यस्ले पूरै छवि,  इतिहास सम्मिलित गर्दै इरेज गर्छ ।"
 
 #~ msgid "Start Over"
 #~ msgstr "सुरु देखि गर"

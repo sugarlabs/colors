@@ -1,3 +1,7 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -13,7 +17,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#  "¡Colores!"
 #: activity/activity.info:2 colors.py:392
 msgid "Colors!"
 msgstr ""
@@ -23,22 +26,18 @@ msgstr ""
 msgid "Size"
 msgstr "Taña"
 
-#  "Sensitivo"
 #: colors.py:134 colors.py:148
 msgid "Sensitive"
 msgstr ""
 
-#  "Opacidad"
 #: colors.py:140
 msgid "Opacity"
 msgstr ""
 
-#  "Trabajando..."
 #: colors.py:305
 msgid "Working..."
 msgstr ""
 
-#  "Paleta de colores"
 #: colors.py:510
 msgid "Palette"
 msgstr ""
@@ -53,7 +52,6 @@ msgstr "Jisk'aptayaña"
 msgid "Zoom In"
 msgstr "Jach'aptayaña"
 
-#  "Centrar Imagen"
 #: colors.py:536
 msgid "Center Image"
 msgstr ""
@@ -73,42 +71,34 @@ msgstr "Jani wali lurjaña"
 msgid "Copy"
 msgstr "Apaqaña"
 
-#  "Pintura de vídeo"
 #: colors.py:573
 msgid "Video Paint"
 msgstr ""
 
-#  "Borrar Imagen"
 #: colors.py:588
 msgid "Erase Image"
 msgstr ""
 
-#  "Mostrar Ayuda"
 #: colors.py:594
 msgid "Show Help"
 msgstr ""
 
-#  "Iniciar reproducción"
 #: colors.py:628
 msgid "Start Playback"
 msgstr ""
 
-#  "Pausar"
 #: colors.py:632
 msgid "Pause Playback"
 msgstr ""
 
-#  "Ir al principio"
 #: colors.py:650
 msgid "Skip To Beginning"
 msgstr ""
 
-#  "Ir al final"
 #: colors.py:663
 msgid "Skip To End"
 msgstr ""
 
-#  "Galería ¡Colores!"
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
 msgstr ""
@@ -118,32 +108,26 @@ msgstr ""
 msgid "Paint"
 msgstr "Samichaña"
 
-#  "Mirar"
 #: colors.py:711
 msgid "Watch"
 msgstr ""
 
-#  "Aprender"
 #: colors.py:712
 msgid "Learn"
 msgstr ""
 
-#  "Guardar a PNG"
 #: colors.py:719
 msgid "Keep to PNG"
 msgstr ""
 
-#  "¡Haga clic en cualquier parte para comenzar a pintar!"
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr ""
 
-#  "¿Borrar el lienzo?"
 #: colors.py:1889
 msgid "Clear Canvas?"
 msgstr ""
 
-#  "Esto borrará toda la imagen, incluyendo la historia."
 #: colors.py:1890
 msgid "This will erase the entire image, including the history."
 msgstr ""

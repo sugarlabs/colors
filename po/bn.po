@@ -89,7 +89,7 @@ msgstr "পর্দা জুড়ে প্রদর্শন"
 
 #: colors.py:550
 msgid "Undo"
-msgstr ""
+msgstr "আগের অবস্থায় ফিরিয়ে আনুন"
 
 #: colors.py:555
 msgid "Copy"
@@ -97,7 +97,7 @@ msgstr "অনুলিপি করা"
 
 #: colors.py:573
 msgid "Video Paint"
-msgstr ""
+msgstr "ভিডিও রং করা"
 
 #: colors.py:588
 msgid "Erase Image"
@@ -105,7 +105,7 @@ msgstr "চিত্র মুছে ফেলুন"
 
 #: colors.py:594
 msgid "Show Help"
-msgstr ""
+msgstr "সহায়তা প্রদর্শন"
 
 #: colors.py:628
 msgid "Start Playback"
@@ -125,7 +125,7 @@ msgstr "সরাসরি সমাপ্তিতে যান"
 
 #: colors.py:698 colors.py:2059
 msgid "Colors! Gallery"
-msgstr ""
+msgstr "রং! গ্যালারি"
 
 #: colors.py:709
 msgid "Paint"
@@ -141,7 +141,7 @@ msgstr "শেখা"
 
 #: colors.py:719
 msgid "Keep to PNG"
-msgstr ""
+msgstr "PNG তে রাখুন"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"

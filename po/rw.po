@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2012-02-15 13:35+0200\n"
-"Last-Translator: salomon <salomonisoni@yahoo.fr>\n"
+"PO-Revision-Date: 2012-04-05 05:33+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: rw\n"
 "MIME-Version: 1.0\n"
@@ -62,8 +62,9 @@ msgid "Opacity"
 msgstr ""
 
 #: colors.py:305
+#, fuzzy
 msgid "Working..."
-msgstr ""
+msgstr "Gukora..."
 
 #: colors.py:510
 msgid "Palette"
@@ -78,8 +79,9 @@ msgid "Zoom In"
 msgstr "Kongera ubunini"
 
 #: colors.py:536
+#, fuzzy
 msgid "Center Image"
-msgstr ""
+msgstr "Shyira ishushu rwagati"
 
 #: colors.py:541
 msgid "Fullscreen"
@@ -98,57 +100,69 @@ msgid "Video Paint"
 msgstr ""
 
 #: colors.py:588
+#, fuzzy
 msgid "Erase Image"
-msgstr ""
+msgstr "Siba ishusho"
 
 #: colors.py:594
+#, fuzzy
 msgid "Show Help"
-msgstr ""
+msgstr "Erekana ubufasha"
 
 #: colors.py:628
+#, fuzzy
 msgid "Start Playback"
-msgstr ""
+msgstr "Tangira playback"
 
 #: colors.py:632
+#, fuzzy
 msgid "Pause Playback"
-msgstr ""
+msgstr "Ruhutsa playback"
 
 #: colors.py:650
+#, fuzzy
 msgid "Skip To Beginning"
-msgstr ""
+msgstr "Gusimbuka ujya kuntangiriro"
 
 #: colors.py:663
+#, fuzzy
 msgid "Skip To End"
-msgstr ""
+msgstr "Gusimbuka ujya ku iherezo"
 
 #: colors.py:698 colors.py:2059
+#, fuzzy
 msgid "Colors! Gallery"
-msgstr ""
+msgstr "Ibara! Gallery"
 
 #: colors.py:709
 msgid "Paint"
 msgstr "Siga irangi"
 
 #: colors.py:711
+#, fuzzy
 msgid "Watch"
-msgstr ""
+msgstr "Gukurikirana"
 
 #: colors.py:712
+#, fuzzy
 msgid "Learn"
-msgstr ""
+msgstr "Umuntu wiga"
 
 #: colors.py:719
+#, fuzzy
 msgid "Keep to PNG"
-msgstr ""
+msgstr "Bika kuri PNG"
 
 #: colors.py:1768
 msgid "Click anywhere to begin painting!"
 msgstr ""
 
 #: colors.py:1889
+#, fuzzy
 msgid "Clear Canvas?"
-msgstr ""
+msgstr "Hanagura Canvas?"
 
 #: colors.py:1890
+#, fuzzy
 msgid "This will erase the entire image, including the history."
-msgstr ""
+msgstr "Iki kirasiba ishusho irimo imbere, urutonde rukubiyemo."
