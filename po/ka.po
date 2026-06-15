@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-30 01:50-0500\n"
-"PO-Revision-Date: 2025-04-30 02:39+0000\n"
+"PO-Revision-Date: 2026-06-15 08:49+0000\n"
 "Last-Translator: NF <rkavt@smartprojects.ge>\n"
 "Language-Team: Georgian <http://weblate.sugarlabs.org/projects/"
 "sugar-activities/colors/ka/>\n"
@@ -33,7 +33,7 @@ msgstr "მგრძნობიარე"
 
 #: colors.py:140
 msgid "Opacity"
-msgstr "სიმღვრიე"
+msgstr "ბუნდოვნება"
 
 #: colors.py:305
 msgid "Working..."
